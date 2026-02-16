@@ -31,7 +31,7 @@ Phase 1 (Current) successfully synchronized gallery data via a Headless CMS. The
 ## Data Flow & Data Structure
 Google Sheet (Data) -> Google Apps Script (API) -> Vanilla JS (Frontend) -> Google Maps API (Visualization)
 
-## 📊 Data Flow & Architecture
+## Data Flow & Architecture
 
 ```text
        [ ADMIN ]                     [ BACKEND ]                    [ FRONTEND ]
