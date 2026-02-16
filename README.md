@@ -5,9 +5,7 @@ This repository contains the foundational phase of the **Beyoğlu Art Route** pr
 ## The Concept
 Instead of hardcoding museum and gallery data or setting up a complex database at the start, I leveraged Google Workspace tools to create a user-friendly data management system. This allows for real-time updates to the website by simply editing a spreadsheet.
 
----
-
-## How It Works (The Architecture)
+## The Architecture
 
 1. **Data Source (Google Sheets):** All venue information (Name, Lat/Lng, Address, Description, etc.) is stored in a structured Google Sheet.
    
@@ -18,7 +16,7 @@ Instead of hardcoding museum and gallery data or setting up a complex database a
 
 3. **Frontend (Vanilla JS):** The application uses the `fetch()` API to call the GAS URL, retrieve the venue list, and dynamically render UI cards and Google Maps markers.
 
-## Future Roadmap: The "Intelligent Urban Concierge"
+## Roadmap
 
 Phase 1 (Current) successfully synchronized gallery data via a Headless CMS. The next evolution of the project involves:
 
@@ -31,7 +29,7 @@ Phase 1 (Current) successfully synchronized gallery data via a Headless CMS. The
 ## Data Flow & Data Structure
 Google Sheet (Data) -> Google Apps Script (API) -> Vanilla JS (Frontend) -> Google Maps API (Visualization)
 
-## Data Flow & Architecture
+## Data Flow & Schema
 
 ```text
        [ ADMIN ]                     [ BACKEND ]                    [ FRONTEND ]
