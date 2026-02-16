@@ -1,0 +1,19 @@
+# Security
+.env
+api_keys.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python (For your future FastAPI move)
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Editor files
+.vscode/
+.idea/
