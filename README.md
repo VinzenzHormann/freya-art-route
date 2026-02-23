@@ -91,7 +91,7 @@ Phase 2 (Current) Migrating to a cloud-native FastAPI backend solution for quick
 | info_website| String (URL) | Link to the venue's pricing/opening hours site       |
 +-------------+--------------+------------------------------------------------------+
 
-
+```
 
 ---
 # Beyoğlu Art Route - Phase 1: Google Sheets as a Headless CMS
