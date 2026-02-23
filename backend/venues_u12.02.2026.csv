@@ -1,0 +1,13 @@
+id,name,type,description,address,phone,website,lat,lng
+1,Pera Müzesi,museum,Suna ve İnan Kıraç Vakfı'na ait özel bir müze.,Meşrutiyet Caddesi No: 65,(0212) 334 99 00,https://www.peramuzesi.org.tr/,41.031852,28.97504976
+2,İstanbul Modern,museum,Türkiye'nin modern ve çağdaş sanat alanındaki ilk özel müzesi.,Tophane İskele Cd. No:1/1,(0212) 334 73 00,https://www.istanbulmodern.org/,41.02635248,28.98300056
+3,SALT Beyoğlu,gallery,"Çağdaş sanat, mimarlık ve tasarım üzerine sergiler sunan bir kültür kurumu.",İstiklal Caddesi No: 136,(0212) 377 42 00,https://saltonline.org/,41.0320979,28.97616144
+4,ARTER,museum,Vehbi Koç Vakfı'na ait bir çağdaş sanat müzesi.,"Irmak Caddesi No: 13, Dolapdere",(0212) 708 58 00,https://www.arter.org.tr/,41.04069689,28.97869848
+5,Masumiyet Müzesi,museum,Orhan Pamuk'un aynı adlı romanından yola çıkarak kurduğu müze.,"Çukurcuma Cd., Dalgıç Sk. No:2",(0212) 252 97 38,https://www.masumiyetmuzesi.org/,41.03093711,28.97978146
+6,Galeri Zilberman,gallery,Mısır Apartmanı'nda yer alan önde gelen çağdaş sanat galerilerinden biri.,İstiklal Cd. Mısır Apt. No:163 Kat:3,(0212) 251 12 14,https://www.zilbermangallery.com/,41.03259605,28.97648069
+7,Galeri Nev İstanbul,gallery,Türkiye modern ve çağdaş sanatının önemli temsilcilerini sergileyen köklü bir galeri.,İstiklal Cd. Mısır Apt. No:163 Kat:4,(0212) 252 11 85,https://www.galerinevistanbul.com/tr/,41.03269349,28.97658504
+8,Mixer,gallery,"Karaköy'de yer alan, genç ve yükselen sanatçılara odaklanan dinamik bir mekan.","Mumhane Cd. No:46-50, Karaköy",(0212) 243 54 43,https://mixerarts.com/,41.02570761,28.98027143
+9,Anna Laudel Gallery,gallery,"Tarihi bir binada yer alan, yerel ve uluslararası sanatçıların çalışmalarını sergileyen galeri.","Banka Sk. No: 10, Karaköy",(0212) 243 32 57,https://annalaudel.gallery/,41.03375577,28.98702359
+10,Meşher,gallery,"İstiklal Caddesi üzerinde yer alan, geniş kapsamlı tematik sergilere ev sahipliği yapan bir sergi mekanı.",İstiklal Caddesi No: 211,(0212) 708 58 01,https://www.mesher.org/,41.03045722,28.9759651
+11,Akbank Sanat,gallery,"Sergiler, konserler, atölye çalışmaları ve söyleşiler düzenleyen çok yönlü bir merkez.",İstiklal Caddesi No: 8,(0212) 252 35 00,https://www.akbanksanat.com/,41.03590822,28.98311103
+12,Yapı Kredi Kültür Sanat,gallery,"Galatasaray Meydanı'nda, kütüphane ve kitabevi barındıran önemli bir kültür merkezi.",İstiklal Caddesi No: 161,(0212) 252 47 00,https://www.ykykultur.com.tr/,41.03322624,28.97684141

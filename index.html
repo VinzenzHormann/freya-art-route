@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beyoğlu Sanat Rota Planlayıcısı</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap&subset=latin-ext" rel="stylesheet">
+
    
     <style>
         #beyoglu-sanat-rehberi-app {
             font-family: 'Poppins', sans-serif;
             background-color: #ffffff;
-            --color-primary: #12a48e; /* Main Marker Color (Turkuaz) */
-            --color-button: #047666; /* Button color */
-            --color-hover: #075f52; /* Hover color */
+            --color-primary: #12a48e; /* Ana Marka Rengi (Turkuaz) */
+            --color-button: #047666; /* Buton Rengi (Koyu Yeşil) */
+            --color-hover: #075f52; /* Hover Rengi */
         }
         #beyoglu-sanat-rehberi-app h1 { color: var(--color-primary); font-weight: 700; }
        
@@ -38,21 +39,32 @@
        
         .venue-card.selected-for-route { border: 3px solid var(--color-primary); box-shadow: 0 0 15px rgba(18, 164, 142, 0.5); background-color: #f7fcfb; }
        
+        /* Yeni Düzen CSS'i */
         .full-screen-container {
             min-height: 100vh;
         }
 
+        /* Harita kapsayıcılarının tam boy olması için */
+        #map { width: 100%; height: 100%; }
+
+        /* MOBİL İÇİN DÜZELTME: Harita konteynırına varsayılan yükseklik veriyoruz */
+        #map-container { 
+            width: 100%; 
+            height: 350px; /* Mobilde harita yüksekliği */
+            }
+        /* Masaüstünde yan yana (md: breakpoint'ten itibaren) */
         @media (min-width: 768px) {
             .map-view-layout #control-panel {
-                width: 33.333333%; 
+                width: 33.333333%; /* 1/3 genişlik */
                 max-height: 100vh;
                 overflow-y: auto;
             }
             .map-view-layout #map-container {
-                width: 66.666667%; 
+                width: 66.666667%; /* 2/3 genişlik */
                 height: 100vh;
             }
         }
+        /* Harita kapsayıcılarının tam boy olması için */
         #map { width: 100%; height: 100%; }
        
     </style>
@@ -62,14 +74,14 @@
 
     <div id="beyoglu-sanat-rehberi-app" class="text-stone-800 full-screen-container flex flex-col">
        
-        
+        <!-- Ana İçerik Kapsayıcı: Selection View'da dikey, Map View'da masaüstünde yatay -->
         <div id="main-content-wrapper" class="flex flex-col md:flex-row flex-grow w-full">
            
-            
+            <!-- Kontrol Paneli: Hem Seçim hem de Rota Özeti görünümü için kullanılır -->
             <div id="control-panel" class="w-full p-4 sm:p-6 lg:p-8 bg-white max-w-7xl mx-auto md:max-w-none md:mx-0">
                
                 <header class="text-center mb-6 lg:text-left">
-                    <h1 class="text-3xl md:text-4xl mb-1 tracking-tight">Beyoğlu Sanat Rehberi</h1>
+                    <h1 class="text-3xl md:text-4xl mb-1 font-bold">Beyoğlu Sanat Rehberi</h1>
                     <p class="text-md text-gray-500 font-normal">Seçtiğiniz galeriler için optimize edilmiş yürüyüş rotası oluşturun.</p>
                 </header>
 
@@ -77,18 +89,18 @@
                 <div class="mb-6 p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
                     <h3 class="text-xl font-semibold mb-3 text-gray-700">Rota Planlayıcı</h3>
                    
-                    >
+                    <!-- Seçim Açıklaması (Sadece Seçim Görünümünde) -->
                     <div id="selection-info">
                         <p class="text-sm text-gray-600 mb-4">Aşağıdaki listeden en az iki mekanı seçin (kartlara tıklayarak ve etrafındaki yeşil kenarlığı kontrol ederek). Rota adımları haritada numara ve isim olarak görünecektir.</p>
                     </div>
 
 
-                    
+                    <!-- Ana Eylem Butonu: Duruma göre metin ve işlev değişir -->
                     <button id="main-action-button" onclick="handleMainAction()" class="filter-btn w-full !text-lg !py-3 !shadow-lg">
                         Optimize Edilmiş Rotayı Hesapla
                     </button>
                    
-                    
+                    <!-- Rota Özeti (Sadece Harita Görünümünde) -->
                     <div id="route-summary" class="mt-4 p-3 bg-white rounded-lg shadow-md border border-gray-100 hidden">
                         <h4 class="font-bold text-base mb-2 text-red-600 flex items-center">
                             <span class="mr-2 text-xl">📍</span> Önerilen Rota Adımları:
@@ -96,7 +108,7 @@
                         <p id="total-distance" class="text-sm text-gray-700"></p>
                         <p id="total-time" class="text-sm text-gray-700 mb-2"></p>
                         <ol id="route-steps" class="list-decimal list-inside text-sm space-y-2"></ol>
-                        
+                        <!-- Rotayı Temizle butonu artık "Rotayı Değiştir" butonu içinde hallediliyor -->
                     </div>
 
 
@@ -104,7 +116,7 @@
                 </div>
 
 
-                
+                <!-- Filtreler ve Mekan Kartları (Sadece Seçim Görünümünde) -->
                 <div id="selection-content">
                     <nav id="filter-nav" class="flex gap-3 mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide py-2">
                         <button id="filter-all" class="filter-btn active" data-filter="all">Tümü</button>
@@ -114,15 +126,15 @@
 
 
                     <main id="venue-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        
+                        <!-- Mekan kartları buraya JavaScript ile dinamik olarak yüklenecek -->
                         <div id="loading-indicator" class="col-span-full p-10 text-center text-gray-500 text-lg font-medium">
-                            Sanat mekanları verileri yükleniyor...
+                            Sanat mekanları verileri yükleniyor, bu birkaç saniye sürebilir...
                         </div>
                     </main>
                 </div>
             </div>
            
-            
+            <!-- Harita Kapsayıcı (Başlangıçta gizli, Map View'da görünür) -->
             <div id="map-container" class="w-full hidden">
                 <div id="map"></div>
             </div>
@@ -132,459 +144,348 @@
     </div>
 
 
-    <script>
-    
-    const API_KEY = YOUR_OWN_API_KEU; 
-    const GAS_WEB_APP_URL = YOUR_GAS_WEB_APP_URL;
+<script>
+function getTodayKey() {
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const dayIndex = new Date().getDay(); 
+    console.log("Current Day Index:", dayIndex); // Should be 3 for Wednesday
+    return days[dayIndex];
+}
 
+    const API_KEY = "AIzaSyAaRDnZ5crli-C2m66Nj0xD8rKfEPSg2o0"; 
+    const API_URL = 'https://beyoglu-api-666539972908.europe-west3.run.app/venues';
 
-    let venues = []; let map; let selectedVenues = new Set(); let markers = {};
-    let directionsService; let directionsRenderer;
-   
-    
-    let appState = 'selection'; 
+    let venues = [
+    { "id": 1, "name": "Pera Müzesi", "type": "museum", "description": "Suna ve İnan Kıraç Vakfı'na ait özel bir müze.", "address": "Meşrutiyet Caddesi No: 65", "phone": "(0212) 334 99 00", "website": "https://www.peramuzesi.org.tr/", "lat": 41.0318522, "lng": 28.97504976, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 300, "info_website": "https://www.peramuzesi.org.tr/ziyaret" },
+    { "id": 2, "name": "İstanbul Modern", "type": "museum", "description": "Türkiye'nin modern ve çağdaş sanat alanındaki ilk özel müzesi.", "address": "Tophane İskele Cd. No:1/1", "phone": "(0212) 334 73 00", "website": "https://www.istanbulmodern.org/", "lat": 41.02635248, "lng": 28.98300056, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 550, "info_website": "https://www.istanbulmodern.org/ziyaret/muze" },
+    { "id": 3, "name": "SALT Beyoğlu", "type": "gallery", "description": "Çağdaş sanat, mimarlık ve tasarım üzerine sergiler sunan bir kültür kurumu.", "address": "İstiklal Caddesi No: 136", "phone": "(0212) 377 42 00", "website": "https://saltonline.org/", "lat": 41.0320979, "lng": 28.97616144, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://saltonline.org/tr/41" },
+    { "id": 4, "name": "SALT Galata", "type": "gallery", "description": "Çağdaş sanat, mimarlık ve tasarım üzerine sergiler sunan bir kültür kurumu.", "address": "Bankalar Caddesi 11, Karaköy", "phone": "(0212) 334 22 00", "website": "https://saltonline.org/", "lat": 41.02393677, "lng": 28.97349467, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://saltonline.org/tr/42" },
+    { "id": 5, "name": "ARTER", "type": "museum", "description": "Vehbi Koç Vakfı'na ait bir çağdaş sanat müzesi.", "address": "Irmak Caddesi No: 13, Dolapdere", "phone": "(0212) 708 58 00", "website": "https://www.arter.org.tr/", "lat": 41.04069689, "lng": 28.97869848, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 450, "info_website": "https://www.arter.org.tr/saatler-bilet-bilgileri" },
+    { "id": 6, "name": "Masumiyet Müzesi", "type": "museum", "description": "Orhan Pamuk'un aynı adlı romanından yola çıkarak kurduğu müze.", "address": "Çukurcuma Cd., Dalgıç Sk. No:2", "phone": "(0212) 252 97 38", "website": "https://www.masumiyetmuzesi.org/", "lat": 41.03093711, "lng": 28.97978146, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 375, "info_website": "https://www.masumiyetmuzesi.org/zi-yaret-g%C3%BCn-ve-saatleri" },
+    { "id": 7, "name": "Galeri Zilberman", "type": "gallery", "description": "Mısır Apartmanı'nda yer alan önde gelen çağdaş sanat galerilerinden biri.", "address": "İstiklal Cd. Mısır Apt. No:163 Kat:3", "phone": "(0212) 251 12 14", "website": "https://www.zilbermangallery.com/", "lat": 41.03259605, "lng": 28.97648069, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://www.zilbermangallery.com/contact.html" },
+    { "id": 8, "name": "Galeri Nev İstanbul", "type": "gallery", "description": "Türkiye modern ve çağdaş sanatının önemli temsilcilerini sergileyen köklü bir galeri.", "address": "İstiklal Cd. Mısır Apt. No:163 Kat:4", "phone": "(0212) 252 11 85", "website": "https://www.galerinevistanbul.com/tr/", "lat": 41.03269349, "lng": 28.97658504, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://www.galerinevistanbul.com/tr/contact/" },
+    { "id": 9, "name": "Mixer", "type": "gallery", "description": "Karaköy'de yer alan, genç ve yükselen sanatçılara odaklanan dinamik bir mekan.", "address": "Mumhane Cd. No:46-50, Karaköy", "phone": "(0212) 243 54 43", "website": "https://mixerarts.com/", "lat": 41.02570761, "lng": 28.98027143, "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0, "price": 0, "info_website": "https://mixerarts.com/" },
+    { "id": 10, "name": "Anna Laudel Gallery", "type": "gallery", "description": "Tarihi bir binada yer alan, yerel ve uluslararası sanatçıların çalışmalarını sergileyen galeri.", "address": "Banka Sk. No: 10, Karaköy", "phone": "(0212) 243 32 57", "website": "https://annalaudel.gallery/", "lat": 41.03375577, "lng": 28.98702359, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 0, "info_website": "https://annalaudel.gallery/istanbul/" },
+    { "id": 11, "name": "Meşher", "type": "gallery", "description": "İstiklal Caddesi üzerinde yer alan, geniş kapsamlı tematik sergilere ev sahipliği yapan bir sergi mekanı.", "address": "İstiklal Caddesi No: 211", "phone": "(0212) 708 58 01", "website": "https://www.mesher.org/", "lat": 41.03045722, "lng": 28.9759651, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 0, "info_website": "https://www.mesher.org/ziyaret" },
+    { "id": 12, "name": "Akbank Sanat", "type": "gallery", "description": "Sergiler, konserler, atölye çalışmaları ve söyleşiler düzenleyen çok yönlü bir merkez.", "address": "İstiklal Caddesi No: 8", "phone": "(0212) 252 35 00", "website": "https://www.akbanksanat.com/", "lat": 41.03590822, "lng": 28.98311103, "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0, "price": 0, "info_website": "https://www.akbanksanat.com/" },
+    { "id": 13, "name": "Yapı Kredi Kültür Sanat", "type": "gallery", "description": "Galatasaray Meydanı'nda, kütüphane ve kitabevi barındıran önemli bir kültür merkezi.", "address": "İstiklal Caddesi No: 161", "phone": "(0212) 252 47 00", "website": "https://www.ykykultur.com.tr/", "lat": 41.03322624, "lng": 28.97684141, "mon": 1, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 0, "info_website": "https://sanat.ykykultur.com.tr/ziyaret" },
+    { "id": 14, "name": "Türkiye İş Bankası Resim Heykel Müzesi", "type": "museum", "description": "Türkiye İş Bankası Sanat Eserleri Koleksiyonu’na ev sahipliği yapıyor.", "address": "Asmalı Mescit Mh. İstiklal Caddesi. No: 144", "phone": "(0212) 987 37 37", "website": "https://issanat.com.tr/resim-heykel-muzesi/", "lat": 41.03146294, "lng": 28.97599124, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 100, "info_website": "https://issanat.com.tr/resim-heykel-muzesi/" }
+];
+    let map; 
+    let selectedVenues = new Set(); 
+    let markers = {};
+    let directionsService; 
+    let directionsRenderer;
+    let appState = 'selection';
+
+    // DOM Elements
     const grid = document.getElementById('venue-grid');
-    const filterButtons = document.querySelectorAll('.filter-btn');
     const mainActionButton = document.getElementById('main-action-button');
     const alertBox = document.getElementById('alert-box');
     const routeSummary = document.getElementById('route-summary');
     const selectionContent = document.getElementById('selection-content');
-    const selectionInfo = document.getElementById('selection-info');
     const mapContainer = document.getElementById('map-container');
-    const controlPanel = document.getElementById('control-panel');
-    const mainContentWrapper = document.getElementById('main-content-wrapper');
     const appContainer = document.getElementById('beyoglu-sanat-rehberi-app');
 
+    // --- DATA HANDLING ---
+    function escapeHTML(str) {
+        if (!str) return "";
+        const p = document.createElement("p");
+        p.textContent = str;
+        return p.innerHTML;
+    }
 
-    // -------------------------------------------------------------------
-    // I. View State Management
-    // -------------------------------------------------------------------
+async function updateDataFromCloud() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        if (data && Array.isArray(data)) {
+            venues = data.map((v) => {
+                const clean = {};
+                // Normalize keys once during import
+                Object.keys(v).forEach(k => clean[k.toLowerCase()] = v[k]);
 
+                return { 
+                    ...clean, 
+                    id: parseInt(clean.id),
+                    lat: parseFloat(clean.lat), 
+                    lng: parseFloat(clean.lng),
+                    // Keep these to ensure the 'isOpen' logic always has a number to check
+                    mon: parseInt(clean.mon || 0),
+                    tue: parseInt(clean.tue || 0),
+                    wed: parseInt(clean.wed || 0),
+                    thu: parseInt(clean.thu || 0),
+                    fri: parseInt(clean.fri || 0),
+                    sat: parseInt(clean.sat || 0),
+                    sun: parseInt(clean.sun || 0)
+                };
+            });
+            displayVenues();
+            Object.values(markers).forEach(m => m.setMap(null));
+            venues.forEach(addMarker);
+        }
+    } catch (e) {
+        // Only log actual errors
+        console.error("Sync failed:", e);
+    }
+}
 
+    // --- VIEW LOGIC ---
     function switchView(newState) {
-        if (appState === newState) return;
         appState = newState;
-
-
         if (newState === 'map') {
             appContainer.classList.add('map-view-layout');
-            mainContentWrapper.classList.add('md:h-screen');
-            controlPanel.classList.remove('max-w-7xl', 'mx-auto');
-           
-            
             selectionContent.classList.add('hidden');
-            selectionInfo.classList.add('hidden');
-           
-            
             mapContainer.classList.remove('hidden');
             routeSummary.classList.remove('hidden');
-           
-            
             mainActionButton.textContent = "Rotayı Değiştir";
-            mainActionButton.onclick = changeRoute;
-
-
             
-            if (map) {
-                
+            // Trigger a resize so Google Maps calculates its container size correctly
+            setTimeout(() => {
                 google.maps.event.trigger(map, 'resize');
-                const stops = Array.from(selectedVenues).map(id => venues.find(v => v.id === id));
-                if (stops.length > 0) fitMapToBounds(stops);
-            }
-
-
-        } else if (newState === 'selection') {
-
-           
-
+            }, 100);
+        } else {
             appContainer.classList.remove('map-view-layout');
-            mainContentWrapper.classList.remove('md:h-screen');
-            controlPanel.classList.add('max-w-7xl', 'mx-auto');
-           
-
             selectionContent.classList.remove('hidden');
-            selectionInfo.classList.remove('hidden');
-
-
- 
             mapContainer.classList.add('hidden');
             routeSummary.classList.add('hidden');
-            if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
-           
-
             mainActionButton.textContent = "Optimize Edilmiş Rotayı Hesapla";
-            mainActionButton.onclick = handleMainAction;
-
-            venues.forEach(venue => updateMarkerIcon(venue.id, selectedVenues.has(venue.id)));
+            
+            // Clear route and reset markers to selection style
+            if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
+            venues.forEach(v => updateMarkerIcon(v.id, selectedVenues.has(v.id)));
         }
     }
-
-
 
     function handleMainAction() {
-        if (appState === 'selection') {
-            calculateRoute();
-        } else {
-            changeRoute();
-        }
+        if (appState === 'selection') calculateRoute();
+        else switchView('selection');
     }
 
-
-    function changeRoute() {
-        switchView('selection');
-        alertUser('Rota değiştirme moduna geçildi. Yeni mekanları seçebilir veya mevcutları kaldırabilirsiniz.', 'info');
-    }
-
-
-    // -------------------------------------------------------------------
-    // II. Data Fetching and Map Initialization
-    // -------------------------------------------------------------------
-
-
-    async function fetchVenuesFromGAS(attempt = 0) {
-        mainActionButton.disabled = true;
-        const loadingIndicator = document.getElementById('loading-indicator');
-        if (loadingIndicator) loadingIndicator.classList.remove('hidden');
-
-
-        try {
-            const response = await fetch(GAS_WEB_APP_URL);
-            if (!response.ok) throw new Error(HTTP hatası! Durum kodu: ${response.status});
-            const data = await response.json();
-
-
-            if (data && Array.isArray(data)) {
-                venues = data.map((v, i) => ({ ...v, id: v.id || i + 1, lat: parseFloat(v.lat), lng: parseFloat(v.lng) }));
-                if (loadingIndicator) loadingIndicator.classList.add('hidden');
-                alertUser(Başarıyla ${venues.length} mekan verisi sunucudan yüklendi., 'success');
-                displayVenues();
-                loadGoogleMapsScript();
-            } else {
-                throw new Error("Sunucudan gelen veri beklenmedik bir formatta.");
-            }
-        } catch (error) {
-            console.error("Veri yükleme hatası:", error);
-            if (attempt < 2) {
-                const delay = Math.pow(2, attempt) * 1000;
-                alertUser(Veri yükleme hatası. ${delay / 1000} saniye sonra yeniden denenecek... (Deneme ${attempt + 1}/3), 'error');
-                setTimeout(() => fetchVenuesFromGAS(attempt + 1), delay);
-            } else {
-                if (loadingIndicator) loadingIndicator.textContent = 'HATA: Mekan verileri yüklenemedi. Lütfen GAS URL\'nizi kontrol edin.';
-                alertUser('Mekan verileri yüklenemedi. Lütfen Google Apps Script URL\'sini ve dağıtımını kontrol edin.', 'error');
-            }
-        } finally {
-            mainActionButton.disabled = false;
-        }
-    }
-
-
+    // --- MAP & MARKERS ---
     function initMap() {
-        if (venues.length === 0) return console.error("Harita başlatılamadı: Mekan verisi mevcut değil.");
-        const initialCenter = { lat: 41.0360, lng: 28.9876 }; 
-
-
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15, center: initialCenter, streetViewControl: false, mapTypeControl: false,
+            zoom: 14, 
+            center: { lat: 41.0360, lng: 28.9876 },
+            streetViewControl: false, 
+            mapTypeControl: false,
             styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }]
         });
 
-
         directionsService = new google.maps.DirectionsService();
         directionsRenderer = new google.maps.DirectionsRenderer({
-            map: map, suppressMarkers: true,
-            polylineOptions: { strokeColor: var_to_hex('--color-primary'), strokeWeight: 6, strokeOpacity: 0.8 }
+            map: map, 
+            suppressMarkers: true, // This is key to prevent duplicate markers
+            polylineOptions: { strokeColor: '#12a48e', strokeWeight: 6 }
         });
-       
-        venues.forEach(addMarker);
+updateDataFromCloud();
     }
-   
-    function loadGoogleMapsScript() {
-        if (typeof google === 'object' && typeof google.maps === 'object') {
-            initMap();
-        } else {
-            const script = document.createElement('script');
-
-            script.src = https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=geometry&callback=initMap;
-            script.async = true;
-            document.head.appendChild(script);
-        }
-    }
-
-
-    // -------------------------------------------------------------------
-    // III. Map, Route, and Marker Logic (Numbered Markers)
-    // -------------------------------------------------------------------
-
 
     function addMarker(venue) {
-  
-        const position = new google.maps.LatLng(venue.lat, venue.lng);
-
-        const marker = new google.maps.Marker({ position, map: null, title: venue.name }); 
-        
-        marker.addListener('click', () => { 
-
-            if (appState === 'selection') {
-                toggleVenueSelection(venue.id); 
-            }
+        const marker = new google.maps.Marker({
+            position: { lat: venue.lat, lng: venue.lng },
+            map: null,
+            title: venue.name
         });
-        
+        marker.addListener('click', () => {
+            if (appState === 'selection') toggleVenueSelection(venue.id);
+        });
         markers[venue.id] = marker;
-
         updateMarkerIcon(venue.id, false);
     }
-   
 
     function updateMarkerIcon(venueId, isSelected, stepNumber = null) {
-        const marker = markers[venueId]; if (!marker) return;
-        const venue = venues.find(v => v.id === venueId); if (!venue) return;
-       
-        let iconConfig = {}; let labelConfig = null;
-        const primaryHex = var_to_hex('--color-primary').replace('#', '');
-        const buttonHex = var_to_hex('--color-button').replace('#', '');
-       
+        const marker = markers[venueId];
+        if (!marker) return;
+
         if (stepNumber !== null) {
-
-            iconConfig = { 
-                path: google.maps.SymbolPath.CIRCLE, 
-                scale: 16, 
-                fillColor: #${buttonHex}, 
-                fillOpacity: 1.0, 
-                strokeWeight: 4, 
-                strokeColor: '#FFFFFF' 
-            };
-
-            labelConfig = { 
-                text: stepNumber.toString(), 
-                color: '#FFFFFF', 
-                fontWeight: '800', 
-                fontSize: '16px' 
-            };
-            marker.setTitle(${stepNumber}. ${venue.name} (Rota Adımı));
-            marker.setMap(map);
+            // ROUTE MODE: Numbered circles
+            marker.setIcon({
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 14,
+                fillColor: "#047666",
+                fillOpacity: 1,
+                strokeWeight: 2,
+                strokeColor: "#FFFFFF"
+            });
+            marker.setLabel({
+                text: stepNumber.toString(),
+                color: "#FFFFFF",
+                fontSize: "12px",
+                fontWeight: "bold"
+            });
+            marker.setMap(map); // Ensure it is visible on map
         } else {
-
-            const hex = isSelected ? buttonHex : primaryHex;
-            iconConfig = { 
-                url: https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|${hex}|FFFFFF, 
-                scaledSize: new google.maps.Size(32, 32) 
-            };
-            marker.setTitle(venue.name + (isSelected ? ' (Seçili)' : ''));
-
-            marker.setMap(null); 
+            // SELECTION MODE: Standard pins
+            const color = isSelected ? "047666" : "12a48e";
+            marker.setIcon({
+                url: `https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|${color}|FFFFFF`,
+                scaledSize: new google.maps.Size(30, 30)
+            });
+            marker.setLabel(null);
+            marker.setMap(null); // Hide in selection view until calculation
         }
-        marker.setIcon(iconConfig);
-        marker.setLabel(labelConfig);
-    }
-   
-    function var_to_hex(varName) {
-        const style = getComputedStyle(document.body);
-        const rgb = style.getPropertyValue(varName).trim();
-        if (rgb.startsWith('#')) return rgb;
-        if (rgb.startsWith('rgb')) {
-            const parts = rgb.match(/\d+/g);
-            if (parts.length === 3) return "#" + parts.map(x => { const hex = parseInt(x).toString(16); return hex.length === 1 ? '0' + hex : hex; }).join('');
-        }
-        return '#12a48e';
     }
 
-
-
+    // --- ROUTE CALCULATION ---
     async function calculateRoute() {
-        if (selectedVenues.size < 2) return alertUser("Rotayı hesaplamak için lütfen en az iki mekan seçin.", 'error');
-
-
+        if (selectedVenues.size < 2) return alertUser("En az iki mekan seçin.", 'error');
+        
         mainActionButton.disabled = true;
-        mainActionButton.textContent = "Rota Hesaplanıyor...";
-        alertBox.classList.add('hidden');
-       
+        mainActionButton.textContent = "Hesaplanıyor...";
+
         const stops = Array.from(selectedVenues).map(id => venues.find(v => v.id === id));
-
-
-
-        let orderedWaypoints = [];
-        let unvisitedStops = [...stops];
-        let currentStop = unvisitedStops.shift();
-        orderedWaypoints.push(currentStop);
-
-
-        while (unvisitedStops.length > 0) {
-            let nearestStop = null;
-            let minDistance = Infinity;
-            const currentLatLng = new google.maps.LatLng(currentStop.lat, currentStop.lng);
-
-
-            for (const stop of unvisitedStops) {
-                const distance = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng, new google.maps.LatLng(stop.lat, stop.lng));
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    nearestStop = stop;
-                }
-            }
-            if (nearestStop) {
-                orderedWaypoints.push(nearestStop);
-                currentStop = nearestStop;
-                unvisitedStops = unvisitedStops.filter(s => s.id !== nearestStop.id);
-            }
+        
+        // Basic TSP sort (nearest neighbor)
+        let ordered = [stops[0]];
+        let unvisited = stops.slice(1);
+        while(unvisited.length > 0) {
+            let last = ordered[ordered.length-1];
+            unvisited.sort((a,b) => 
+                google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(last.lat, last.lng), new google.maps.LatLng(a.lat, a.lng)) -
+                google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(last.lat, last.lng), new google.maps.LatLng(b.lat, b.lng))
+            );
+            ordered.push(unvisited.shift());
         }
-       
-        const waypoints = orderedWaypoints.slice(1, -1).map(stop => ({ location: new google.maps.LatLng(stop.lat, stop.lng), stopover: true }));
-
 
         const request = {
-            origin: new google.maps.LatLng(orderedWaypoints[0].lat, orderedWaypoints[0].lng),
-            destination: new google.maps.LatLng(orderedWaypoints[orderedWaypoints.length - 1].lat, orderedWaypoints[orderedWaypoints.length - 1].lng),
-            waypoints, travelMode: 'WALKING'
+            origin: { lat: ordered[0].lat, lng: ordered[0].lng },
+            destination: { lat: ordered[ordered.length-1].lat, lng: ordered[ordered.length-1].lng },
+            waypoints: ordered.slice(1, -1).map(s => ({ location: { lat: s.lat, lng: s.lng }, stopover: true })),
+            travelMode: 'WALKING'
         };
-
 
         directionsService.route(request, (response, status) => {
             mainActionButton.disabled = false;
-           
             if (status === 'OK') {
+                // 1. Hide all existing markers first
+                Object.values(markers).forEach(m => m.setMap(null));
+                
+                // 2. Draw the line
                 directionsRenderer.setDirections(response);
-                displayRouteSummary(response, orderedWaypoints);
+                
+                // 3. Show the UI
                 switchView('map');
-                alertUser('Rotanız başarıyla oluşturuldu! Haritayı kontrol edin.', 'success');
+                
+                // 4. Place the numbered markers
+                displayRouteSummary(response, ordered);
             } else {
-
-                mainActionButton.textContent = "Optimize Edilmiş Rotayı Hesapla";
-                alertUser('Rota hesaplama hatası: ' + status + '. Koordinatları ve API anahtarını kontrol edin.', 'error');
-                directionsRenderer.setDirections({ routes: [] });
+                alertUser('Rota bulunamadı: ' + status, 'error');
             }
         });
     }
-   
-    function fitMapToBounds(stops) {
-        if (!map) return;
-        const bounds = new google.maps.LatLngBounds();
-        stops.forEach(stop => bounds.extend(new google.maps.LatLng(stop.lat, stop.lng)));
-        map.fitBounds(bounds);
-    }
-
 
     function displayRouteSummary(response, orderedStops) {
-        const leg = response.routes[0].legs;
-        let totalDistanceMeters = 0; let totalTimeSeconds = 0;
-        const stepsList = document.getElementById('route-steps'); stepsList.innerHTML = '';
-       
+        const legs = response.routes[0].legs;
+        const stepsList = document.getElementById('route-steps'); 
+        stepsList.innerHTML = '';
 
-        leg.forEach((l, index) => {
-            totalDistanceMeters += l.distance.value; totalTimeSeconds += l.duration.value;
-            const stepNumber = index + 1;
-            const startVenue = orderedStops[index];
-            const nextVenue = orderedStops[index + 1];
-           
-
-            updateMarkerIcon(startVenue.id, true, stepNumber);
-
-
-            const stepItem = document.createElement('li');
-
-            stepItem.innerHTML = `<span class="font-bold text-base text-gray-800">${startVenue.name}</span> <br> 
-                <span class="text-xs text-gray-500">
-                    <span class="font-semibold text-gray-700">${l.duration.text}</span> yürüyüş ile ${nextVenue.name}'a (${l.distance.text})
-                </span>`;
-            stepsList.appendChild(stepItem);
+        orderedStops.forEach((stop, i) => {
+            updateMarkerIcon(stop.id, true, i + 1);
+            
+            const li = document.createElement('li');
+            li.className = "flex items-start gap-3 p-2 border-b border-gray-50";
+            let info = i === 0 ? "Başlangıç" : `${legs[i-1].duration.text} (${legs[i-1].distance.text})`;
+            
+            li.innerHTML = `
+                <span class="bg-[#047666] text-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">${i + 1}</span>
+                <div>
+                    <p class="font-bold text-sm">${stop.name}</p>
+                    <p class="text-[10px] text-gray-400 uppercase">${info}</p>
+                </div>
+            `;
+            stepsList.appendChild(li);
         });
-       
-
-        const lastStepNumber = orderedStops.length;
-        const lastVenue = orderedStops[orderedStops.length - 1];
-        updateMarkerIcon(lastVenue.id, true, lastStepNumber);
-       
-        const lastItem = document.createElement('li');
-
-        lastItem.innerHTML = <span class="font-bold text-base text-gray-800">${lastVenue.name}</span> (Bitiş Noktası);
-        stepsList.appendChild(lastItem);
-
-
-        document.getElementById('total-distance').textContent = Toplam Yürüyüş Mesafesi: ${(totalDistanceMeters / 1000).toFixed(2)} km;
-        document.getElementById('total-time').textContent = Toplam Tahmini Yürüyüş Süresi: ${Math.round(totalTimeSeconds / 60)} dakika;
-
     }
 
-
+    // --- UI INTERACTION ---
     function toggleVenueSelection(venueId) {
-
-        if (appState === 'map') return;
-       
-        const cardElement = document.getElementById(venue-card-${venueId});
-        const isSelected = selectedVenues.has(venueId);
-       
-        if (isSelected) {
+        const card = document.getElementById(`venue-card-${venueId}`);
+        if (selectedVenues.has(venueId)) {
             selectedVenues.delete(venueId);
-            if(cardElement) cardElement.classList.remove('selected-for-route');
-            updateMarkerIcon(venueId, false);
+            card.classList.replace('border-[#12a48e]', 'border-transparent');
+            card.classList.remove('bg-emerald-50');
         } else {
             selectedVenues.add(venueId);
-            if(cardElement) cardElement.classList.add('selected-for-route');
-            updateMarkerIcon(venueId, true);
+            card.classList.replace('border-transparent', 'border-[#12a48e]');
+            card.classList.add('bg-emerald-50');
         }
     }
 
-
     function createVenueCard(venue) {
-        const typeLabel = venue.type === 'museum' ? 'Müze' : 'Galeri';
-        const typeColor = venue.type === 'museum' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
+        const today = getTodayKey();
+        const isOpen = venue[today] === 1;         
         const isSelected = selectedVenues.has(venue.id);
-       
-        return `
-            <div id="venue-card-${venue.id}" class="venue-card bg-white rounded-xl shadow-lg border border-gray-100 transition-shadow duration-300 hover:shadow-2xl overflow-hidden cursor-pointer ${isSelected ? 'selected-for-route' : ''}"
-                data-type="${venue.type}" onclick="toggleVenueSelection(${venue.id})">
-                <div class="p-5 relative">
-                    <div class="flex justify-between items-start mb-3">
-                        <h2 class="text-lg font-semibold text-gray-800 pr-10">${venue.name}</h2>
-                        <span class="flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium ${typeColor} shadow-sm">${typeLabel}</span>
+        const statusBadge = isOpen ? '🟢 Açık' : '⚪ Kapalı';
+        
+return `
+            <div id="venue-card-${venue.id}" 
+                class="venue-card bg-white rounded-xl shadow-md border-2 p-4 transition-all flex flex-col ${isOpen ? 'cursor-pointer' : 'opacity-50 pointer-events-none'} ${isSelected ? 'border-[#12a48e] bg-emerald-50' : 'border-transparent'}" 
+                onclick="toggleVenueSelection(${venue.id})">
+                
+                <div class="flex justify-between items-start mb-1">
+                    <h2 class="text-xl font-bold leading-tight">${escapeHTML(venue.name)}</h2>
+                    <span class="text-[10px] font-bold ${isOpen ? 'text-green-600' : 'text-gray-400'}">${statusBadge}</span>
+                </div>
+                
+                <p class="text-gray-500 text-[14px] mb-3 line-clamp-2">${escapeHTML(venue.description)}</p>
+
+                <div class="space-y-1 mb-4 text-[12px] text-gray-600 border-t border-gray-50 pt-2">
+                    <div class="flex items-start gap-1">
+                        <span class="flex-shrink-0">📍</span>
+                        <span>${escapeHTML(venue.address)}</span>
                     </div>
-                    <p class="text-gray-600 text-sm mb-4">${venue.description}</p>
-                    <div class="text-sm text-gray-700 space-y-2 mb-5">
-                        <p class="flex items-start"><span class="mr-2 pt-0.5 text-lg icon-color">🏢</span>${venue.address}</p>
-                        <p class="flex items-center"><span class="mr-2 text-lg icon-color">📞</span>${venue.phone}</p>
+                    <div class="flex items-center gap-1">
+                        <span class="flex-shrink-0">📞</span>
+                        <span>${escapeHTML(venue.phone)}</span>
                     </div>
-                    <div class="flex gap-3 flex-wrap border-t pt-4">
-                        <a href="${venue.website}" target="_blank" rel="noopener noreferrer" class="card-link" onclick="event.stopPropagation()">
-                            <span class="mr-1.5 text-xs">🌐</span> Website
-                        </a>
+                    <div class="flex items-center gap-1">
+                        <span class="flex-shrink-0">🌐</span>
+                        <a href="${escapeHTML(venue.website)}" target="_blank" rel="nofollow noopener noreferrer" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation()">Websitesini Ziyaret Et </a>
                     </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-2 border-t border-gray-100 mt-auto">
+                    <span class="text-[9px] uppercase font-bold text-gray-400">${venue.type}</span>                    
+                    <a href="${escapeHTML(venue.info_website)}" target="_blank" rel="nofollow noopener noreferrer" class="hover:underline text-s font-bold text-emerald-700" onclick="event.stopPropagation()">${venue.price > 0 ? venue.price + ' TL' : 'Ücretsiz'}</a>
                 </div>
             </div>
         `;
     }
 
-
     function displayVenues(filter = 'all') {
-        grid.innerHTML = venues.length === 0
-            ? '<div id="loading-indicator" class="col-span-full p-10 text-center text-gray-500 text-lg font-medium">Sanat mekanları verileri yükleniyor...</div>'
-            : venues.filter(v => filter === 'all' || v.type === filter).map(createVenueCard).join('');
+        grid.innerHTML = venues
+            .filter(v => filter === 'all' || v.type === filter)
+            .map(createVenueCard).join('');
     }
-   
-    function alertUser(message, type) {
-        alertBox.textContent = message;
-        alertBox.className = 'mt-4 p-3 rounded-md border-l-4';
-       
-        if (type === 'error') alertBox.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
-        else if (type === 'success') alertBox.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
-        else alertBox.classList.add('bg-blue-100', 'border-blue-500', 'text-blue-700');
 
-
+    function alertUser(msg, type) {
+        alertBox.textContent = msg;
+        alertBox.className = `mt-4 p-3 rounded border-l-4 ${type === 'error' ? 'bg-red-100 border-red-500 text-red-700' : 'bg-blue-100 border-blue-500 text-blue-700'}`;
         alertBox.classList.remove('hidden');
-        setTimeout(() => alertBox.classList.add('hidden'), 6000);
+        setTimeout(() => alertBox.classList.add('hidden'), 3000);
     }
 
+    function loadGoogleMapsScript() {
+        const script = document.createElement('script');
+        // Added loading=async and v=weekly/beta
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=geometry&callback=initMap&loading=async`;
+        script.async = true;
+        document.head.appendChild(script);
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-        filterButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
+        loadGoogleMapsScript();
+        //updateDataFromCloud();
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 e.currentTarget.classList.add('active');
                 displayVenues(e.currentTarget.dataset.filter);
             });
         });
-        displayVenues();
-        fetchVenuesFromGAS();
-        switchView('selection');
     });
-    </script>
+</script>
 </body>
 </html>
