@@ -79,7 +79,7 @@ def get_venues():
         # IMPORTANT: Convert the meta string back into a Dictionary
         try:
             item['meta'] = json.loads(item['meta'])
-        except:
+        except Exception:
             item['meta'] = {} # Fallback if JSON is empty or broken
         rows.append(item)
     return rows
@@ -92,7 +92,7 @@ def search_venues(type: str):
         item = dict(row)
         try:
             item['meta'] = json.loads(item['meta'])
-        except:
+        except Exception:
             item['meta'] = {}
         rows.append(item)
     return rows
