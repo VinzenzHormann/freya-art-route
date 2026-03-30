@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import csv
 import sqlite3
+import json
 
 app = FastAPI()
 #app = FastAPI(docs_url=None, redoc_url=None
@@ -34,23 +35,12 @@ cursor.execute('''
     CREATE TABLE venues (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
+        type TEXT,
+        description TEXT,
+        address TEXT,
         lat REAL,
         lng REAL,
-        type TEXT,
-        address TEXT,
-        description TEXT,
-        phone TEXT,
-        website TEXT,
-        mon INTEGER,
-        tue INTEGER,
-        wen INTEGER,
-        thu INTEGER,
-        fri INTEGER,
-        sat INTEGER,
-        sun INTEGER,
-        payment INTEGER,
-        price REAL,
-        info_website TEXT
+        meta TEXT  -- This will store our JSON string
     )
 ''')
 
@@ -60,26 +50,17 @@ def startup_load():
         reader = csv.DictReader(f)
         for row in reader:
             cursor.execute('''
-                INSERT INTO venues (name, lat, lng, type, address, description, phone, website, mon, tue, wed, thu, fri, sat, sun, payment, price, info_website )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (row['name'], 
-                float(row['lat']), 
-                float(row['lng']), 
+                INSERT INTO venues (name, type, description, address, lat, lng, meta)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                row['name'], 
                 row['type'],
+                row['description'],
                 row['address'], 
-                row['description'], 
-                row['phone'], 
-                row['website'], 
-                int(row['mon']),   # Convert to Integer
-                int(row['tue']),   # Convert to Integer
-                int(row['wed']),   # Ensure CSV column name is 'wed'
-                int(row['thu']),
-                int(row['fri']),
-                int(row['sat']),
-                int(row['sun']),
-                int(row['payment']),
-                float(row['price']) if row['price'] else 0.0, 
-                row['info_website']))
+                float(row['lat']), 
+                float(row['lng']),
+                row['meta'] # This must be a valid JSON string in your CSV
+            ))
     conn.commit()
 
 # Run the loader once
@@ -91,14 +72,27 @@ def read_root():
 
 @app.get("/venues")
 def get_venues():
-    # 3. QUERY THE DATABASE
     cursor.execute("SELECT * FROM venues")
-    # Convert SQL rows into a list of dictionaries for JSON
-    rows = [dict(row) for row in cursor.fetchall()]
+    rows = []
+    for row in cursor.fetchall():
+        item = dict(row)
+        # IMPORTANT: Convert the meta string back into a Dictionary
+        try:
+            item['meta'] = json.loads(item['meta'])
+        except:
+            item['meta'] = {} # Fallback if JSON is empty or broken
+        rows.append(item)
     return rows
-
-# Bonus: High-volume "Search" example
+    
 @app.get("/venues/search")
 def search_venues(type: str):
     cursor.execute("SELECT * FROM venues WHERE type = ?", (type,))
-    return [dict(row) for row in cursor.fetchall()]
+    rows = []
+    for row in cursor.fetchall():
+        item = dict(row)
+        try:
+            item['meta'] = json.loads(item['meta'])
+        except:
+            item['meta'] = {}
+        rows.append(item)
+    return rows

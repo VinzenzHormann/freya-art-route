@@ -8,102 +8,253 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap&subset=latin-ext" rel="stylesheet">
 
    
-    <style>
-        #beyoglu-sanat-rehberi-app {
-            font-family: 'Poppins', sans-serif;
-            background-color: #ffffff;
-            --color-primary: #12a48e; /* Ana Marka Rengi (Turkuaz) */
-            --color-button: #047666; /* Buton Rengi (Koyu Yeşil) */
-            --color-hover: #075f52; /* Hover Rengi */
-        }
-        #beyoglu-sanat-rehberi-app h1 { color: var(--color-primary); font-weight: 700; }
-       
-        .filter-btn {
-            flex-shrink: 0; padding: 0.6rem 1.5rem; font-size: 0.875rem; font-weight: 600;
-            color: #fff; background-color: var(--color-button); border: 2px solid var(--color-button);
-            border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: all 0.2s ease-in-out;
-        }
-        .filter-btn:hover { background-color: var(--color-hover); border-color: var(--color-hover); transform: translateY(-1px); }
-        .filter-btn.active { background-color: var(--color-primary); border-color: var(--color-primary); box-shadow: 0 6px 10px rgba(18, 164, 142, 0.3); }
-       
-        .card-link {
-            display: inline-flex; align-items: center; padding: 0.375rem 0.875rem; font-size: 0.8125rem;
-            font-weight: 600; color: var(--color-button); background-color: rgba(4, 118, 102, 0.1);
-            border-radius: 9999px; transition: all 0.2s;
-        }
-        .card-link:hover { background-color: rgba(4, 118, 102, 0.2); color: var(--color-hover); }
-        .icon-color { color: var(--color-primary); }
-       
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-       
-        .venue-card.selected-for-route { border: 3px solid var(--color-primary); box-shadow: 0 0 15px rgba(18, 164, 142, 0.5); background-color: #f7fcfb; }
-       
-        /* Yeni Düzen CSS'i */
-        .full-screen-container {
-            min-height: 100vh;
-        }
+   <style>
+ /* 1. DEĞİŞKENLER VE TEMEL AYARLAR */
+:root {
+    --color-primary: #12a48e;
+    --color-button: #047666;
+    --color-hover: #075f52;
+    --color-landmark: #ffde59;
+    --footer-bg: #f9f9f9;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-        /* Harita kapsayıcılarının tam boy olması için */
-        #map { width: 100%; height: 100%; }
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
 
-        /* MOBİL İÇİN DÜZELTME: Harita konteynırına varsayılan yükseklik veriyoruz */
-        #map-container { 
-            width: 100%; 
-            height: 350px; /* Mobilde harita yüksekliği */
-            }
-        /* Masaüstünde yan yana (md: breakpoint'ten itibaren) */
-        @media (min-width: 768px) {
-            .map-view-layout #control-panel {
-                width: 33.333333%; /* 1/3 genişlik */
-                max-height: 100vh;
-                overflow-y: auto;
-            }
-            .map-view-layout #map-container {
-                width: 66.666667%; /* 2/3 genişlik */
-                height: 100vh;
-            }
-        }
-        /* Harita kapsayıcılarının tam boy olması için */
-        #map { width: 100%; height: 100%; }
-       
-    </style>
+#beyoglu-sanat-rehberi-app {
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+/* 2. BİLEŞENLER */
+.filter-btn {
+    flex-shrink: 0; padding: 0.6rem 1.5rem; font-size: 0.875rem; font-weight: 600;
+    color: #fff; background-color: var(--color-button); border: 2px solid var(--color-button);
+    border-radius: 0.5rem; box-shadow: var(--card-shadow); transition: all 0.2s ease-in-out;
+}
+.filter-btn:hover { background-color: var(--color-hover); border-color: var(--color-hover); transform: translateY(-1px); }
+.filter-btn.active { background-color: var(--color-primary); border-color: var(--color-primary); box-shadow: 0 6px 10px rgba(18, 164, 142, 0.3); }
+
+.card-link {
+    display: inline-flex; align-items: center; padding: 0.375rem 0.875rem; font-size: 0.8125rem;
+    font-weight: 600; color: var(--color-button); background-color: rgba(4, 118, 102, 0.1);
+    border-radius: 9999px; transition: all 0.2s;
+}
+
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* 3. DÜZEN (LAYOUT) */
+#main-content-wrapper { flex: 1; position: relative; overflow: hidden; }
+
+#control-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 12rem; /* Spacing for the floating button */
+}
+
+#map-container { width: 100%; height: 350px; }
+#map { width: 100%; height: 100%; }
+
+#app-footer {
+    background: var(--footer-bg); border-top: 1px solid #eee;
+    padding: 1rem; text-align: center; font-size: 0.75rem; color: #666; z-index: 10;
+}
+
+/* 4. MASAÜSTÜ DÜZENİ */
+@media (min-width: 768px) {
+    .map-view-layout #main-content-wrapper { flex-direction: row; }
+    .map-view-layout #control-panel { width: 33.33%; height: 100%; }
+    .map-view-layout #map-container { width: 66.66%; height: 100% !important; display: block !important; }
+}
+
+/* 5. MOBİL ÖZEL DÜZENİ */
+@media (max-width: 767px) {
+    .map-view-layout #control-panel {
+        position: fixed; top: 0; left: 0;
+        width: 85%; height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 2000; background: white;
+        box-shadow: 10px 0 20px rgba(0,0,0,0.2);
+    }
+    .map-view-layout #control-panel.open { transform: translateX(0); }
+    .map-view-layout #map-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100% !important; z-index: 1; }
+    .map-view-layout #app-footer { display: none; }
+}
+
+/* 6. FLOATING ACTION AREA (BUTTON & INFO BOX) */
+
+/* The Green Button */
+#main-action-button.fixed-bottom {
+    position: fixed !important;
+    bottom: 2rem;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90%;
+    max-width: 400px;
+    height: 60px;
+    background-color: var(--color-button);
+    color: white;
+    border-radius: 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    z-index: 4000; /* Above Info Box */
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+/* The Yellow Info Box */
+/* Update these lines in your CSS */
+/* Update these lines in your CSS */
+#route-info-box {
+    position: fixed !important;
+    /* Reduced from calc(2rem + 50px) to sit lower */
+    bottom: calc(2rem + 42px); 
+    left: 50% !important;
+    transform: translateX(-50%);
+    width: calc(90% - 20px);
+    max-width: 380px;
+    background-color: var(--color-landmark) !important;
+    border-radius: 12px 12px 0 0; /* Slightly sharper corners for a cleaner look */
+    /* Reduced padding: 8px top, 12px sides, 24px bottom (to hide behind button) */
+    padding: 8px 12px 24px 12px; 
+    z-index: 3000;
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+/* Hidden State for Info Box */
+#route-info-box.hidden {
+    display: none !important; /* Force hide */
+    opacity: 0;
+    transform: translate(-50%, 40px);
+}
+
+/* The Toggle Circle Button (i / x) */
+#info-toggle-btn {
+    position: fixed !important;
+    bottom: calc(2rem + 45px); 
+    left: calc(50% + 170px); 
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #035e52 !important; /* Darker Green */
+    color: white !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    z-index: 4500; /* Topmost */
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Mobile Adjustments for Floating Area */
+@media (max-width: 767px) {
+    #main-action-button.fixed-bottom { bottom: 1.5rem; }
+    #route-info-box { bottom: calc(1.5rem + 50px); width: calc(95% - 10px); }
+    #info-toggle-btn { bottom: calc(1.5rem + 45px); left: calc(50% + 42%); }
+}
+
+#main-action-button.inline-bottom {
+    position: relative !important;
+    margin: 2rem auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100%;
+}
+
+#info-toggle-btn.hidden {
+    display: none !important;
+}
+
+/* Mobile adjustment for height */
+@media (max-width: 767px) {
+    #route-info-box { 
+        bottom: calc(1.5rem + 42px); 
+        padding: 6px 10px 20px 10px; 
+    }
+}
+
+</style>
 </head>
+
+
+
 <body class="font-sans antialiased text-stone-800">
 
 
     <div id="beyoglu-sanat-rehberi-app" class="text-stone-800 full-screen-container flex flex-col">
-       
+        <button id="mobile-route-toggle" onclick="toggleMobileMenu()" class="fixed bottom-24 right-4 z-[1001] bg-[#047666] text-white p-4 rounded-full shadow-2xl md:hidden hidden">
+            <span class="text-sm font-bold">📋 Rota Listesi</span>
+        </button>
         <!-- Ana İçerik Kapsayıcı: Selection View'da dikey, Map View'da masaüstünde yatay -->
         <div id="main-content-wrapper" class="flex flex-col md:flex-row flex-grow w-full">
            
             <!-- Kontrol Paneli: Hem Seçim hem de Rota Özeti görünümü için kullanılır -->
-            <div id="control-panel" class="w-full p-4 sm:p-6 lg:p-8 bg-white max-w-7xl mx-auto md:max-w-none md:mx-0">
+            <div id="control-panel" class="w-full p-4 sm:p-6 lg:p-8 bg-white flex-grow">
                
-                <header class="text-center mb-6 lg:text-left">
-                    <h1 class="text-3xl md:text-4xl mb-1 font-bold">Beyoğlu Sanat Rehberi</h1>
-                    <p class="text-md text-gray-500 font-normal">Seçtiğiniz galeriler için optimize edilmiş yürüyüş rotası oluşturun.</p>
-                </header>
+<header class="mb-4">
+    <div class="w-full">
+        <img id="banner-selection" 
+             src="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png" 
+             alt="Nasıl Kullanılır" 
+             class="w-full h-auto">
+
+        <img id="banner-map" 
+             src="https://www.freyartt.com/wp-content/uploads/2026/03/banner-map.png" 
+             alt="Beyoğlu Sanat Rotaları" 
+             class="w-full h-auto hidden">
+    </div>
+</header>
+
+<div class="sr-only">
+    <h2>1. Keşfet: Müze ve galerileri inceleyin.</h2>
+    <h2>2. Seç: İlginizi çeken kartlara tıklayarak rotanıza ekleyin.</h2>
+    <h2>3. Rotanı Oluştur: En az iki mekan seçtikten sonra butona tıklayın.</h2>
+</div>
 
 
-                <div class="mb-6 p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
-                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Rota Planlayıcı</h3>
-                   
-                    <!-- Seçim Açıklaması (Sadece Seçim Görünümünde) -->
-                    <div id="selection-info">
-                        <p class="text-sm text-gray-600 mb-4">Aşağıdaki listeden en az iki mekanı seçin (kartlara tıklayarak ve etrafındaki yeşil kenarlığı kontrol ederek). Rota adımları haritada numara ve isim olarak görünecektir.</p>
-                    </div>
-
+                <div>
+<button id="info-toggle-btn" 
+        onclick="toggleInfoBox()" 
+        class="fixed bottom-[6.5rem] right-[7%] z-[4000] bg-white border-2 border-gray-200 text-gray-500 w-8 h-8 rounded-full shadow-lg flex items-center justify-center font-bold text-lg hover:bg-gray-50 transition-all hidden">
+    x
+</button>
+                    <div id="route-info-box" class="hidden fixed bottom-[6rem] left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] bg-[#ffde59] border-2 border-yellow-600 rounded-xl p-3 shadow-lg z-[3500] text-center">
+        <p id="route-info-text" class="text-sm font-bold text-yellow-900">
+            </p>
+    </div>
 
                     <!-- Ana Eylem Butonu: Duruma göre metin ve işlev değişir -->
-                    <button id="main-action-button" onclick="handleMainAction()" class="filter-btn w-full !text-lg !py-3 !shadow-lg">
-                        Optimize Edilmiş Rotayı Hesapla
-                    </button>
+                    <button id="main-action-button" onclick="handleMainAction()" class="filter-btn btn-waiting fixed-bottom !text-lg !py-4 !shadow-2xl">
+                    
+                    <span id="btn-text">Mekan Seçin</span>
+                </button>
                    
                     <!-- Rota Özeti (Sadece Harita Görünümünde) -->
                     <div id="route-summary" class="mt-4 p-3 bg-white rounded-lg shadow-md border border-gray-100 hidden">
+                        <button onclick="toggleMobileMenu()" class="md:hidden w-full mb-4 py-2 bg-gray-100 text-gray-600 rounded font-bold text-xs uppercase tracking-wider">
+                        ✕ Haritaya Dön
+                        </button>
                         <h4 class="font-bold text-base mb-2 text-red-600 flex items-center">
-                            <span class="mr-2 text-xl">📍</span> Önerilen Rota Adımları:
+                             Önerilen Rota Adımları:
                         </h4>
                         <p id="total-distance" class="text-sm text-gray-700"></p>
                         <p id="total-time" class="text-sm text-gray-700 mb-2"></p>
@@ -141,35 +292,50 @@
 
 
         </div>
+        <footer id="app-footer">
+            <p>© 2026 Beyoğlu Sanat Rotası | Kültür ve Sanat Rehberi</p>
+        </footer>
     </div>
 
 
 <script>
+const typeTranslations = {
+    'museum': 'Müze',
+    'gallery': 'Galeri',
+    'landmark': 'Yol Üstünde'
+};
+
+function translateType(type) {
+    return typeTranslations[type] || type;
+}
 function getTodayKey() {
     const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const dayIndex = new Date().getDay(); 
-    console.log("Current Day Index:", dayIndex); // Should be 3 for Wednesday
+    //console.log("Current Day Index:", dayIndex); // Should be 3 for Wednesday
     return days[dayIndex];
 }
 
     const API_KEY = "AIzaSyAaRDnZ5crli-C2m66Nj0xD8rKfEPSg2o0"; 
     const API_URL = 'https://beyoglu-api-666539972908.europe-west3.run.app/venues';
 
-    let venues = [
-    { "id": 1, "name": "Pera Müzesi", "type": "museum", "description": "Suna ve İnan Kıraç Vakfı'na ait özel bir müze.", "address": "Meşrutiyet Caddesi No: 65", "phone": "(0212) 334 99 00", "website": "https://www.peramuzesi.org.tr/", "lat": 41.0318522, "lng": 28.97504976, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 300, "info_website": "https://www.peramuzesi.org.tr/ziyaret" },
-    { "id": 2, "name": "İstanbul Modern", "type": "museum", "description": "Türkiye'nin modern ve çağdaş sanat alanındaki ilk özel müzesi.", "address": "Tophane İskele Cd. No:1/1", "phone": "(0212) 334 73 00", "website": "https://www.istanbulmodern.org/", "lat": 41.02635248, "lng": 28.98300056, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 550, "info_website": "https://www.istanbulmodern.org/ziyaret/muze" },
-    { "id": 3, "name": "SALT Beyoğlu", "type": "gallery", "description": "Çağdaş sanat, mimarlık ve tasarım üzerine sergiler sunan bir kültür kurumu.", "address": "İstiklal Caddesi No: 136", "phone": "(0212) 377 42 00", "website": "https://saltonline.org/", "lat": 41.0320979, "lng": 28.97616144, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://saltonline.org/tr/41" },
-    { "id": 4, "name": "SALT Galata", "type": "gallery", "description": "Çağdaş sanat, mimarlık ve tasarım üzerine sergiler sunan bir kültür kurumu.", "address": "Bankalar Caddesi 11, Karaköy", "phone": "(0212) 334 22 00", "website": "https://saltonline.org/", "lat": 41.02393677, "lng": 28.97349467, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://saltonline.org/tr/42" },
-    { "id": 5, "name": "ARTER", "type": "museum", "description": "Vehbi Koç Vakfı'na ait bir çağdaş sanat müzesi.", "address": "Irmak Caddesi No: 13, Dolapdere", "phone": "(0212) 708 58 00", "website": "https://www.arter.org.tr/", "lat": 41.04069689, "lng": 28.97869848, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 450, "info_website": "https://www.arter.org.tr/saatler-bilet-bilgileri" },
-    { "id": 6, "name": "Masumiyet Müzesi", "type": "museum", "description": "Orhan Pamuk'un aynı adlı romanından yola çıkarak kurduğu müze.", "address": "Çukurcuma Cd., Dalgıç Sk. No:2", "phone": "(0212) 252 97 38", "website": "https://www.masumiyetmuzesi.org/", "lat": 41.03093711, "lng": 28.97978146, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 375, "info_website": "https://www.masumiyetmuzesi.org/zi-yaret-g%C3%BCn-ve-saatleri" },
-    { "id": 7, "name": "Galeri Zilberman", "type": "gallery", "description": "Mısır Apartmanı'nda yer alan önde gelen çağdaş sanat galerilerinden biri.", "address": "İstiklal Cd. Mısır Apt. No:163 Kat:3", "phone": "(0212) 251 12 14", "website": "https://www.zilbermangallery.com/", "lat": 41.03259605, "lng": 28.97648069, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://www.zilbermangallery.com/contact.html" },
-    { "id": 8, "name": "Galeri Nev İstanbul", "type": "gallery", "description": "Türkiye modern ve çağdaş sanatının önemli temsilcilerini sergileyen köklü bir galeri.", "address": "İstiklal Cd. Mısır Apt. No:163 Kat:4", "phone": "(0212) 252 11 85", "website": "https://www.galerinevistanbul.com/tr/", "lat": 41.03269349, "lng": 28.97658504, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 0, "price": 0, "info_website": "https://www.galerinevistanbul.com/tr/contact/" },
-    { "id": 9, "name": "Mixer", "type": "gallery", "description": "Karaköy'de yer alan, genç ve yükselen sanatçılara odaklanan dinamik bir mekan.", "address": "Mumhane Cd. No:46-50, Karaköy", "phone": "(0212) 243 54 43", "website": "https://mixerarts.com/", "lat": 41.02570761, "lng": 28.98027143, "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0, "price": 0, "info_website": "https://mixerarts.com/" },
-    { "id": 10, "name": "Anna Laudel Gallery", "type": "gallery", "description": "Tarihi bir binada yer alan, yerel ve uluslararası sanatçıların çalışmalarını sergileyen galeri.", "address": "Banka Sk. No: 10, Karaköy", "phone": "(0212) 243 32 57", "website": "https://annalaudel.gallery/", "lat": 41.03375577, "lng": 28.98702359, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 0, "info_website": "https://annalaudel.gallery/istanbul/" },
-    { "id": 11, "name": "Meşher", "type": "gallery", "description": "İstiklal Caddesi üzerinde yer alan, geniş kapsamlı tematik sergilere ev sahipliği yapan bir sergi mekanı.", "address": "İstiklal Caddesi No: 211", "phone": "(0212) 708 58 01", "website": "https://www.mesher.org/", "lat": 41.03045722, "lng": 28.9759651, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 0, "info_website": "https://www.mesher.org/ziyaret" },
-    { "id": 12, "name": "Akbank Sanat", "type": "gallery", "description": "Sergiler, konserler, atölye çalışmaları ve söyleşiler düzenleyen çok yönlü bir merkez.", "address": "İstiklal Caddesi No: 8", "phone": "(0212) 252 35 00", "website": "https://www.akbanksanat.com/", "lat": 41.03590822, "lng": 28.98311103, "mon": 0, "tue": 0, "wed": 0, "thu": 0, "fri": 0, "sat": 0, "sun": 0, "price": 0, "info_website": "https://www.akbanksanat.com/" },
-    { "id": 13, "name": "Yapı Kredi Kültür Sanat", "type": "gallery", "description": "Galatasaray Meydanı'nda, kütüphane ve kitabevi barındıran önemli bir kültür merkezi.", "address": "İstiklal Caddesi No: 161", "phone": "(0212) 252 47 00", "website": "https://www.ykykultur.com.tr/", "lat": 41.03322624, "lng": 28.97684141, "mon": 1, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 0, "info_website": "https://sanat.ykykultur.com.tr/ziyaret" },
-    { "id": 14, "name": "Türkiye İş Bankası Resim Heykel Müzesi", "type": "museum", "description": "Türkiye İş Bankası Sanat Eserleri Koleksiyonu’na ev sahipliği yapıyor.", "address": "Asmalı Mescit Mh. İstiklal Caddesi. No: 144", "phone": "(0212) 987 37 37", "website": "https://issanat.com.tr/resim-heykel-muzesi/", "lat": 41.03146294, "lng": 28.97599124, "mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1, "price": 100, "info_website": "https://issanat.com.tr/resim-heykel-muzesi/" }
+let venues = [
+    { 
+        "id": 1, 
+        "name": "Pera Müzesi", 
+        "type": "museum", 
+        "description": "Suna ve İnan Kıraç Vakfı'na ait özel bir müze.", 
+        "address": "Meşrutiyet Caddesi No: 65", 
+        "lat": 41.0318522, 
+        "lng": 28.97504976,
+        "meta": {
+            "phone": "(0212) 334 99 00", 
+            "website": "https://www.peramuzesi.org.tr/", 
+            "hours": {"mon": 0, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1}, 
+            "price": 300, 
+            "info_url": "https://www.peramuzesi.org.tr/ziyaret" 
+        }
+    }
+    // ... add more as placeholders if you wish, but the API will overwrite this
 ];
     let map; 
     let selectedVenues = new Set(); 
@@ -177,6 +343,8 @@ function getTodayKey() {
     let directionsService; 
     let directionsRenderer;
     let appState = 'selection';
+    let infoBox;
+    let isInfoBoxManuallyHidden = false;
 
     // DOM Elements
     const grid = document.getElementById('venue-grid');
@@ -201,67 +369,268 @@ async function updateDataFromCloud() {
         const data = await response.json();
         
         if (data && Array.isArray(data)) {
-            venues = data.map((v) => {
-                const clean = {};
-                // Normalize keys once during import
-                Object.keys(v).forEach(k => clean[k.toLowerCase()] = v[k]);
-
-                return { 
-                    ...clean, 
-                    id: parseInt(clean.id),
-                    lat: parseFloat(clean.lat), 
-                    lng: parseFloat(clean.lng),
-                    // Keep these to ensure the 'isOpen' logic always has a number to check
-                    mon: parseInt(clean.mon || 0),
-                    tue: parseInt(clean.tue || 0),
-                    wed: parseInt(clean.wed || 0),
-                    thu: parseInt(clean.thu || 0),
-                    fri: parseInt(clean.fri || 0),
-                    sat: parseInt(clean.sat || 0),
-                    sun: parseInt(clean.sun || 0)
-                };
-            });
+            // Data is already processed by FastAPI (json.loads), so we just save it
+            venues = data;
             displayVenues();
             Object.values(markers).forEach(m => m.setMap(null));
             venues.forEach(addMarker);
         }
     } catch (e) {
-        // Only log actual errors
         console.error("Sync failed:", e);
     }
 }
 
     // --- VIEW LOGIC ---
-    function switchView(newState) {
-        appState = newState;
-        if (newState === 'map') {
-            appContainer.classList.add('map-view-layout');
-            selectionContent.classList.add('hidden');
-            mapContainer.classList.remove('hidden');
-            routeSummary.classList.remove('hidden');
-            mainActionButton.textContent = "Rotayı Değiştir";
-            
-            // Trigger a resize so Google Maps calculates its container size correctly
-            setTimeout(() => {
-                google.maps.event.trigger(map, 'resize');
-            }, 100);
-        } else {
-            appContainer.classList.remove('map-view-layout');
-            selectionContent.classList.remove('hidden');
-            mapContainer.classList.add('hidden');
-            routeSummary.classList.add('hidden');
-            mainActionButton.textContent = "Optimize Edilmiş Rotayı Hesapla";
-            
-            // Clear route and reset markers to selection style
-            if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
-            venues.forEach(v => updateMarkerIcon(v.id, selectedVenues.has(v.id)));
-        }
+let isMobileMenuOpen = false;
+
+function toggleMobileMenu() {
+    const panel = document.getElementById('control-panel');
+    isMobileMenuOpen = !isMobileMenuOpen;
+    if (isMobileMenuOpen) {
+        panel.classList.add('open');
+        panel.scrollTop = 0; // Reset scroll when opening the slide-out menu
+    } else {
+        panel.classList.remove('open');
     }
+}
+function switchView(newState) {
+    appState = newState;
+    window.scrollTo(0, 0); 
+    const panel = document.getElementById('control-panel');
+    if (panel) panel.scrollTop = 0;
+    const mobileBtn = document.getElementById('mobile-route-toggle');
+    const btn = document.getElementById('main-action-button');
+    const bannerSelection = document.getElementById('banner-selection'); // Added this
+    const bannerMap = document.getElementById('banner-map');             // Added this
+    
+    if (newState === 'map') {
+        if (infoBox) infoBox.classList.add('hidden');
+        appContainer.classList.add('map-view-layout');
+        appContainer.classList.remove('selection-active');
+        selectionContent.classList.add('hidden');
+        mapContainer.classList.remove('hidden');
+        routeSummary.classList.remove('hidden');
+        
+        // Banner Swapping Logic
+        if (bannerSelection) bannerSelection.classList.add('hidden');
+        if (bannerMap) bannerMap.classList.remove('hidden');
+        
+        // Move button to summary
+        btn.classList.remove('fixed-bottom');
+        btn.classList.add('inline-bottom');
+        routeSummary.appendChild(btn); 
+        
+        mobileBtn.classList.remove('hidden');
+
+        // Ensure Map Resizes
+        setTimeout(() => {
+            if (map) google.maps.event.trigger(map, 'resize');
+        }, 200);
+
+    } else {
+        updateRoutePreview();
+        appContainer.classList.remove('map-view-layout');
+        appContainer.classList.add('selection-active');
+        selectionContent.classList.remove('hidden');
+        mapContainer.classList.add('hidden');
+        routeSummary.classList.add('hidden');
+        
+        // Banner Swapping Logic
+        if (bannerSelection) bannerSelection.classList.remove('hidden');
+        if (bannerMap) bannerMap.classList.add('hidden');
+        
+        // Move button back
+        btn.classList.remove('inline-bottom');
+        btn.classList.add('fixed-bottom');
+        document.getElementById('control-panel').appendChild(btn); 
+        
+        mobileBtn.classList.add('hidden');
+        document.getElementById('control-panel').classList.remove('open');
+        isMobileMenuOpen = false;
+
+        if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
+    }
+    updateButtonState();
+}
 
     function handleMainAction() {
         if (appState === 'selection') calculateRoute();
         else switchView('selection');
     }
+
+
+/**
+ * Calculates if a point is within a certain distance of a line segment.
+ * @param {Object} pt - The landmark {lat, lng}
+ * @param {Object} p1 - Start of segment (Venue A) {lat, lng}
+ * @param {Object} p2 - End of segment (Venue B) {lat, lng}
+ * @param {Number} tolerance - Distance in degrees (approx 0.001 is ~111 meters)
+ */
+function isPointNearSegment(pt, p1, p2, tolerance) {
+    const x = pt.lat, y = pt.lng;
+    const x1 = p1.lat, y1 = p1.lng;
+    const x2 = p2.lat, y2 = p2.lng;
+
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+
+    // If the two venues are basically on top of each other
+    if (dx === 0 && dy === 0) {
+        const dist = Math.sqrt((x - x1) ** 2 + (y - y1) ** 2);
+        return dist <= tolerance;
+    }
+
+    // Calculate the projection of the point onto the line
+    const t = ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy);
+
+    if (t < 0) {
+        // Point is closest to the start point (p1)
+        return Math.sqrt((x - x1) ** 2 + (y - y1) ** 2) <= tolerance;
+    } else if (t > 1) {
+        // Point is closest to the end point (p2)
+        return Math.sqrt((x - x2) ** 2 + (y - y2) ** 2) <= tolerance;
+    } else {
+        // Point is closest to the segment itself
+        const projX = x1 + t * dx;
+        const projY = y1 + t * dy;
+        return Math.sqrt((x - projX) ** 2 + (y - projY) ** 2) <= tolerance;
+    }
+}
+
+
+function updateRoutePreview() {
+    const infoBox = document.getElementById('route-info-box');
+    const infoText = document.getElementById('route-info-text');
+    const count = selectedVenues.size;
+
+    if (count > 0 && appState === 'selection') {
+        if (!isInfoBoxManuallyHidden) {
+            infoBox.classList.remove('hidden');
+        }
+        
+        
+        const selectedObjects = Array.from(selectedVenues)
+            .map(id => venues.find(v => v.id === id))
+            .sort((a, b) => b.lat - a.lat); // Sort to match your route logic
+
+        // 1. Better Landmark Counting
+        const nearbyLandmarks = venues.filter(v => {
+            if (v.type !== 'landmark') return false;
+            
+            // If only 1 venue selected, check radius
+            if (selectedObjects.length === 1) {
+                const dist = google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(v.lat, v.lng),
+                    new google.maps.LatLng(selectedObjects[0].lat, selectedObjects[0].lng)
+                );
+                return dist <= 150;
+            }
+
+            // If 2+ venues, check if it's near any segment of the route
+            return selectedObjects.some((venue, idx) => {
+                if (idx === 0) return false;
+                const prevVenue = selectedObjects[idx - 1];
+                // 0.0009 is roughly 100 meters in Istanbul's latitude
+                return isPointNearSegment(v, prevVenue, venue, 0.0009);
+            });
+        });
+
+
+        // 2. Walking Time Estimate (Unchanged)
+        let totalDist = 0;
+        if (selectedObjects.length > 1) {
+            for (let i = 0; i < selectedObjects.length - 1; i++) {
+                totalDist += google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(selectedObjects[i].lat, selectedObjects[i].lng),
+                    new google.maps.LatLng(selectedObjects[i+1].lat, selectedObjects[i+1].lng)
+                );
+            }
+
+        }
+        const walkTime = Math.max(Math.round(totalDist / 80), count * 2);
+
+infoText.innerHTML = `
+    <div class="flex items-center justify-between w-full max-w-[260px] mx-auto">
+        <div class="flex flex-1 items-center justify-center gap-2">
+            <img src="https://www.freyartt.com/wp-content/uploads/2026/03/icon_museum_dark.png" class="w-7 h-7 object-contain" alt="Mekan">
+            <span class="text-sm font-bold whitespace-nowrap">${count}</span>
+        </div>
+        
+        <div class="flex flex-1 items-center justify-center gap-2">
+            <img src="https://www.freyartt.com/wp-content/uploads/2026/03/icon_landmark_dark.png" class="w-7 h-7 object-contain" alt="Landmark">
+            <span class="text-sm font-bold whitespace-nowrap">${nearbyLandmarks.length}</span>
+        </div>
+        
+        <div class="flex flex-1 items-center justify-center gap-2">
+            <img src="https://www.freyartt.com/wp-content/uploads/2026/03/icon_walkingdist_dark.png" class="w-7 h-7 object-contain" alt="Yürüme">
+            <span class="text-sm font-bold whitespace-nowrap">${walkTime} dk</span>
+        </div>
+    </div>
+`;
+    } else {
+        infoBox.classList.add('hidden');
+    }
+}
+
+function toggleInfoBox() {
+    const infoBox = document.getElementById('route-info-box');
+    const toggleBtn = document.getElementById('info-toggle-btn');
+    
+    if (infoBox.classList.contains('hidden')) {
+        infoBox.classList.remove('hidden');
+        toggleBtn.textContent = '×'; // Change 'i' to 'close'
+        isInfoBoxManuallyHidden = false;
+    } else {
+        infoBox.classList.add('hidden');
+        toggleBtn.textContent = 'i';
+        isInfoBoxManuallyHidden = true;
+    }
+}
+
+
+function updateButtonState() {
+    const btn = document.getElementById('main-action-button');
+    const btnText = document.getElementById('btn-text');
+    const toggleBtn = document.getElementById('info-toggle-btn');
+    const infoBox = document.getElementById('route-info-box'); // Get the yellow box too
+    const count = selectedVenues.size;
+
+    // --- 1. TOGGLE BUTTON VISIBILITY ('i' button) ---
+    if (appState === 'selection' && count > 0) {
+        toggleBtn.classList.remove('hidden');
+    } else {
+        toggleBtn.classList.add('hidden');
+        // If count is 0, reset the manual hide flag so it pops up next time they select something
+        if (count === 0) isInfoBoxManuallyHidden = false; 
+    }
+
+    // --- 2. MAIN ACTION BUTTON VISIBILITY ---
+    if (appState === 'selection' && count === 0) {
+        btn.classList.add('hidden');
+    } else {
+        btn.classList.remove('hidden');
+    }
+
+    // --- 3. REFRESH THE YELLOW BOX DATA ---
+    updateRoutePreview();
+
+    // --- 4. BUTTON TEXT & STYLE LOGIC ---
+    if (appState === 'map') {
+        btn.classList.remove('btn-waiting');
+        btnText.textContent = "Rotayı Değiştir";
+        if (infoBox) infoBox.classList.add('hidden'); // Always hide info box on map view
+        return;
+    }
+
+    if (count < 2) {
+        btn.classList.add('btn-waiting');
+        btnText.textContent = "1 Mekan Daha Seçin";
+    } else {
+        btn.classList.remove('btn-waiting');
+        btnText.textContent = `Rotayı Oluştur`;
+    }
+}
+
 
     // --- MAP & MARKERS ---
     function initMap() {
@@ -279,6 +648,9 @@ async function updateDataFromCloud() {
             suppressMarkers: true, // This is key to prevent duplicate markers
             polylineOptions: { strokeColor: '#12a48e', strokeWeight: 6 }
         });
+
+
+
 updateDataFromCloud();
     }
 
@@ -327,77 +699,237 @@ updateDataFromCloud();
             marker.setMap(null); // Hide in selection view until calculation
         }
     }
+function getDistanceFromPath(point, path) {
+    let minDistance = Infinity;
+    path.forEach(pathPoint => {
+        const dist = google.maps.geometry.spherical.computeDistanceBetween(point, pathPoint);
+        if (dist < minDistance) minDistance = dist;
+    });
+    return minDistance;
+}
 
     // --- ROUTE CALCULATION ---
-    async function calculateRoute() {
-        if (selectedVenues.size < 2) return alertUser("En az iki mekan seçin.", 'error');
-        
-        mainActionButton.disabled = true;
-        mainActionButton.textContent = "Hesaplanıyor...";
+async function calculateRoute() {
+    if (selectedVenues.size < 2) return alertUser("En az iki mekan seçin.", 'error');
+    
+    const btnText = document.getElementById('btn-text');
+    mainActionButton.disabled = true;
+    btnText.textContent = "Hesaplanıyor...";
 
-        const stops = Array.from(selectedVenues).map(id => venues.find(v => v.id === id));
+    // 1. Get the selected venues
+    let stops = Array.from(selectedVenues).map(id => venues.find(v => v.id === id));
+    
+    // 2. Sort by Latitude (North to South) to prevent zig-zagging
+    // This ensures stops follow the natural flow of Istiklal Avenue
+    stops.sort((a, b) => b.lat - a.lat); 
+
+    // 3. Define the request using 'stops' instead of 'ordered'
+    const request = {
+        origin: { lat: stops[0].lat, lng: stops[0].lng },
+        destination: { lat: stops[stops.length-1].lat, lng: stops[stops.length-1].lng },
+        waypoints: stops.slice(1, -1).map(s => ({ location: { lat: s.lat, lng: s.lng }, stopover: true })),
+        optimizeWaypoints: true, 
+        travelMode: 'WALKING'
+    };
+
+    directionsService.route(request, (response, status) => {
+        mainActionButton.disabled = false;
+        if (status === 'OK') {
+            Object.values(markers).forEach(m => m.setMap(null));
+            directionsRenderer.setDirections(response);
+            
+            const path = response.routes[0].overview_path;
+            
+            const directLandmarks = venues.filter(v => {
+                if (v.type !== 'landmark') return false;
+                const dist = getDistanceFromPath(new google.maps.LatLng(v.lat, v.lng), path);
+                return dist <= 50;
+            });
+
+            const peripheralLandmarks = venues.filter(v => {
+                if (v.type !== 'landmark') return false;
+                const dist = getDistanceFromPath(new google.maps.LatLng(v.lat, v.lng), path);
+                return dist > 50 && dist <= 150;
+            });
+
+            switchView('map');
+            
+            // Pass 'stops' here as well to replace 'orderedMuseums'
+            displayRouteSummary(response, stops, directLandmarks);
+            showPeripheralLandmarks(peripheralLandmarks);
+            
+        } else {
+            alertUser('Rota bulunamadı: ' + status, 'error');
+        }
+    });
+}
+function showPeripheralLandmarks(landmarks) {
+    landmarks.forEach(landmark => {
+        const marker = markers[landmark.id];
+        marker.setIcon({
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: "#ffde59",
+            fillOpacity: 0.6, // Semi-transparent
+            strokeWeight: 1,
+            strokeColor: "#ffde59"
+        });
+        marker.setLabel(null); // No number
+        marker.setMap(map);
         
-        // Basic TSP sort (nearest neighbor)
-        let ordered = [stops[0]];
-        let unvisited = stops.slice(1);
-        while(unvisited.length > 0) {
-            let last = ordered[ordered.length-1];
-            unvisited.sort((a,b) => 
-                google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(last.lat, last.lng), new google.maps.LatLng(a.lat, a.lng)) -
-                google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(last.lat, last.lng), new google.maps.LatLng(b.lat, b.lng))
-            );
-            ordered.push(unvisited.shift());
+        marker.addListener('click', () => showLandmarkCard(landmark));
+    });
+}
+
+function showLandmarkCard(landmark) {
+    // Remove existing card if it exists
+    const existing = document.getElementById('landmark-detail-card');
+    if (existing) existing.remove();
+
+    const meta = landmark.meta || {};
+
+    let creatorLabel = "";
+    let creatorName = "";
+
+    if (meta.artist) {
+        creatorLabel = "Sanatçı";
+        creatorName = meta.artist;
+    } else if (meta.architect) {
+        creatorLabel = "Mimar";
+        creatorName = meta.architect;
+    }
+const creatorDisplay = (creatorName && creatorName.toLowerCase() !== 'bilinmiyor') 
+        ? `${creatorLabel}: ${creatorName}` 
+        : "Tasarımcı: Bilinmiyor";
+
+    const funFacts = Object.values(meta.fun_fact || {});
+    let currentFactIndex = 0;
+
+    const card = document.createElement('div');
+    card.id = 'landmark-detail-card';
+    card.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] bg-white rounded-2xl shadow-2xl border-t-4 border-[#ffde59] z-[3000] p-5 animate-bounce-in';
+    
+    // Function to update the text inside the card
+    const updateFact = () => {
+        const factText = document.getElementById('fact-content');
+        const counter = document.getElementById('fact-counter');
+        factText.textContent = funFacts[currentFactIndex];
+        counter.textContent = `${currentFactIndex + 1} / ${funFacts.length}`;
+    };
+
+    card.innerHTML = `
+        <button onclick="this.parentElement.remove()" class="absolute top-2 right-4 text-gray-400 text-2xl">&times;</button>
+        <div class="mb-3">
+            <h3 class="text-xl font-bold text-gray-800">${escapeHTML(landmark.name)}</h3>
+            <p class="text-xs text-gray-500 uppercase font-semibold">${meta.style} • ${meta.build_in}</p>
+            <p class="text-sm text-gray-600 mt-1">${creatorDisplay}</p>
+        </div>
+        
+        <div class="bg-yellow-50 rounded-lg p-3 relative overflow-hidden">
+            <p id="fact-content" class="text-sm italic text-gray-700 leading-relaxed min-h-[60px]">
+                ${funFacts[0]}
+            </p>
+            <div class="flex justify-between items-center mt-3">
+                <span id="fact-counter" class="text-[10px] font-bold text-yellow-600">1 / ${funFacts.length}</span>
+                <div class="flex gap-2">
+                    <button id="prevFact" class="p-1 px-3 bg-white rounded border text-xs shadow-sm disabled:opacity-30">←</button>
+                    <button id="nextFact" class="p-1 px-3 bg-white rounded border text-xs shadow-sm disabled:opacity-30">→</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(card);
+
+    // Navigation logic
+    document.getElementById('nextFact').onclick = () => {
+        if (currentFactIndex < funFacts.length - 1) {
+            currentFactIndex++;
+            updateFact();
+        }
+    };
+    document.getElementById('prevFact').onclick = () => {
+        if (currentFactIndex > 0) {
+            currentFactIndex--;
+            updateFact();
+        }
+    };
+}
+function getPointProgressOnPath(point, path) {
+    let minDistance = Infinity;
+    let progressIndex = 0;
+    
+    for (let i = 0; i < path.length; i++) {
+        const dist = google.maps.geometry.spherical.computeDistanceBetween(point, path[i]);
+        if (dist < minDistance) {
+            minDistance = dist;
+            progressIndex = i;
+        }
+    }
+    return progressIndex;
+}
+    function displayRouteSummary(response, orderedMuseums, directLandmarks) {
+    const stepsList = document.getElementById('route-steps'); 
+    stepsList.innerHTML = '';
+    const path = response.routes[0].overview_path;
+
+    // Combine both types into one "Master List" for the route
+    // We'll keep the numbering consistent
+    let fullRoute = [...orderedMuseums, ...directLandmarks];
+    
+    // Sort the combined list by distance from the starting point to keep it logical
+    // const startPoint = new google.maps.LatLng(orderedMuseums[0].lat, orderedMuseums[0].lng);
+fullRoute.sort((a, b) => {
+        const posA = getPointProgressOnPath(new google.maps.LatLng(a.lat, a.lng), path);
+        const posB = getPointProgressOnPath(new google.maps.LatLng(b.lat, b.lng), path);
+        return posA - posB;
+    });
+
+    fullRoute.forEach((stop, i) => {
+        const isLandmark = stop.type === 'landmark';
+        
+        // Use different colors for the markers: Emerald for Art, Gold for Landmark
+        const markerColor = isLandmark ? "#ffde59" : "#047666";
+        
+        const marker = markers[stop.id];
+        marker.setIcon({
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 14,
+            fillColor: markerColor,
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#FFFFFF"
+        });
+        marker.setLabel({
+            text: (i + 1).toString(),
+            color: "#FFFFFF",
+            fontSize: "12px",
+            fontWeight: "bold"
+        });
+        marker.setMap(map);
+        
+        // Add click listener for Landmark card if it's a landmark
+        if(isLandmark) {
+            google.maps.event.clearInstanceListeners(marker);
+            marker.addListener('click', () => showLandmarkCard(stop));
         }
 
-        const request = {
-            origin: { lat: ordered[0].lat, lng: ordered[0].lng },
-            destination: { lat: ordered[ordered.length-1].lat, lng: ordered[ordered.length-1].lng },
-            waypoints: ordered.slice(1, -1).map(s => ({ location: { lat: s.lat, lng: s.lng }, stopover: true })),
-            travelMode: 'WALKING'
-        };
-
-        directionsService.route(request, (response, status) => {
-            mainActionButton.disabled = false;
-            if (status === 'OK') {
-                // 1. Hide all existing markers first
-                Object.values(markers).forEach(m => m.setMap(null));
-                
-                // 2. Draw the line
-                directionsRenderer.setDirections(response);
-                
-                // 3. Show the UI
-                switchView('map');
-                
-                // 4. Place the numbered markers
-                displayRouteSummary(response, ordered);
-            } else {
-                alertUser('Rota bulunamadı: ' + status, 'error');
-            }
-        });
-    }
-
-    function displayRouteSummary(response, orderedStops) {
-        const legs = response.routes[0].legs;
-        const stepsList = document.getElementById('route-steps'); 
-        stepsList.innerHTML = '';
-
-        orderedStops.forEach((stop, i) => {
-            updateMarkerIcon(stop.id, true, i + 1);
-            
-            const li = document.createElement('li');
-            li.className = "flex items-start gap-3 p-2 border-b border-gray-50";
-            let info = i === 0 ? "Başlangıç" : `${legs[i-1].duration.text} (${legs[i-1].distance.text})`;
-            
-            li.innerHTML = `
-                <span class="bg-[#047666] text-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">${i + 1}</span>
-                <div>
-                    <p class="font-bold text-sm">${stop.name}</p>
-                    <p class="text-[10px] text-gray-400 uppercase">${info}</p>
-                </div>
-            `;
-            stepsList.appendChild(li);
-        });
-    }
+        const li = document.createElement('li');
+        li.className = `flex items-start gap-3 p-2 border-b border-gray-50 ${isLandmark ? 'bg-yellow-50/50' : ''}`;
+        
+        li.innerHTML = `
+            <span class="rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-white" style="background-color: ${markerColor}">
+                ${i + 1}
+            </span>
+            <div class="flex-grow">
+                <p class="font-bold text-sm ${isLandmark ? 'text-amber-900' : 'text-gray-800'}">
+                    ${stop.name} 
+                </p>
+            </div>
+        `;
+        stepsList.appendChild(li);
+    });
+}
 
     // --- UI INTERACTION ---
     function toggleVenueSelection(venueId) {
@@ -411,54 +943,67 @@ updateDataFromCloud();
             card.classList.replace('border-transparent', 'border-[#12a48e]');
             card.classList.add('bg-emerald-50');
         }
+        updateButtonState();
     }
 
     function createVenueCard(venue) {
-        const today = getTodayKey();
-        const isOpen = venue[today] === 1;         
-        const isSelected = selectedVenues.has(venue.id);
-        const statusBadge = isOpen ? '🟢 Açık' : '⚪ Kapalı';
-        
-return `
-            <div id="venue-card-${venue.id}" 
-                class="venue-card bg-white rounded-xl shadow-md border-2 p-4 transition-all flex flex-col ${isOpen ? 'cursor-pointer' : 'opacity-50 pointer-events-none'} ${isSelected ? 'border-[#12a48e] bg-emerald-50' : 'border-transparent'}" 
-                onclick="toggleVenueSelection(${venue.id})">
-                
-                <div class="flex justify-between items-start mb-1">
-                    <h2 class="text-xl font-bold leading-tight">${escapeHTML(venue.name)}</h2>
-                    <span class="text-[10px] font-bold ${isOpen ? 'text-green-600' : 'text-gray-400'}">${statusBadge}</span>
-                </div>
-                
-                <p class="text-gray-500 text-[14px] mb-3 line-clamp-2">${escapeHTML(venue.description)}</p>
+    const today = getTodayKey();
+    
+    // NEW LOGIC: Look inside the 'meta' object
+    // We use optional chaining (?.) and defaults (||) to prevent errors if meta is missing
+    const meta = venue.meta || {};
+    const hours = meta.hours || {};
+    
+    const isOpen = hours[today] === 1; 
+    const isSelected = selectedVenues.has(venue.id);
+    const statusBadge = isOpen ? '🟢 Açık' : '⚪ Kapalı';
+    
+    // Only show Museum and Gallery for the initial selection grid
+    if (venue.type !== 'museum' && venue.type !== 'gallery') return '';
 
-                <div class="space-y-1 mb-4 text-[12px] text-gray-600 border-t border-gray-50 pt-2">
-                    <div class="flex items-start gap-1">
-                        <span class="flex-shrink-0">📍</span>
-                        <span>${escapeHTML(venue.address)}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <span class="flex-shrink-0">📞</span>
-                        <span>${escapeHTML(venue.phone)}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <span class="flex-shrink-0">🌐</span>
-                        <a href="${escapeHTML(venue.website)}" target="_blank" rel="nofollow noopener noreferrer" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation()">Websitesini Ziyaret Et </a>
-                    </div>
-                </div>
+    return `
+        <div id="venue-card-${venue.id}" 
+            class="venue-card bg-white rounded-xl shadow-md border-2 p-4 transition-all flex flex-col ${isOpen ? 'cursor-pointer' : 'opacity-50 pointer-events-none'} ${isSelected ? 'border-[#12a48e] bg-emerald-50' : 'border-transparent'}" 
+            onclick="toggleVenueSelection(${venue.id})">
+            
+            <div class="flex justify-between items-start mb-1">
+                <h2 class="text-xl font-bold leading-tight">${escapeHTML(venue.name)}</h2>
+                <span class="text-[10px] font-bold ${isOpen ? 'text-green-600' : 'text-gray-400'}">${statusBadge}</span>
+            </div>
+            
+            <p class="text-gray-500 text-[14px] mb-3 line-clamp-2">${escapeHTML(venue.description)}</p>
 
-                <div class="flex justify-between items-center pt-2 border-t border-gray-100 mt-auto">
-                    <span class="text-[9px] uppercase font-bold text-gray-400">${venue.type}</span>                    
-                    <a href="${escapeHTML(venue.info_website)}" target="_blank" rel="nofollow noopener noreferrer" class="hover:underline text-s font-bold text-emerald-700" onclick="event.stopPropagation()">${venue.price > 0 ? venue.price + ' TL' : 'Ücretsiz'}</a>
+            <div class="space-y-1 mb-4 text-[12px] text-gray-600 border-t border-gray-50 pt-2">
+                <div class="flex items-start gap-1">
+                    <span class="flex-shrink-0">📍</span>
+                    <span>${escapeHTML(venue.address)}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="flex-shrink-0">📞</span>
+                    <span>${escapeHTML(meta.phone || 'N/A')}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="flex-shrink-0">🌐</span>
+                    <a href="${escapeHTML(meta.website)}" target="_blank" rel="noopener" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation()">Websitesini Ziyaret Et</a>
                 </div>
             </div>
-        `;
-    }
 
-    function displayVenues(filter = 'all') {
-        grid.innerHTML = venues
-            .filter(v => filter === 'all' || v.type === filter)
-            .map(createVenueCard).join('');
-    }
+<div class="flex justify-between items-center pt-2 border-t border-gray-100 mt-auto">
+    <span class="text-[9px] uppercase font-bold text-gray-400">${translateType(venue.type)}</span>                  
+    <a href="${escapeHTML(meta.info_url || meta.website)}" target="_blank" rel="noopener" class="hover:underline text-xs font-bold text-emerald-700" onclick="event.stopPropagation()">
+        ${meta.payment? 'Fiyat Bilgisi' : 'Ücretsiz'}
+    </a>
+</div>
+        </div>
+    `;
+}
+function displayVenues(filter = 'all') {
+    // If filter is 'all', we still only show museums/galleries for this specific grid
+    grid.innerHTML = venues
+        .filter(v => (v.type === 'museum' || v.type === 'gallery'))
+        .filter(v => filter === 'all' || v.type === filter)
+        .map(createVenueCard).join('');
+}
 
     function alertUser(msg, type) {
         alertBox.textContent = msg;
@@ -478,6 +1023,7 @@ return `
     document.addEventListener('DOMContentLoaded', () => {
         loadGoogleMapsScript();
         //updateDataFromCloud();
+        infoBox = document.getElementById('route-info-box');
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));

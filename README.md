@@ -1,3 +1,83 @@
+#Beyoğlu Art Route — Phase 2.5: The Geospatial Enrichment Layer
+
+This repository contains the production-grade infrastructure and logic for the Beyoğlu Art Route.
+
+Following the successful migration to a cloud-native FastAPI backend (Phase 2), Phase 2.5 focuses on Geospatial Intelligence and UX Optimization. We have moved beyond simple point-mapping to implement corridor-based discovery and live route analytics.
+
+## Key Improvements in Phase 2.5
+1. **Intelligent Data Structure (Metadata 2.0)**
+We transitioned from a flat data model to a Nested Metadata Schema. This allows the frontend to handle complex venue logic (like specific daily opening hours and dynamic pricing) without bloating the primary database table.
+
+* **JSON Meta-Objects**: Stores hours, artist bios, architectural styles, and "fun facts" for landmarks.
+
+* **Polymorphic Markers**: The system now distinguishes between museum, gallery, and landmark types, applying different logic and UI treatments to each.
+
+2. **The "Discovery Corridor" (Landmarks Integration)**
+We launched a curated collection task to add historical and architectural landmarks. To keep the UI clean, we implemented a Corridor-Based Filter:
+
+* **Geometric Proximity**: Landmarks are not just shown randomly. A custom geometric helper (isPointNearSegment) calculates which landmarks fall within a ~100m "discovery corridor" of the user's selected path.
+
+* **Dynamic UI**: Landmarks appear as subtle gold points that expand into rich-media detail cards when clicked.
+
+3. **Reworked UI & Experience (UX)**
+* **Visual Hierarchy**: New high-resolution start banners and refined typography for better readability on mobile.
+
+* **Reworked Action Flow**: Buttons now use "Smart States" (e.g., Mekan Seçin → 1 Mekan Daha Seçin → Rotayı Oluştur), guiding the user through the process intuitively.
+
+Real-Time Analytics Box: A new floating Info Box provides instant feedback as users build their route:
+
+* Venue Count: Direct stops.
+
+* Landmark Count: Hidden gems discovered along the way.
+
+* Est. Walking Time: Calculated using a standard 80m/min pace plus buffer for stops.
+
+4. **Optimizations**
+* **Route Sorting**: Implemented a North-to-South (Latitude-based) sorting algorithm to prevent "zig-zagging" routes, ensuring the path follows the natural flow of Istiklal Avenue.
+
+* **Spherical Geometry**: Used the google.maps.geometry library to provide instant distance estimates during the selection phase, saving API quota for the final route calculation.
+
+## The Cloud Infrastructure (Phase 2 Recap)
+The application is powered by a containerized FastAPI backend deployed on Google Cloud.
+
+* **Dockerization**: Ensures environment consistency across local development and cloud production.
+
+* **Cloud Run (Serverless)**: Scales automatically to handle traffic spikes during weekend art events.
+
+* **Security Layer**: Includes Origin-based CORS protection and a custom XSS sanitization layer (escapeHTML) for all dynamic content injection.
+
+## Updated Data Schema (Metadata Focus)
+The schema now leverages a flexible meta field to support future expansion without database migrations.
+
+```text
++-----------------------+--------------+------------------------------------------------------+
+| Field       		      | Type         | Description                                          |
++-----------------------+--------------+------------------------------------------------------+
+| id          		      | Integer      | Unique identifier for the venue                      |
+| name        		      | String       | The official name of the Gallery or Museum           |
+| type        		      | String       | Categorization: "museum", "gallery" or "landmark"    |
+| lat         		      | Float/Decimal| Latitude coordinate (e.g., 41.0360)                  |
+| lng         		      | Float/Decimal| Longitude coordinate (e.g., 28.9876)                 |
+| META        		      | JSON         | Including the Folowing Data                          |
+| FOR MUESUM AND GALLERİES								                                              |
+| description 		      | String       | Short blurb about the venue's current focus          |
+| address     		      | String       | Physical street address in Beyoğlu                   |
+| phone       		      | String       | Contact number                                       |
+| website     		      | String (URL) | Link to the venue's official page                    |
+| opening_days		      | String       | Bool value for every day    	                      |
+| price       		      | String       | Standart price for turkish citizen full price        |
+| info_website		      | String (URL) | Link to the venue's pricing/opening hours site       |
+| FOR LANDMARKS						      	    			                                        |
+| Architect / Artist    | String       | Name of the Artist                                   |
+| build_in    		      | Integer      | Build Year			                                  |
+| style  		         | String       | One word style summary   	                         |
+| fun_fact     		   | Nested Data  | Funfacts about the landmark			                   |
+| source		            | Nested Data  | Source for the funfacts(url, Academic Paper, Website)|
++-----------------------+--------------+------------------------------------------------------+
+
+
+---
+
 # Beyoğlu Art Route - Phase 2: Scale-Up to a production-grade, cloud-native FastAPI infrastructure
 
 This repository houses the improved data backend for the **Beyoğlu Art Route**. This version implements the migration from a basic CMS to a production-grade, cloud-native FastAPI infrastructure designed for speed, security, and global scalability. While Phase 1 (Google Sheets CMS) was great for prototyping, it had limitations in speed and concurrency. For Phase 2, I completely re-engineered the backend to handle high traffic and complex geospatial data.
