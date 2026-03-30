@@ -1,4 +1,4 @@
-#Beyoğlu Art Route — Phase 2.5: The Geospatial Enrichment Layer
+# Beyoğlu Art Route — Phase 2.5: The Geospatial Enrichment Layer
 
 This repository contains the production-grade infrastructure and logic for the Beyoğlu Art Route.
 
@@ -24,13 +24,13 @@ We launched a curated collection task to add historical and architectural landma
 
 * **Reworked Action Flow**: Buttons now use "Smart States" (e.g., Mekan Seçin → 1 Mekan Daha Seçin → Rotayı Oluştur), guiding the user through the process intuitively.
 
-Real-Time Analytics Box: A new floating Info Box provides instant feedback as users build their route:
+* **Real-Time Analytics Box**: A new floating Info Box provides instant feedback as users build their route:
 
-* Venue Count: Direct stops.
+          * Venue Count: Direct stops.
 
-* Landmark Count: Hidden gems discovered along the way.
+          * Landmark Count: Hidden gems discovered along the way.
 
-* Est. Walking Time: Calculated using a standard 80m/min pace plus buffer for stops.
+          * Est. Walking Time: Calculated using a standard 80m/min pace plus buffer for stops.
 
 4. **Optimizations**
 * **Route Sorting**: Implemented a North-to-South (Latitude-based) sorting algorithm to prevent "zig-zagging" routes, ensuring the path follows the natural flow of Istiklal Avenue.
@@ -50,31 +50,31 @@ The application is powered by a containerized FastAPI backend deployed on Google
 The schema now leverages a flexible meta field to support future expansion without database migrations.
 
 ```text
-+-----------------------+--------------+------------------------------------------------------+
++-----------------------------------+--------------+------------------------------------------------------+
 | Field       		      | Type         | Description                                          |
-+-----------------------+--------------+------------------------------------------------------+
++-----------------------------------+--------------+------------------------------------------------------+
 | id          		      | Integer      | Unique identifier for the venue                      |
 | name        		      | String       | The official name of the Gallery or Museum           |
 | type        		      | String       | Categorization: "museum", "gallery" or "landmark"    |
 | lat         		      | Float/Decimal| Latitude coordinate (e.g., 41.0360)                  |
 | lng         		      | Float/Decimal| Longitude coordinate (e.g., 28.9876)                 |
 | META        		      | JSON         | Including the Folowing Data                          |
-| FOR MUESUM AND GALLERİES								                                              |
+| FOR MUESUM AND GALLERİES								      |
 | description 		      | String       | Short blurb about the venue's current focus          |
 | address     		      | String       | Physical street address in Beyoğlu                   |
 | phone       		      | String       | Contact number                                       |
 | website     		      | String (URL) | Link to the venue's official page                    |
-| opening_days		      | String       | Bool value for every day    	                      |
+| opening_days		      | String       | Bool value for every day    	                |
 | price       		      | String       | Standart price for turkish citizen full price        |
 | info_website		      | String (URL) | Link to the venue's pricing/opening hours site       |
-| FOR LANDMARKS						      	    			                                        |
-| Architect / Artist    | String       | Name of the Artist                                   |
-| build_in    		      | Integer      | Build Year			                                  |
-| style  		         | String       | One word style summary   	                         |
-| fun_fact     		   | Nested Data  | Funfacts about the landmark			                   |
-| source		            | Nested Data  | Source for the funfacts(url, Academic Paper, Website)|
-+-----------------------+--------------+------------------------------------------------------+
-
+| FOR LANDMARKS						      	    	                |
+| Architect / Artist                | String       | Name of the Artist                                   |
+| build_in    		      | Integer      | Build Year			                |
+| style  		                | String       | One word style summary   	                          |
+| fun_fact     		      | Nested Data  | Funfacts about the landmark		      |
+| source		                | Nested Data  | Source for the funfacts(url, Academic Paper, Website)|
++-----------------------------------+--------------+------------------------------------------------------+
+```
 
 ---
 
