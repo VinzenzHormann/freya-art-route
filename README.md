@@ -26,11 +26,11 @@ We launched a curated collection task to add historical and architectural landma
 
 * **Real-Time Analytics Box**: A new floating Info Box provides instant feedback as users build their route:
 
-          * Venue Count: Direct stops.
+    * Venue Count: Direct stops.
 
-          * Landmark Count: Hidden gems discovered along the way.
+    * Landmark Count: Hidden gems discovered along the way.
 
-          * Est. Walking Time: Calculated using a standard 80m/min pace plus buffer for stops.
+    * Est. Walking Time: Calculated using a standard 80m/min pace plus buffer for stops.
 
 4. **Optimizations**
 * **Route Sorting**: Implemented a North-to-South (Latitude-based) sorting algorithm to prevent "zig-zagging" routes, ensuring the path follows the natural flow of Istiklal Avenue.
@@ -166,7 +166,7 @@ Phase 2 (Current) Migrating to a cloud-native FastAPI backend solution for quick
 | address     | String       | Physical street address in Beyoğlu                   |
 | phone       | String       | Contact number                                       |
 | website     | String (URL) | Link to the venue's official page                    |
-| opening_days| String       | Bool value for every day    	                    |
+| opening_days| String       | Bool value for every day    	                     |
 | price       | String       | Standart price for turkish citizen full price        |
 | info_website| String (URL) | Link to the venue's pricing/opening hours site       |
 +-------------+--------------+------------------------------------------------------+
