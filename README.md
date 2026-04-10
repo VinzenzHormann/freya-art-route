@@ -49,32 +49,8 @@ The application is powered by a containerized FastAPI backend deployed on Google
 ## Updated Data Schema (Metadata Focus)
 The schema now leverages a flexible meta field to support future expansion without database migrations.
 
-```text
-+--------------------------------+--------------+------------------------------------------------------+
-| Field       		      | Type         | Description                                          |
-+--------------------------------+--------------+------------------------------------------------------+
-| id          		      | Integer      | Unique identifier for the venue                      |
-| name        		      | String       | The official name of the Gallery or Museum           |
-| type        		      | String       | Categorization: "museum", "gallery" or "landmark"    |
-| lat         		      | Float/Decimal| Latitude coordinate (e.g., 41.0360)                  |
-| lng         		      | Float/Decimal| Longitude coordinate (e.g., 28.9876)                 |
-| META        		      | JSON         | Including the Folowing Data                          |
-| FOR MUESUM AND GALLERİES								             |
-| description 		      | String       | Short blurb about the venue's current focus          |
-| address     		      | String       | Physical street address in Beyoğlu                   |
-| phone       		      | String       | Contact number                                       |
-| website     		      | String (URL) | Link to the venue's official page                    |
-| opening_days		      | String       | Bool value for every day    	                      |
-| price       		      | String       | Standart price for turkish citizen full price        |
-| info_website		      | String (URL) | Link to the venue's pricing/opening hours site       |
-| FOR LANDMARKS						      	    	                      |
-| Architect / Artist             | String       | Name of the Artist                                   |
-| build_in    		      | Integer      | Build Year			                      |
-| style  		      | String       | One word style summary   	                      |
-| fun_fact     		      | Nested Data  | Funfacts about the landmark		             |
-| source		               | Nested Data  | Source for the funfacts(url, Academic Paper, Website)|
-+--------------------------------+--------------+------------------------------------------------------+
-```
+![upgraded data schema](ss/data_schema.png)
+
 
 ---
 
