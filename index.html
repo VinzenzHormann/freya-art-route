@@ -77,20 +77,6 @@ html, body {
     .map-view-layout #map-container { width: 66.66%; height: 100% !important; display: block !important; }
 }
 
-/* 5. MOBİL ÖZEL DÜZENİ */
-@media (max-width: 767px) {
-    .map-view-layout #control-panel {
-        position: fixed; top: 0; left: 0;
-        width: 85%; height: 100%;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-        z-index: 2000; background: white;
-        box-shadow: 10px 0 20px rgba(0,0,0,0.2);
-    }
-    .map-view-layout #control-panel.open { transform: translateX(0); }
-    .map-view-layout #map-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100% !important; z-index: 1; }
-    .map-view-layout #app-footer { display: none; }
-}
 
 /* 6. FLOATING ACTION AREA (BUTTON & INFO BOX) */
 
@@ -165,12 +151,7 @@ html, body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Mobile Adjustments for Floating Area */
-@media (max-width: 767px) {
-    #main-action-button.fixed-bottom { bottom: 1.5rem; }
-    #route-info-box { bottom: calc(1.5rem + 50px); width: calc(95% - 10px); }
-    #info-toggle-btn { bottom: calc(1.5rem + 45px); left: calc(50% + 42%); }
-}
+
 
 #main-action-button.inline-bottom {
     position: relative !important;
@@ -186,11 +167,160 @@ html, body {
 
 /* Mobile adjustment for height */
 @media (max-width: 767px) {
+    .map-view-layout #control-panel {
+        position: fixed; top: 0; left: 0;
+        width: 85%; height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 2000; background: white;
+        box-shadow: 10px 0 20px rgba(0,0,0,0.2);
+    }
+    .map-view-layout #control-panel.open { transform: translateX(0); }
+    .map-view-layout #map-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100% !important; z-index: 1; }
+    .map-view-layout #app-footer { display: none; }
+    #main-action-button.fixed-bottom { bottom: 1.5rem; }
+    #route-info-box { bottom: calc(1.5rem + 50px); width: calc(95% - 10px); }
+    #info-toggle-btn { bottom: calc(1.5rem + 45px); left: calc(50% + 42%); }
     #route-info-box { 
         bottom: calc(1.5rem + 42px); 
         padding: 6px 10px 20px 10px; 
     }
 }
+
+
+
+/* Navigation Controls in the middle bottom */
+.fact-nav-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;     /* CHANGE: Fixed small gap instead of 'auto' */
+    padding-top: 5px;
+
+}
+
+/* Circular Freya Buttons */
+.nav-btn-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #12a48e; /* Freya Green/Blue */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    transition: opacity 0.2s;
+}
+
+.nav-btn-circle:disabled {
+    background-color: #cbd5e1; /* Grayed out when inactive */
+    cursor: not-allowed;
+}
+
+/* Page Counter Text */
+#fact-counter {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4b5563;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* The Landmark Detail Card Container */
+#landmark-detail-card {
+    position: fixed;
+    /* 1. Positioning & Spacing from corners */
+    bottom: 20px;               /* Gap from bottom */
+    left: 50%;
+    transform: translateX(-50%); /* Centers the card */
+    width: 95%;                 /* Padding from left/right on mobile */
+    max-width: 800px;           /* Prevents it from getting too wide on desktop */
+    
+    /* 2. Visual Style */
+    height: 230px;               /* Let content dictate height */
+    /*min-height: 250px; */
+    background-color: white;
+    border-radius: 24px;        /* Soft rounded corners */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Slightly deeper shadow for 'floating' effect */
+    z-index: 3000;
+    
+    /* 3. Internal Padding */
+    padding: 30px 30px 12px 30px;; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* Thin Gray Separator */
+.meta-separator {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 8px; /* Reduced from 12px to 8px */
+    width: 100%;
+    flex-shrink: 0; /* Prevents the line from disappearing */
+}
+
+/* The scrollable text container */
+.fact-container {
+    flex-grow: 1;
+    overflow-y: auto; /* Adds a scrollbar if text is too long */
+    margin-bottom: 4px;
+    padding-right: 4px; /* Space for the scrollbar */
+}
+
+
+/* Optional: Make the scrollbar look cleaner */
+.fact-container::-webkit-scrollbar {
+    width: 4px;
+}
+.fact-container::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+/* Updated Title and Subtitle Sizes */
+#landmark-detail-card h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem; /* Increased size (roughly 24px) */
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+
+/* Unified styling for Subtitle and Fun-Fact */
+#landmark-detail-card p.subtitle, 
+#fact-content {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 0.875rem !important;      
+    color: #111827 !important;       
+    font-weight: 400;                
+    line-height: 1.4;                
+    margin: 0;
+}
+
+/* Specific tweak for subtitle weight if you want it slightly bolder than the fact but same size */
+#landmark-detail-card p.subtitle {
+    font-weight: 500; 
+}
+
+.fact-nav-controls.hidden {
+    display: none !important;
+}
+
+#landmark-detail-card p.subtitle a {
+    color: var(--color-button); /* Uses your Freya Green */
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+#landmark-detail-card p.subtitle a:hover {
+    color: var(--color-hover);
+}
+
 
 </style>
 </head>
@@ -777,84 +907,91 @@ function showPeripheralLandmarks(landmarks) {
         marker.setLabel(null); // No number
         marker.setMap(map);
         
-        marker.addListener('click', () => showLandmarkCard(landmark));
+        marker.addListener('click', () => showVenueCard(landmark));
     });
 }
 
-function showLandmarkCard(landmark) {
-    // Remove existing card if it exists
+function showVenueCard(venue) {
     const existing = document.getElementById('landmark-detail-card');
     if (existing) existing.remove();
 
-    const meta = landmark.meta || {};
+    const isLandmark = venue.type === 'landmark';
+    const meta = venue.meta || {};
+    
+    // --- Subtitle & Links Logic ---
+    let subtitleParts = [];
 
-    let creatorLabel = "";
-    let creatorName = "";
-
-    if (meta.artist) {
-        creatorLabel = "Sanatçı";
-        creatorName = meta.artist;
-    } else if (meta.architect) {
-        creatorLabel = "Mimar";
-        creatorName = meta.architect;
+    // Add Landmark-specific info first
+    if (isLandmark) {
+        const creator = meta.artist || meta.architect || "";
+        if (meta.style) subtitleParts.push(meta.style);
+        if (meta.build_in) subtitleParts.push(meta.build_in);
+        if (creator && creator.toLowerCase() !== 'bilinmiyor') subtitleParts.push(creator);
     }
-const creatorDisplay = (creatorName && creatorName.toLowerCase() !== 'bilinmiyor') 
-        ? `${creatorLabel}: ${creatorName}` 
-        : "Tasarımcı: Bilinmiyor";
 
-    const funFacts = Object.values(meta.fun_fact || {});
-    let currentFactIndex = 0;
+    // Add Universal Links (Website & Fiyat)
+    if (meta.website) {
+        subtitleParts.push(`<a href="${meta.website}" target="_blank" class="underline hover:text-emerald-700">Websitesi</a>`);
+    }
+    if (meta.info_url) {
+        subtitleParts.push(`<a href="${meta.info_url}" target="_blank" class="underline hover:text-emerald-700">Fiyat Bilgisi</a>`);
+    }
+
+    const subtitleHTML = subtitleParts.join(' | ');
+    const infoList = isLandmark ? Object.values(meta.fun_fact || {}) : [venue.description];
+    let currentIndex = 0;
+
+    // --- Marker Style ---
+    const marker = markers[venue.id];
+    const labelText = marker.getLabel() ? marker.getLabel().text : "";
+    const markerColor = marker.getIcon().fillColor || (isLandmark ? "#ffde59" : "#047666");
 
     const card = document.createElement('div');
     card.id = 'landmark-detail-card';
-    card.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] bg-white rounded-2xl shadow-2xl border-t-4 border-[#ffde59] z-[3000] p-5 animate-bounce-in';
-    
-    // Function to update the text inside the card
-    const updateFact = () => {
-        const factText = document.getElementById('fact-content');
-        const counter = document.getElementById('fact-counter');
-        factText.textContent = funFacts[currentFactIndex];
-        counter.textContent = `${currentFactIndex + 1} / ${funFacts.length}`;
-    };
 
     card.innerHTML = `
-        <button onclick="this.parentElement.remove()" class="absolute top-2 right-4 text-gray-400 text-2xl">&times;</button>
-        <div class="mb-3">
-            <h3 class="text-xl font-bold text-gray-800">${escapeHTML(landmark.name)}</h3>
-            <p class="text-xs text-gray-500 uppercase font-semibold">${meta.style} • ${meta.build_in}</p>
-            <p class="text-sm text-gray-600 mt-1">${creatorDisplay}</p>
+        <button onclick="this.parentElement.remove()" class="absolute top-4 right-5 text-gray-400 text-2xl z-50">&times;</button>
+        
+        <div class="flex-shrink-0">
+            <div class="flex items-center gap-3 mb-1">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" 
+                      style="background-color: ${markerColor}">
+                    ${labelText}
+                </span>
+                <h3 class="text-2xl font-bold text-gray-900 leading-tight">${escapeHTML(venue.name)}</h3>
+            </div>
+            <p class="subtitle mt-1 text-gray-500">${subtitleHTML}</p>
         </div>
         
-        <div class="bg-yellow-50 rounded-lg p-3 relative overflow-hidden">
-            <p id="fact-content" class="text-sm italic text-gray-700 leading-relaxed min-h-[60px]">
-                ${funFacts[0]}
-            </p>
-            <div class="flex justify-between items-center mt-3">
-                <span id="fact-counter" class="text-[10px] font-bold text-yellow-600">1 / ${funFacts.length}</span>
-                <div class="flex gap-2">
-                    <button id="prevFact" class="p-1 px-3 bg-white rounded border text-xs shadow-sm disabled:opacity-30">←</button>
-                    <button id="nextFact" class="p-1 px-3 bg-white rounded border text-xs shadow-sm disabled:opacity-30">→</button>
-                </div>
-            </div>
+        <div class="meta-separator"></div>
+        
+        <div class="fact-container">
+            <p id="fact-content">${escapeHTML(infoList[0])}</p>
+        </div>
+
+        <div class="fact-nav-controls flex-shrink-0 ${infoList.length <= 1 ? 'hidden' : ''}">
+            <button id="prevFact" class="nav-btn-circle" disabled>‹</button>
+            <span id="fact-counter">1 / ${infoList.length}</span>
+            <button id="nextFact" class="nav-btn-circle">›</button>
         </div>
     `;
 
     document.body.appendChild(card);
 
-    // Navigation logic
-    document.getElementById('nextFact').onclick = () => {
-        if (currentFactIndex < funFacts.length - 1) {
-            currentFactIndex++;
-            updateFact();
-        }
-    };
-    document.getElementById('prevFact').onclick = () => {
-        if (currentFactIndex > 0) {
-            currentFactIndex--;
-            updateFact();
-        }
-    };
+    // Navigation logic stays the same...
+    if (infoList.length > 1) {
+        const updateUI = () => {
+            document.getElementById('fact-content').textContent = infoList[currentIndex];
+            document.getElementById('fact-counter').textContent = `${currentIndex + 1} / ${infoList.length}`;
+            document.getElementById('prevFact').disabled = currentIndex === 0;
+            document.getElementById('nextFact').disabled = currentIndex === infoList.length - 1;
+        };
+        document.getElementById('nextFact').onclick = () => { if (currentIndex < infoList.length - 1) { currentIndex++; updateUI(); } };
+        document.getElementById('prevFact').onclick = () => { if (currentIndex > 0) { currentIndex--; updateUI(); } };
+    }
 }
+
+
 function getPointProgressOnPath(point, path) {
     let minDistance = Infinity;
     let progressIndex = 0;
@@ -909,10 +1046,10 @@ fullRoute.sort((a, b) => {
         marker.setMap(map);
         
         // Add click listener for Landmark card if it's a landmark
-        if(isLandmark) {
-            google.maps.event.clearInstanceListeners(marker);
-            marker.addListener('click', () => showLandmarkCard(stop));
-        }
+        
+        google.maps.event.clearInstanceListeners(marker);
+        marker.addListener('click', () => showVenueCard(stop));
+        
 
         const li = document.createElement('li');
         li.className = `flex items-start gap-3 p-2 border-b border-gray-50 ${isLandmark ? 'bg-yellow-50/50' : ''}`;
