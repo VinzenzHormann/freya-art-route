@@ -62,7 +62,7 @@ html, body {
     padding-bottom: 12rem; /* Spacing for the floating button */
 }
 
-#map-container { width: 100%; height: 350px; }
+#map-container { width: 100%; height: 100vh; }
 #map { width: 100%; height: 100%; }
 
 #app-footer {
@@ -234,7 +234,7 @@ html, body {
 #landmark-detail-card {
     position: fixed;
     /* 1. Positioning & Spacing from corners */
-    bottom: 20px;               /* Gap from bottom */
+    bottom: 120px;               /* Gap from bottom */
     left: 50%;
     transform: translateX(-50%); /* Centers the card */
     width: 95%;                 /* Padding from left/right on mobile */
@@ -321,6 +321,105 @@ html, body {
     color: var(--color-hover);
 }
 
+/* Horizontal Floating Container */
+.route-horizontal-card {
+    position: fixed;
+    bottom: 20px; /* Sits above the Main Action Button */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 450px;
+    background: white;
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    z-index: 4000;
+    display: flex;
+    flex-direction: column;
+}
+
+.route-scroll-wrapper {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 5px 0 5px 0;
+    scrollbar-width: none; /* Firefox */
+}
+
+.route-scroll-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.route-step-node {
+    flex: 0 0 100px; /* Fixed width for each stop */
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+}
+
+.step-number-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 6px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Container for buttons on the top border */
+.route-card-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    top: -18px; /* Offset to sit on the border */
+    left: 0;
+    padding: 0 10px;
+    gap: 8px;
+}
+
+/* Base style for the small control buttons */
+.route-control-btn {
+    background-color: white !important; /* Your signature Green */
+    color: #047666 !important;
+    border: 2px solid #047666 !important;
+    
+    font-size: 10px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    min-width: 140px; 
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+/* The "Open" state (Green bg, White text) */
+.route-control-btn:active {
+    transform: scale(0.95);
+}
+
+
+/* Adjusting the scroll wrapper to handle the text-above-circle layout */
+.route-scroll-wrapper {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px 0 5px 0; /* Extra top padding for the text */
+    scrollbar-width: none;
+}
+
 
 </style>
 </head>
@@ -331,9 +430,6 @@ html, body {
 
 
     <div id="beyoglu-sanat-rehberi-app" class="text-stone-800 full-screen-container flex flex-col">
-        <button id="mobile-route-toggle" onclick="toggleMobileMenu()" class="fixed bottom-24 right-4 z-[1001] bg-[#047666] text-white p-4 rounded-full shadow-2xl md:hidden hidden">
-            <span class="text-sm font-bold">📋 Rota Listesi</span>
-        </button>
         <!-- Ana İçerik Kapsayıcı: Selection View'da dikey, Map View'da masaüstünde yatay -->
         <div id="main-content-wrapper" class="flex flex-col md:flex-row flex-grow w-full">
            
@@ -380,12 +476,6 @@ html, body {
                    
                     <!-- Rota Özeti (Sadece Harita Görünümünde) -->
                     <div id="route-summary" class="mt-4 p-3 bg-white rounded-lg shadow-md border border-gray-100 hidden">
-                        <button onclick="toggleMobileMenu()" class="md:hidden w-full mb-4 py-2 bg-gray-100 text-gray-600 rounded font-bold text-xs uppercase tracking-wider">
-                        ✕ Haritaya Dön
-                        </button>
-                        <h4 class="font-bold text-base mb-2 text-red-600 flex items-center">
-                             Önerilen Rota Adımları:
-                        </h4>
                         <p id="total-distance" class="text-sm text-gray-700"></p>
                         <p id="total-time" class="text-sm text-gray-700 mb-2"></p>
                         <ol id="route-steps" class="list-decimal list-inside text-sm space-y-2"></ol>
@@ -416,8 +506,8 @@ html, body {
             </div>
            
             <!-- Harita Kapsayıcı (Başlangıçta gizli, Map View'da görünür) -->
-            <div id="map-container" class="w-full hidden">
-                <div id="map"></div>
+            <div id="map-container" class="hidden w-full h-full">
+                <div id="map" class="w-full h-full"></div>
             </div>
 
 
@@ -429,6 +519,10 @@ html, body {
 
 
 <script>
+
+let lastClickedRouteItem = null;
+let currentRouteLandmarks = [];
+
 const typeTranslations = {
     'museum': 'Müze',
     'gallery': 'Galeri',
@@ -513,22 +607,11 @@ async function updateDataFromCloud() {
     // --- VIEW LOGIC ---
 let isMobileMenuOpen = false;
 
-function toggleMobileMenu() {
-    const panel = document.getElementById('control-panel');
-    isMobileMenuOpen = !isMobileMenuOpen;
-    if (isMobileMenuOpen) {
-        panel.classList.add('open');
-        panel.scrollTop = 0; // Reset scroll when opening the slide-out menu
-    } else {
-        panel.classList.remove('open');
-    }
-}
 function switchView(newState) {
     appState = newState;
     window.scrollTo(0, 0); 
     const panel = document.getElementById('control-panel');
     if (panel) panel.scrollTop = 0;
-    const mobileBtn = document.getElementById('mobile-route-toggle');
     const btn = document.getElementById('main-action-button');
     const bannerSelection = document.getElementById('banner-selection'); // Added this
     const bannerMap = document.getElementById('banner-map');             // Added this
@@ -539,7 +622,7 @@ function switchView(newState) {
         appContainer.classList.remove('selection-active');
         selectionContent.classList.add('hidden');
         mapContainer.classList.remove('hidden');
-        routeSummary.classList.remove('hidden');
+        
         
         // Banner Swapping Logic
         if (bannerSelection) bannerSelection.classList.add('hidden');
@@ -550,7 +633,7 @@ function switchView(newState) {
         btn.classList.add('inline-bottom');
         routeSummary.appendChild(btn); 
         
-        mobileBtn.classList.remove('hidden');
+        
 
         // Ensure Map Resizes
         setTimeout(() => {
@@ -559,11 +642,16 @@ function switchView(newState) {
 
     } else {
         updateRoutePreview();
+        const horizontalRoute = document.getElementById('horizontal-route-container');
+        if (horizontalRoute) horizontalRoute.remove();
+
+        const landmarkCard = document.getElementById('landmark-detail-card');
+        if (landmarkCard) landmarkCard.remove();
         appContainer.classList.remove('map-view-layout');
         appContainer.classList.add('selection-active');
         selectionContent.classList.remove('hidden');
         mapContainer.classList.add('hidden');
-        routeSummary.classList.add('hidden');
+        
         
         // Banner Swapping Logic
         if (bannerSelection) bannerSelection.classList.remove('hidden');
@@ -574,10 +662,8 @@ function switchView(newState) {
         btn.classList.add('fixed-bottom');
         document.getElementById('control-panel').appendChild(btn); 
         
-        mobileBtn.classList.add('hidden');
-        document.getElementById('control-panel').classList.remove('open');
-        isMobileMenuOpen = false;
-
+        const toggleBtn = document.getElementById('toggle-landmark-btn');
+        if (toggleBtn) toggleBtn.textContent = "Açıklamaları Göster";
         if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
     }
     updateButtonState();
@@ -784,18 +870,28 @@ function updateButtonState() {
 updateDataFromCloud();
     }
 
-    function addMarker(venue) {
-        const marker = new google.maps.Marker({
-            position: { lat: venue.lat, lng: venue.lng },
-            map: null,
-            title: venue.name
-        });
-        marker.addListener('click', () => {
-            if (appState === 'selection') toggleVenueSelection(venue.id);
-        });
-        markers[venue.id] = marker;
-        updateMarkerIcon(venue.id, false);
-    }
+function addMarker(venue) {
+    const marker = new google.maps.Marker({
+        position: { lat: venue.lat, lng: venue.lng },
+        map: null,
+        title: venue.name
+    });
+
+    marker.addListener('click', () => {
+        // --- ADD THIS LINE ---
+        lastClickedRouteItem = venue; 
+
+        if (appState === 'selection') {
+            toggleVenueSelection(venue.id);
+        } else {
+            // If we are in map mode, show the card when the pin is clicked
+            showVenueCard(venue);
+        }
+    });
+    
+    markers[venue.id] = marker;
+    updateMarkerIcon(venue.id, false);
+}
 
     function updateMarkerIcon(venueId, isSelected, stepNumber = null) {
         const marker = markers[venueId];
@@ -885,9 +981,10 @@ async function calculateRoute() {
             switchView('map');
             
             // Pass 'stops' here as well to replace 'orderedMuseums'
-            displayRouteSummary(response, stops, directLandmarks);
-            showPeripheralLandmarks(peripheralLandmarks);
+            route_summary_horizontal(response, stops, directLandmarks);
             
+            showPeripheralLandmarks(peripheralLandmarks);
+            route_summary_horizontal(response, stops, directLandmarks);
         } else {
             alertUser('Rota bulunamadı: ' + status, 'error');
         }
@@ -906,8 +1003,13 @@ function showPeripheralLandmarks(landmarks) {
         });
         marker.setLabel(null); // No number
         marker.setMap(map);
-        
-        marker.addListener('click', () => showVenueCard(landmark));
+google.maps.event.clearInstanceListeners(marker); // Clear old listeners
+        marker.addListener('click', () => {
+            // --- ADD THIS LINE ---
+            lastClickedRouteItem = landmark; 
+
+            showVenueCard(landmark);
+        });
     });
 }
 
@@ -950,8 +1052,7 @@ function showVenueCard(venue) {
     card.id = 'landmark-detail-card';
 
     card.innerHTML = `
-        <button onclick="this.parentElement.remove()" class="absolute top-4 right-5 text-gray-400 text-2xl z-50">&times;</button>
-        
+               
         <div class="flex-shrink-0">
             <div class="flex items-center gap-3 mb-1">
                 <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" 
@@ -977,6 +1078,7 @@ function showVenueCard(venue) {
     `;
 
     document.body.appendChild(card);
+    updateToggleButtonText(true);
 
     // Navigation logic stays the same...
     if (infoList.length > 1) {
@@ -992,6 +1094,58 @@ function showVenueCard(venue) {
 }
 
 
+
+function panToVenueWithOffset(lat, lng) {
+    const latLng = new google.maps.LatLng(lat, lng);
+    map.panTo(latLng);
+    
+    // We calculate the offset: 
+    // To get the venue in the top 2/3, we need to push the map 'down' 
+    // by roughly 1/6th of its total height.
+    const offsetPixels = (map.getDiv().offsetHeight / 4);
+    
+    // panBy moves the map by pixels (x, y)
+    map.panBy(0, offsetPixels);
+}
+
+function handleRouteItemClick(venueId) {
+    const venueData = venues.find(v => v.id === venueId);
+    if (!venueData) return;
+
+    lastClickedRouteItem = venueData;
+
+    // Replace the old panTo/panBy with our new function
+    panToVenueWithOffset(venueData.lat, venueData.lng);
+
+    if (document.getElementById('landmark-detail-card')) {
+        showVenueCard(venueData);
+    }
+}
+
+function toggleLandmarkDisplay() {
+    const card = document.getElementById('landmark-detail-card');
+    
+    if (card) {
+        card.remove();
+        updateToggleButtonText(); // Update text to "Göster"
+    } else {
+        const toShow = lastClickedRouteItem || currentRouteLandmarks[0];
+        if (toShow) {
+            showVenueCard(toShow); // This will internally call updateToggleBtnText to "Gizle"
+        } else {
+            alertUser("Görüntülenecek açıklama bulunamadı.", "info");
+        }
+    }
+}
+function updateToggleButtonText(isOpen) {
+    const btnText = document.querySelector('#toggle-landmark-btn span');
+        if (!btnText) return;
+
+        const card = document.getElementById('landmark-detail-card');
+        // If card exists, text should be "Gizle", otherwise "Göster"
+        btnText.textContent = card ? "Açıklamaları Gizle" : "Açıklamaları Göster";
+    }
+
 function getPointProgressOnPath(point, path) {
     let minDistance = Infinity;
     let progressIndex = 0;
@@ -1005,68 +1159,141 @@ function getPointProgressOnPath(point, path) {
     }
     return progressIndex;
 }
-    function displayRouteSummary(response, orderedMuseums, directLandmarks) {
-    const stepsList = document.getElementById('route-steps'); 
-    stepsList.innerHTML = '';
+
+
+function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
+    const existing = document.getElementById('horizontal-route-container');
+    if (existing) existing.remove();
+
     const path = response.routes[0].overview_path;
 
-    // Combine both types into one "Master List" for the route
-    // We'll keep the numbering consistent
+    // --- STEP 1: START FRESH (MOVE THIS TO THE TOP) ---
+    // This clears the map before we start drawing any new markers
+    Object.values(markers).forEach(m => m.setMap(null));
+
+    // --- STEP 2: DRAW PERIPHERAL LANDMARKS ---
+    const peripheralLandmarks = venues.filter(v => {
+        if (v.type !== 'landmark') return false;
+        const dist = getDistanceFromPath(new google.maps.LatLng(v.lat, v.lng), path);
+        return dist > 50 && dist <= 150; 
+    });
+
+    peripheralLandmarks.forEach(landmark => {
+        const marker = markers[landmark.id];
+        if (marker) {
+            marker.setIcon({
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 7,
+                fillColor: "#ffde59",
+                fillOpacity: 0.7,
+                strokeWeight: 1,
+                strokeColor: "#ffffff"
+            });
+            marker.setLabel(null);
+            marker.setMap(map); // Now it stays visible
+            
+            google.maps.event.clearInstanceListeners(marker);
+            marker.addListener('click', () => {
+                lastClickedRouteItem = landmark;
+                showVenueCard(landmark);
+            });
+        }
+    });
+
+    // --- STEP 3: DRAW MAIN ROUTE MARKERS ---
     let fullRoute = [...orderedMuseums, ...directLandmarks];
-    
-    // Sort the combined list by distance from the starting point to keep it logical
-    // const startPoint = new google.maps.LatLng(orderedMuseums[0].lat, orderedMuseums[0].lng);
-fullRoute.sort((a, b) => {
+    fullRoute.sort((a, b) => {
         const posA = getPointProgressOnPath(new google.maps.LatLng(a.lat, a.lng), path);
         const posB = getPointProgressOnPath(new google.maps.LatLng(b.lat, b.lng), path);
         return posA - posB;
     });
 
+    const firstLandmark = fullRoute.find(stop => stop.type === 'landmark');
+
+    if (firstLandmark) {
+        // If a landmark exists on the route, set it as the default memory
+        lastClickedRouteItem = firstLandmark;
+    } else if (fullRoute.length > 0) {
+        // Fallback: If no landmarks are on the path, use the first museum (#1)
+        lastClickedRouteItem = fullRoute[0];
+    }
+
     fullRoute.forEach((stop, i) => {
         const isLandmark = stop.type === 'landmark';
-        
-        // Use different colors for the markers: Emerald for Art, Gold for Landmark
         const markerColor = isLandmark ? "#ffde59" : "#047666";
-        
         const marker = markers[stop.id];
-        marker.setIcon({
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 14,
-            fillColor: markerColor,
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#FFFFFF"
-        });
-        marker.setLabel({
-            text: (i + 1).toString(),
-            color: "#FFFFFF",
-            fontSize: "12px",
-            fontWeight: "bold"
-        });
-        marker.setMap(map);
-        
-        // Add click listener for Landmark card if it's a landmark
-        
-        google.maps.event.clearInstanceListeners(marker);
-        marker.addListener('click', () => showVenueCard(stop));
-        
+        if (marker) {
+            marker.setIcon({
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 14,
+                fillColor: markerColor,
+                fillOpacity: 1,
+                strokeWeight: 2,
+                strokeColor: "#FFFFFF"
+            });
+            marker.setLabel({
+                text: (i + 1).toString(),
+                color: isLandmark ? "#92400e" : "#FFFFFF",
+                fontSize: "12px",
+                fontWeight: "bold"
+            });
+            marker.setMap(map);
 
-        const li = document.createElement('li');
-        li.className = `flex items-start gap-3 p-2 border-b border-gray-50 ${isLandmark ? 'bg-yellow-50/50' : ''}`;
+            google.maps.event.clearInstanceListeners(marker);
+            marker.addListener('click', () => {
+                lastClickedRouteItem = stop;
+                panToVenueWithOffset(stop.lat, stop.lng);
+                showVenueCard(stop);
+            });
+        }
+    });
+
+    const card = document.createElement('div');
+    card.id = 'horizontal-route-container';
+    card.className = 'route-horizontal-card animate-bounce-in';
+    card.style.position = 'fixed';
+
+    // Build the container structure
+    card.innerHTML = `
+        <div class="route-card-controls">
+            <button onclick="switchView('selection')" class="route-control-btn">
+                Rotayı Değiştir
+            </button>
+            <button id="toggle-landmark-btn" onclick="toggleLandmarkDisplay()" class="route-control-btn">
+                <span>Açıklamaları Göster</span>
+            </button>
+        </div>
+        <div class="route-scroll-wrapper" id="horizontal-steps-list"></div>
+    `;
+    document.body.appendChild(card);
+
+    // 2. Add the steps individually to attach clean click events
+    const stepsList = document.getElementById('horizontal-steps-list');
+    fullRoute.forEach((stop, i) => {
+        const isLandmark = stop.type === 'landmark';
+        const color = isLandmark ? "#ffde59" : "#047666";
+        const textColor = isLandmark ? "#92400e" : "#FFFFFF";
+
+        const node = document.createElement('div');
+        node.className = 'route-step-node cursor-pointer';
         
-        li.innerHTML = `
-            <span class="rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-white" style="background-color: ${markerColor}">
+        // This handles the memory save and the pan
+        node.addEventListener('click', () => handleRouteItemClick(stop.id));
+
+        node.innerHTML = `
+            <p class="text-[9px] font-bold text-gray-800 leading-tight line-clamp-2 h-[22px] mb-1">
+                ${stop.name}
+            </p>
+            <div class="step-number-circle" style="background-color: ${color}; color: ${textColor}">
                 ${i + 1}
-            </span>
-            <div class="flex-grow">
-                <p class="font-bold text-sm ${isLandmark ? 'text-amber-900' : 'text-gray-800'}">
-                    ${stop.name} 
-                </p>
             </div>
         `;
-        stepsList.appendChild(li);
+        stepsList.appendChild(node);
     });
 }
+
+
+
 
     // --- UI INTERACTION ---
     function toggleVenueSelection(venueId) {
