@@ -33,6 +33,7 @@ html, body {
     flex-direction: column;
     overflow: hidden;
     background-color: #ffffff;
+    border: none !important;
 }
 
 /* 2. BİLEŞENLER */
@@ -63,6 +64,16 @@ html, body {
 }
 
 #map-container { width: 100%; height: 100vh; }
+#map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important; /* Force full width */
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 10;
+}
 #map { width: 100%; height: 100%; }
 
 #app-footer {
@@ -111,8 +122,8 @@ html, body {
     bottom: calc(2rem + 42px); 
     left: 50% !important;
     transform: translateX(-50%);
-    width: calc(90% - 20px);
-    max-width: 380px;
+    width: calc(80% - 20px);
+    max-width: 340px;
     background-color: var(--color-landmark) !important;
     border-radius: 12px 12px 0 0; /* Slightly sharper corners for a cleaner look */
     /* Reduced padding: 8px top, 12px sides, 24px bottom (to hide behind button) */
@@ -421,6 +432,106 @@ html, body {
 }
 
 
+/* Ensure the parent container has a defined width and allows horizontal overflow */
+#route-steps {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important; /* Forces scrollbar logic */
+    width: 100% !important;     /* Crucial: Must have a width to overflow */
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Smooth for mobile */
+}
+
+/* Force visible scrollbar on Desktop */
+@media (min-width: 1024px) {
+    #route-steps::-webkit-scrollbar {
+        height: 8px !important;
+        display: block !important;
+    }
+
+    #route-steps::-webkit-scrollbar-thumb {
+        background-color: #888 !important;
+        border-radius: 4px;
+    }
+
+    #route-steps::-webkit-scrollbar-track {
+        background: #f1f1f1 !important;
+    }
+}
+
+/* Force the wrapper to handle overflow */
+.route-scroll-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    /* Ensure it has a width */
+    width: 100% !important; 
+    /* Important: This forces the scrollbar to appear in desktop */
+    padding-bottom: 8px !important;
+    scrollbar-width: thin !important;
+}
+
+/* Force visible scrollbar on Desktop */
+@media (min-width: 1024px) {
+    
+    /* 1. Make the container wider (75% of screen width) */
+    .route-horizontal-card {
+        width: fit-content !important;
+        max-width: 75vw !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        
+        /* Ensure it sits slightly higher to accommodate the scrollbar */
+        bottom: 25px !important; 
+    }
+
+    /* 2. Style the scrollbar for the dynamic wrapper */
+    .route-scroll-wrapper {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        width: auto !important;
+        padding-bottom: 10px !important;
+        scrollbar-width: thin !important;
+    }
+
+    .route-scroll-wrapper::-webkit-scrollbar {
+        height: 10px !important; /* Slightly thicker for desktop */
+        display: block !important;
+    }
+
+    .route-scroll-wrapper::-webkit-scrollbar-thumb {
+        background-color: #888 !important;
+        border-radius: 6px !important;
+        border: 2px solid #ffffff; /* Adds a clean gap */
+    }
+
+    .route-scroll-wrapper::-webkit-scrollbar-track {
+        background: #f1f1f1 !important;
+        border-radius: 6px !important;
+    }
+
+    #landmark-detail-card {
+        /* Adjust this value based on your exact layout needs */
+        bottom: 140px !important; 
+    }
+}
+
+.nv-single-page-wrap, 
+.nv-content-wrap {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    max-width: 100% !important;
+}
+
+/* Use this only if the border persists */
+body, main, .entry-content {
+    border: none !important;
+    padding: 0 !important;
+}
+
 </style>
 </head>
 
@@ -442,11 +553,6 @@ html, body {
              src="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png" 
              alt="Nasıl Kullanılır" 
              class="w-full h-auto">
-
-        <img id="banner-map" 
-             src="https://www.freyartt.com/wp-content/uploads/2026/03/banner-map.png" 
-             alt="Beyoğlu Sanat Rotaları" 
-             class="w-full h-auto hidden">
     </div>
 </header>
 
@@ -478,7 +584,8 @@ html, body {
                     <div id="route-summary" class="mt-4 p-3 bg-white rounded-lg shadow-md border border-gray-100 hidden">
                         <p id="total-distance" class="text-sm text-gray-700"></p>
                         <p id="total-time" class="text-sm text-gray-700 mb-2"></p>
-                        <ol id="route-steps" class="list-decimal list-inside text-sm space-y-2"></ol>
+                        <ol id="route-steps" class="flex flex-row gap-4 overflow-x-auto pb-4 w-full" style="list-style: none; padding: 0; margin: 0;">
+    </ol>
                         <!-- Rotayı Temizle butonu artık "Rotayı Değiştir" butonu içinde hallediliyor -->
                     </div>
 
@@ -613,21 +720,18 @@ function switchView(newState) {
     const panel = document.getElementById('control-panel');
     if (panel) panel.scrollTop = 0;
     const btn = document.getElementById('main-action-button');
-    const bannerSelection = document.getElementById('banner-selection'); // Added this
-    const bannerMap = document.getElementById('banner-map');             // Added this
+
+    // Added this
     
     if (newState === 'map') {
         if (infoBox) infoBox.classList.add('hidden');
-        appContainer.classList.add('map-view-layout');
-        appContainer.classList.remove('selection-active');
+        //appContainer.classList.add('map-view-layout');
+        //appContainer.classList.remove('selection-active');
         selectionContent.classList.add('hidden');
         mapContainer.classList.remove('hidden');
         
         
-        // Banner Swapping Logic
-        if (bannerSelection) bannerSelection.classList.add('hidden');
-        if (bannerMap) bannerMap.classList.remove('hidden');
-        
+       
         // Move button to summary
         btn.classList.remove('fixed-bottom');
         btn.classList.add('inline-bottom');
@@ -647,16 +751,13 @@ function switchView(newState) {
 
         const landmarkCard = document.getElementById('landmark-detail-card');
         if (landmarkCard) landmarkCard.remove();
-        appContainer.classList.remove('map-view-layout');
-        appContainer.classList.add('selection-active');
+        //appContainer.classList.remove('map-view-layout');
+        //appContainer.classList.add('selection-active');
         selectionContent.classList.remove('hidden');
         mapContainer.classList.add('hidden');
         
         
-        // Banner Swapping Logic
-        if (bannerSelection) bannerSelection.classList.remove('hidden');
-        if (bannerMap) bannerMap.classList.add('hidden');
-        
+       
         // Move button back
         btn.classList.remove('inline-bottom');
         btn.classList.add('fixed-bottom');
@@ -984,7 +1085,6 @@ async function calculateRoute() {
             route_summary_horizontal(response, stops, directLandmarks);
             
             showPeripheralLandmarks(peripheralLandmarks);
-            route_summary_horizontal(response, stops, directLandmarks);
         } else {
             alertUser('Rota bulunamadı: ' + status, 'error');
         }
@@ -1033,7 +1133,7 @@ function showVenueCard(venue) {
 
     // Add Universal Links (Website & Fiyat)
     if (meta.website) {
-        subtitleParts.push(`<a href="${meta.website}" target="_blank" class="underline hover:text-emerald-700">Websitesi</a>`);
+        subtitleParts.push(`<a href="${meta.website}" target="_blank" class="underline hover:text-emerald-700">Web Sitesi</a>`);
     }
     if (meta.info_url) {
         subtitleParts.push(`<a href="${meta.info_url}" target="_blank" class="underline hover:text-emerald-700">Fiyat Bilgisi</a>`);
@@ -1348,7 +1448,7 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
                 </div>
                 <div class="flex items-center gap-1">
                     <span class="flex-shrink-0">🌐</span>
-                    <a href="${escapeHTML(meta.website)}" target="_blank" rel="noopener" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation()">Websitesini Ziyaret Et</a>
+                    <a href="${escapeHTML(meta.website)}" target="_blank" rel="noopener" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation()">Web Sitesini Ziyaret Et</a>
                 </div>
             </div>
 
