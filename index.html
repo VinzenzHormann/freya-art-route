@@ -33,7 +33,7 @@ html, body {
     flex-direction: column;
     overflow: hidden;
     background-color: #ffffff;
-    border: none !important;
+    border: none ;
 }
 
 /* 2. BİLEŞENLER */
@@ -55,7 +55,7 @@ html, body {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
 /* 3. DÜZEN (LAYOUT) */
-#main-content-wrapper { flex: 1; position: relative; overflow: hidden; }
+#main-content-wrapper { flex: 1; position: relative; overflow: hidden; height: 100%; }
 
 #control-panel {
     flex: 1;
@@ -63,15 +63,15 @@ html, body {
     padding-bottom: 12rem; /* Spacing for the floating button */
 }
 
-#map-container { width: 100%; height: 100vh; }
+
 #map-container {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100% !important; /* Force full width */
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    width: 100%;  /* Force full width */
+    height: 100% ;
+    margin: 0 ;
+    padding: 0;
     z-index: 10;
 }
 #map { width: 100%; height: 100%; }
@@ -81,22 +81,16 @@ html, body {
     padding: 1rem; text-align: center; font-size: 0.75rem; color: #666; z-index: 10;
 }
 
-/* 4. MASAÜSTÜ DÜZENİ */
-@media (min-width: 768px) {
-    .map-view-layout #main-content-wrapper { flex-direction: row; }
-    .map-view-layout #control-panel { width: 33.33%; height: 100%; }
-    .map-view-layout #map-container { width: 66.66%; height: 100% !important; display: block !important; }
-}
+
 
 
 /* 6. FLOATING ACTION AREA (BUTTON & INFO BOX) */
 
 /* The Green Button */
 #main-action-button.fixed-bottom {
-    position: fixed !important;
     bottom: 2rem;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    left: 50% ;
+    transform: translateX(-50%) ;
     width: 90%;
     max-width: 400px;
     height: 60px;
@@ -117,42 +111,39 @@ html, body {
 /* Update these lines in your CSS */
 /* Update these lines in your CSS */
 #route-info-box {
-    position: fixed !important;
-    /* Reduced from calc(2rem + 50px) to sit lower */
     bottom: calc(2rem + 42px); 
-    left: 50% !important;
+    left: 50% ;
     transform: translateX(-50%);
     width: calc(80% - 20px);
     max-width: 340px;
-    background-color: var(--color-landmark) !important;
+    background-color: var(--color-landmark) ;
     border-radius: 12px 12px 0 0; /* Slightly sharper corners for a cleaner look */
     /* Reduced padding: 8px top, 12px sides, 24px bottom (to hide behind button) */
     padding: 8px 12px 24px 12px; 
     z-index: 3000;
-    border: none !important;
+    border: none ;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
 }
 
 /* Hidden State for Info Box */
 #route-info-box.hidden {
-    display: none !important; /* Force hide */
+    display: none ; /* Force hide */
     opacity: 0;
     transform: translate(-50%, 40px);
 }
 
 /* The Toggle Circle Button (i / x) */
 #info-toggle-btn {
-    position: fixed !important;
     bottom: calc(2rem + 45px); 
     left: calc(50% + 170px); 
     transform: translateX(-50%);
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #035e52 !important; /* Darker Green */
-    color: white !important;
-    border: none !important;
+    background-color: #035e52 ; /* Darker Green */
+    color: white ;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -162,43 +153,17 @@ html, body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-
-
 #main-action-button.inline-bottom {
-    position: relative !important;
-    margin: 2rem auto !important;
-    left: auto !important;
-    transform: none !important;
+    position: relative ;
+    margin: 2rem auto ;
+    left: auto ;
+    transform: none ;
     width: 100%;
 }
 
 #info-toggle-btn.hidden {
-    display: none !important;
+    display: none ;
 }
-
-/* Mobile adjustment for height */
-@media (max-width: 767px) {
-    .map-view-layout #control-panel {
-        position: fixed; top: 0; left: 0;
-        width: 85%; height: 100%;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-        z-index: 2000; background: white;
-        box-shadow: 10px 0 20px rgba(0,0,0,0.2);
-    }
-    .map-view-layout #control-panel.open { transform: translateX(0); }
-    .map-view-layout #map-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100% !important; z-index: 1; }
-    .map-view-layout #app-footer { display: none; }
-    #main-action-button.fixed-bottom { bottom: 1.5rem; }
-    #route-info-box { bottom: calc(1.5rem + 50px); width: calc(95% - 10px); }
-    #info-toggle-btn { bottom: calc(1.5rem + 45px); left: calc(50% + 42%); }
-    #route-info-box { 
-        bottom: calc(1.5rem + 42px); 
-        padding: 6px 10px 20px 10px; 
-    }
-}
-
-
 
 /* Navigation Controls in the middle bottom */
 .fact-nav-controls {
@@ -243,7 +208,6 @@ html, body {
 
 /* The Landmark Detail Card Container */
 #landmark-detail-card {
-    position: fixed;
     /* 1. Positioning & Spacing from corners */
     bottom: 120px;               /* Gap from bottom */
     left: 50%;
@@ -305,9 +269,9 @@ html, body {
 /* Unified styling for Subtitle and Fun-Fact */
 #landmark-detail-card p.subtitle, 
 #fact-content {
-    font-family: 'Poppins', sans-serif !important;
-    font-size: 0.875rem !important;      
-    color: #111827 !important;       
+    font-family: 'Poppins', sans-serif ;
+    font-size: 0.875rem ;      
+    color: #111827 ;       
     font-weight: 400;                
     line-height: 1.4;                
     margin: 0;
@@ -319,7 +283,7 @@ html, body {
 }
 
 .fact-nav-controls.hidden {
-    display: none !important;
+    display: none ;
 }
 
 #landmark-detail-card p.subtitle a {
@@ -334,7 +298,6 @@ html, body {
 
 /* Horizontal Floating Container */
 .route-horizontal-card {
-    position: fixed;
     bottom: 20px; /* Sits above the Main Action Button */
     left: 50%;
     transform: translateX(-50%);
@@ -353,13 +316,14 @@ html, body {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
-    gap: 12px;
-    padding: 5px 0 5px 0;
-    scrollbar-width: none; /* Firefox */
+    width: 100%; 
+    gap: 15px;
+    padding: 10px 0 8px 0; 
+    scrollbar-width: thin; 
 }
 
 .route-scroll-wrapper::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    display: none; 
 }
 
 .route-step-node {
@@ -400,9 +364,9 @@ html, body {
 
 /* Base style for the small control buttons */
 .route-control-btn {
-    background-color: white !important; /* Your signature Green */
-    color: #047666 !important;
-    border: 2px solid #047666 !important;
+    background-color: white; 
+    color: #047666 ;
+    border: 2px solid #047666 ;
     
     font-size: 10px;
     font-weight: 700;
@@ -421,100 +385,100 @@ html, body {
 }
 
 
-/* Adjusting the scroll wrapper to handle the text-above-circle layout */
-.route-scroll-wrapper {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 15px;
-    padding: 10px 0 5px 0; /* Extra top padding for the text */
-    scrollbar-width: none;
-}
-
-
 /* Ensure the parent container has a defined width and allows horizontal overflow */
 #route-steps {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto !important; /* Forces scrollbar logic */
-    width: 100% !important;     /* Crucial: Must have a width to overflow */
+    display: flex ;
+    flex-direction: row ;
+    overflow-x: auto ; /* Forces scrollbar logic */
+    width: 100% ;     /* Crucial: Must have a width to overflow */
     padding-bottom: 10px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch; /* Smooth for mobile */
 }
 
+#main-action-button, #route-info-box, #info-toggle-btn, #landmark-detail-card, .route-horizontal-card {
+    position: fixed;
+}
+
+/* Mobile adjustment for height */
+@media (max-width: 767px) {
+    /* When in map-view-layout, force full screen for everything */
+    .map-view-layout #control-panel {
+        display: none !important;
+    }
+    
+    .map-view-layout #map-container {
+        width: 100% !important; /* Map takes full width */
+        height: 100% !important;
+        display: block !important;
+    }
+    .map-view-layout #app-footer { display: none; }
+    #main-action-button.fixed-bottom { bottom: 1.5rem; }
+    
+    #info-toggle-btn { bottom: calc(1.5rem + 45px); left: calc(50% + 42%); }
+    #route-info-box { 
+        bottom: calc(1.5rem + 42px); 
+        width: calc(95% - 10px);
+        padding: 6px 10px 20px 10px; 
+    }
+    .map-view-layout #main-content-wrapper { flex-direction: row; }
+    .map-view-layout #control-panel { width: 33.33%; height: 100%; }
+    .map-view-layout #map-container { width: 66.66%; height: 100% ; display: block ; }
+
+}
+
 /* Force visible scrollbar on Desktop */
 @media (min-width: 1024px) {
     #route-steps::-webkit-scrollbar {
-        height: 8px !important;
-        display: block !important;
+        height: 8px ;
+        display: block ;
     }
 
     #route-steps::-webkit-scrollbar-thumb {
-        background-color: #888 !important;
+        background-color: #888 ;
         border-radius: 4px;
     }
 
     #route-steps::-webkit-scrollbar-track {
-        background: #f1f1f1 !important;
+        background: #f1f1f1 ;
     }
-}
-
-/* Force the wrapper to handle overflow */
-.route-scroll-wrapper {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    /* Ensure it has a width */
-    width: 100% !important; 
-    /* Important: This forces the scrollbar to appear in desktop */
-    padding-bottom: 8px !important;
-    scrollbar-width: thin !important;
-}
-
-/* Force visible scrollbar on Desktop */
-@media (min-width: 1024px) {
-    
+   
     /* 1. Make the container wider (75% of screen width) */
     .route-horizontal-card {
-        width: fit-content !important;
-        max-width: 75vw !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
+        width: fit-content ;
+        max-width: 75vw ;
+        left: 50% ;
+        transform: translateX(-50%) ;
         
         /* Ensure it sits slightly higher to accommodate the scrollbar */
-        bottom: 25px !important; 
+        bottom: 25px ; 
     }
 
     /* 2. Style the scrollbar for the dynamic wrapper */
     .route-scroll-wrapper {
-        display: flex !important;
-        flex-direction: row !important;
-        overflow-x: auto !important;
-        width: auto !important;
-        padding-bottom: 10px !important;
-        scrollbar-width: thin !important;
+        width: auto;
+        padding-bottom: 10px;
     }
 
     .route-scroll-wrapper::-webkit-scrollbar {
-        height: 10px !important; /* Slightly thicker for desktop */
-        display: block !important;
+        height: 10px ; /* Slightly thicker for desktop */
+        display: block ;
     }
 
     .route-scroll-wrapper::-webkit-scrollbar-thumb {
-        background-color: #888 !important;
-        border-radius: 6px !important;
-        border: 2px solid #ffffff; /* Adds a clean gap */
+        background-color: #888 ;
+        border-radius: 6px ;
+        border: 2px solid #ffffff; 
     }
 
     .route-scroll-wrapper::-webkit-scrollbar-track {
-        background: #f1f1f1 !important;
-        border-radius: 6px !important;
+        background: #f1f1f1 ;
+        border-radius: 6px ;
     }
 
     #landmark-detail-card {
         /* Adjust this value based on your exact layout needs */
-        bottom: 140px !important; 
+        bottom: 140px ; 
     }
 }
 
@@ -549,10 +513,16 @@ body, main, .entry-content {
                
 <header class="mb-4">
     <div class="w-full">
-        <img id="banner-selection" 
-             src="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png" 
-             alt="Nasıl Kullanılır" 
-             class="w-full h-auto">
+        <picture>
+            <source media="(min-width: 768px)" srcset="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png">
+            
+            <img decoding="async" 
+                 id="banner-selection" 
+                 src="https://www.freyartt.com/wp-content/uploads/2026/04/banner_sanat_rotasi_mobile.png" 
+                 alt="Nasıl Kullanılır" 
+                 class="w-full h-auto" 
+                 title="Rota Test Freya Art">
+        </picture>
     </div>
 </header>
 
@@ -700,14 +670,17 @@ async function updateDataFromCloud() {
         const data = await response.json();
         
         if (data && Array.isArray(data)) {
-            // Data is already processed by FastAPI (json.loads), so we just save it
             venues = data;
             displayVenues();
             Object.values(markers).forEach(m => m.setMap(null));
             venues.forEach(addMarker);
+            
+            console.log("Data loaded successfully");
+            return data; // IMPORTANT: Return the data so the promise resolves with it
         }
     } catch (e) {
         console.error("Sync failed:", e);
+        throw e; // Throw error so initMap knows it failed
     }
 }
 
@@ -738,7 +711,8 @@ function switchView(newState) {
         routeSummary.appendChild(btn); 
         
         
-
+        history.pushState({ newState: 'map' }, 'Map View');
+        document.body.classList.add('map-view-layout');
         // Ensure Map Resizes
         setTimeout(() => {
             if (map) google.maps.event.trigger(map, 'resize');
@@ -766,9 +740,16 @@ function switchView(newState) {
         const toggleBtn = document.getElementById('toggle-landmark-btn');
         if (toggleBtn) toggleBtn.textContent = "Açıklamaları Göster";
         if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
+    
+        document.body.classList.remove('map-view-layout');
     }
     updateButtonState();
 }
+
+window.addEventListener('popstate', (event) => {
+    // If the user navigates back, force them to selection view
+    switchView('selection');
+});
 
     function handleMainAction() {
         if (appState === 'selection') calculateRoute();
@@ -965,11 +946,13 @@ function updateButtonState() {
             suppressMarkers: true, // This is key to prevent duplicate markers
             polylineOptions: { strokeColor: '#12a48e', strokeWeight: 6 }
         });
-
-
-
-updateDataFromCloud();
-    }
+ updateDataFromCloud().then(() => {
+        console.log("Data ready, now checking URL for route...");
+        loadRouteFromUrl(); 
+    }).catch(err => {
+        console.error("Failed to load data:", err);
+    });
+}
 
 function addMarker(venue) {
     const marker = new google.maps.Marker({
@@ -1356,12 +1339,16 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
     // Build the container structure
     card.innerHTML = `
         <div class="route-card-controls">
+            <button onclick="generateShareableLink()" class="route-control-btn">
+            Rotayı Paylaş
+            </button>
             <button onclick="switchView('selection')" class="route-control-btn">
                 Rotayı Değiştir
             </button>
             <button id="toggle-landmark-btn" onclick="toggleLandmarkDisplay()" class="route-control-btn">
                 <span>Açıklamaları Göster</span>
             </button>
+            
         </div>
         <div class="route-scroll-wrapper" id="horizontal-steps-list"></div>
     `;
@@ -1419,6 +1406,7 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
     const hours = meta.hours || {};
     
     const isOpen = hours[today] === 1; 
+    const venueId = Number(venue.id);
     const isSelected = selectedVenues.has(venue.id);
     const statusBadge = isOpen ? '🟢 Açık' : '⚪ Kapalı';
     
@@ -1496,6 +1484,52 @@ function displayVenues(filter = 'all') {
             });
         });
     });
+
+function generateShareableLink() {
+    // 1. Convert the Set to an Array
+    const routeIds = Array.from(selectedVenues).join(',');
+    
+    // 2. Build the URL
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?route=${routeIds}`;
+    
+    // 3. Update History & Copy
+    history.replaceState(null, '', shareUrl);
+    
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        alert("Rota linki kopyalandı!");
+    }).catch(err => {
+        console.error("Kopyalama başarısız: ", err);
+    });
+}
+
+function loadRouteFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const routeParam = params.get('route');
+    
+    if (routeParam) {
+        const ids = routeParam.split(',').map(Number);
+        
+        // Clear current state and add the IDs from the URL
+        selectedVenues.clear(); // Empty the Set
+        ids.forEach(id => {
+            selectedVenues.add(id); 
+            // Re-add IDs
+            // Trigger your UI update logic for each ID
+            // e.g., highlightVenueInGrid(id); 
+
+            
+        });
+        
+        // Run your route calculation
+        calculateRoute(); 
+        switchView('map');
+        displayVenues();
+    }
+     else {
+        console.log("No route parameter found, staying in selection view.");
+    }
+}
 </script>
 </body>
 </html>
