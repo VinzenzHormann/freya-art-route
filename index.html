@@ -15,25 +15,28 @@
     --color-button: #047666;
     --color-hover: #075f52;
     --color-landmark: #ffde59;
-    --footer-bg: #f9f9f9;
+
     --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 html, body {
-    height: 100%;
+    height: auto; /* Changed from 100% */
+    min-height: 100vh;
     margin: 0;
-    overflow: hidden;
+    overflow-y: auto; /* Allows scrolling */
+    overflow-x: hidden;
     font-family: 'Poppins', sans-serif;
 }
-
 #beyoglu-sanat-rehberi-app {
-    height: 100vh;
-    height: 100svh;
+    height: auto; /* Changed from 100vh */
+    min-height: 100vh;
+    flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     background-color: #ffffff;
     border: none ;
+
 }
 
 /* 2. BİLEŞENLER */
@@ -55,12 +58,12 @@ html, body {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
 /* 3. DÜZEN (LAYOUT) */
-#main-content-wrapper { flex: 1; position: relative; overflow: hidden; height: 100%; }
+#main-content-wrapper { flex: 1; position: visible; height: auto; overflow: hidden; height: 100%; }
 
 #control-panel {
     flex: 1;
-    overflow-y: auto;
-    padding-bottom: 12rem; /* Spacing for the floating button */
+    overflow-y: visible;
+    padding-bottom: 175px; /* Spacing for the floating button */
 }
 
 
@@ -75,14 +78,6 @@ html, body {
     z-index: 10;
 }
 #map { width: 100%; height: 100%; }
-
-#app-footer {
-    background: var(--footer-bg); border-top: 1px solid #eee;
-    padding: 1rem; text-align: center; font-size: 0.75rem; color: #666; z-index: 10;
-}
-
-
-
 
 /* 6. FLOATING ACTION AREA (BUTTON & INFO BOX) */
 
@@ -414,8 +409,8 @@ html, body {
         height: 100% !important;
         display: block !important;
     }
-    .map-view-layout #app-footer { display: none; }
     #main-action-button.fixed-bottom { bottom: 1.5rem; }
+    .map-view-layout #site-footer { display: none; }
     
     #info-toggle-btn { bottom: calc(1.5rem + 45px); left: calc(50% + 42%); }
     #route-info-box { 
@@ -521,6 +516,30 @@ body, main, .entry-content {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
 }
 
+
+/* 2. App wrapper should grow, not be fixed to the screen */
+#beyoglu-sanat-rehberi-app {
+    min-height: 100vh; /* Takes at least the screen, but can grow */
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: none;
+}
+
+/* 3. Main wrapper should flex to fill space */
+#main-content-wrapper {
+    flex: 1;
+    position: relative;
+    /* Remove overflow: hidden if you want the page to scroll */
+    overflow-y: visible; 
+}
+
+#site-footer {
+    position: relative; /* Essential for z-index to work */
+    z-index: 5000;      /* Higher than your action button (4000) */
+
+}
+
 </style>
 </head>
 
@@ -534,7 +553,7 @@ body, main, .entry-content {
         <div id="main-content-wrapper" class="flex flex-col md:flex-row flex-grow w-full">
            
             <!-- Kontrol Paneli: Hem Seçim hem de Rota Özeti görünümü için kullanılır -->
-            <div id="control-panel" class="w-full pt-0 pb-4 sm:pb-6 lg:pb-8 pl-4 pr-4 sm:pl-6 sm:pr-6 lg:pl-8 lg:pr-8 bg-white flex-grow">  
+            <div id="control-panel" class="w-full pt-0 pb-40 sm:pb-6 lg:pb-40 pl-4 pr-4 sm:pl-6 sm:pr-6 lg:pl-8 lg:pr-8 bg-white flex-grow">  
             <!--  <div id="control-panel" class="w-full p-4 sm:p-6 lg:p-8 bg-white flex-grow">  -->  
                
 <header class="mb-4 flex justify-center">
@@ -590,7 +609,7 @@ body, main, .entry-content {
 
 
                 <!-- Filtreler ve Mekan Kartları (Sadece Seçim Görünümünde) -->
-                <div id="selection-content">
+                <div id="selection-content" >
                     <nav id="filter-nav" class="flex gap-3 mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide py-2">
                         <button id="filter-all" class="filter-btn active" data-filter="all">Tümü</button>
                         <button id="filter-museum" class="filter-btn" data-filter="museum">Müzeler</button>
@@ -614,9 +633,6 @@ body, main, .entry-content {
 
 
         </div>
-        <footer id="app-footer">
-            <p>© 2026 Beyoğlu Sanat Rotası | Kültür ve Sanat Rehberi</p>
-        </footer>
     </div>
 
 
