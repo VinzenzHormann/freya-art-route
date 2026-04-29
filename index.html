@@ -638,6 +638,12 @@ body, main, .entry-content {
 
 <script>
 
+let currentRouteStats = {
+    venueCount: 0,
+    landmarkCount: 0,
+    walkTime: 0
+};
+
 let lastClickedRouteItem = null;
 let currentRouteLandmarks = [];
 
@@ -1195,6 +1201,11 @@ infoText.innerHTML = `
         </div>
     </div>
 `;
+currentRouteStats = {
+    venueCount: count,
+    landmarkCount: nearbyLandmarks.length,
+    walkTime: walkTime
+};
     } else {
         infoBox.classList.add('hidden');
     }
@@ -1829,22 +1840,40 @@ function displayVenues(filter = 'all') {
         });
     });
 
-function generateShareableLink() {
-    // 1. Convert the Set to an Array
+async function generateShareableLink() {
+    // 1. Prepare data
     const routeIds = Array.from(selectedVenues).join(',');
-    
-    // 2. Build the URL
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?route=${routeIds}`;
     
-    // 3. Update History & Copy
-    history.replaceState(null, '', shareUrl);
-    
-    navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("Rota linki kopyalandı!");
-    }).catch(err => {
-        console.error("Kopyalama başarısız: ", err);
-    });
+    // Combine text and URL for the clipboard fallback
+    const fullMessage = `🎨 Beyoğlu Sanat Rotam!\n` +
+                        `${currentRouteStats.venueCount} Mekan, ` +
+                        `${currentRouteStats.landmarkCount} Gezi noktası, ` +
+                        `${currentRouteStats.walkTime} dk yürüme mesafesi.\n` +
+                        `Rotamı detaylı incelemek için: ${shareUrl}`;
+
+    // 2. Mobile: Native Share API
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Beyoğlu Sanat Rotam!',
+                text: `🎨 ${currentRouteStats.venueCount} Mekan, ${currentRouteStats.landmarkCount} Gezi noktası, ${currentRouteStats.walkTime} dk yürüme mesafesi.`,
+                url: shareUrl
+            });
+        } catch (err) {
+            console.log('Paylaşım iptal edildi');
+        }
+    } 
+    // 3. Desktop/Fallback: Copy to Clipboard
+    else {
+        try {
+            await navigator.clipboard.writeText(fullMessage);
+            alert("Rota bilgileri kopyalandı! Şimdi istediğin yere yapıştırabilirsin.");
+        } catch (err) {
+            console.error("Kopyalama başarısız: ", err);
+        }
+    }
 }
 
 function loadRouteFromUrl() {
