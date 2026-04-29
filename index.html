@@ -209,7 +209,7 @@ html, body {
 /* The Landmark Detail Card Container */
 #landmark-detail-card {
     /* 1. Positioning & Spacing from corners */
-    bottom: 120px;               /* Gap from bottom */
+    bottom: 130px;               /* Gap from bottom */
     left: 50%;
     transform: translateX(-50%); /* Centers the card */
     width: 95%;                 /* Padding from left/right on mobile */
@@ -224,7 +224,7 @@ html, body {
     z-index: 3000;
     
     /* 3. Internal Padding */
-    padding: 30px 30px 12px 30px;; 
+    padding: 25px 28px 15px 28px;; 
     display: flex;
     flex-direction: column;
 }
@@ -233,7 +233,8 @@ html, body {
 .meta-separator {
     height: 1px;
     background-color: #e5e7eb;
-    margin: 8px; /* Reduced from 12px to 8px */
+    margin-top: 6px;
+    margin-bottom: 6px;
     width: 100%;
     flex-shrink: 0; /* Prevents the line from disappearing */
 }
@@ -318,7 +319,7 @@ html, body {
     overflow-x: auto;
     width: 100%; 
     gap: 15px;
-    padding: 10px 0 8px 0; 
+    padding: 8px 0 8px 0; 
     scrollbar-width: thin; 
 }
 
@@ -356,7 +357,7 @@ html, body {
     align-items: center;
     width: 100%;
     position: absolute;
-    top: -18px; /* Offset to sit on the border */
+    top: -24px; /* Offset to sit on the border */
     left: 0;
     padding: 0 10px;
     gap: 8px;
@@ -369,19 +370,20 @@ html, body {
     border: 2px solid #047666 ;
     
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 800;
     padding: 6px 12px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     cursor: pointer;
     min-width: 140px; 
+    height: 35px;
     text-align: center;
-    transition: transform 0.2s;
+    transition: none !important;
 }
 
 /* The "Open" state (Green bg, White text) */
 .route-control-btn:active {
-    transform: scale(0.95);
+    transform: none !important;
 }
 
 
@@ -496,6 +498,28 @@ body, main, .entry-content {
     padding: 0 !important;
 }
 
+
+/* A truly static class */
+.btn-static {
+    background-color: white !important;
+    color: #047666 !important;
+    border: 2px solid #047666 !important;
+    cursor: pointer !important;
+    outline: none !important;
+    /* Kill everything */
+    transition: none !important;
+    transform: none !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+}
+
+/* Force nothing to happen on interaction */
+.btn-static:hover, 
+.btn-static:active, 
+.btn-static:focus {
+    transform: none !important;
+    background-color: white !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+}
 
 </style>
 </head>
@@ -1027,8 +1051,8 @@ function switchView(newState) {
         btn.classList.add('fixed-bottom');
         document.getElementById('control-panel').appendChild(btn); 
         
-        const toggleBtn = document.getElementById('toggle-landmark-btn');
-        if (toggleBtn) toggleBtn.textContent = "Açıklamaları Göster";
+        //const toggleBtn = document.getElementById('toggle-landmark-btn');
+        //if (toggleBtn) toggleBtn.textContent = "Açıklamaları Göster";
         if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
     
         document.body.classList.remove('map-view-layout');
@@ -1424,12 +1448,15 @@ function showVenueCard(venue) {
     const card = document.createElement('div');
     card.id = 'landmark-detail-card';
 
-    card.innerHTML = `
-               
-        <div class="flex-shrink-0">
-            <div class="flex items-center gap-3 mb-1">
-                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" 
-                      style="background-color: ${markerColor}">
+card.innerHTML = `
+    <div class="relative w-full h-full flex flex-col">
+<button onclick="document.getElementById('landmark-detail-card').remove()" 
+        class="absolute -top-2 -right-4 w-6 h-6 flex items-center justify-center bg-white rounded-full text-gray-500 font-bold text-lg z-10 ">
+    ×
+</button>
+
+        <div class="flex-shrink-0 pr-2"> <div class="flex items-center gap-3 mb-1">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${venue.type === 'landmark' ? 'text-[#856404]' : 'text-white'}" style="background-color: ${markerColor}">
                     ${labelText}
                 </span>
                 <h3 class="text-2xl font-bold text-gray-900 leading-tight">${escapeHTML(venue.name)}</h3>
@@ -1448,7 +1475,8 @@ function showVenueCard(venue) {
             <span id="fact-counter">1 / ${infoList.length}</span>
             <button id="nextFact" class="nav-btn-circle">›</button>
         </div>
-    `;
+    </div>
+`;
 
     document.body.appendChild(card);
     updateToggleButtonText(true);
@@ -1511,13 +1539,8 @@ function toggleLandmarkDisplay() {
     }
 }
 function updateToggleButtonText(isOpen) {
-    const btnText = document.querySelector('#toggle-landmark-btn span');
-        if (!btnText) return;
 
-        const card = document.getElementById('landmark-detail-card');
-        // If card exists, text should be "Gizle", otherwise "Göster"
-        btnText.textContent = card ? "Açıklamaları Gizle" : "Açıklamaları Göster";
-    }
+}
 
 function getPointProgressOnPath(point, path) {
     let minDistance = Infinity;
@@ -1625,19 +1648,33 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
     card.id = 'horizontal-route-container';
     card.className = 'route-horizontal-card animate-bounce-in';
     card.style.position = 'fixed';
+    card.style.paddingTop = '12px'
+
 
     // Build the container structure
     card.innerHTML = `
         <div class="route-card-controls">
-            <button onclick="generateShareableLink()" class="route-control-btn">
-            Rotayı Paylaş
-            </button>
-            <button onclick="switchView('selection')" class="route-control-btn">
+
+           <button onclick="switchView('selection')" class="route-control-btn">
                 Rotayı Değiştir
             </button>
-            <button id="toggle-landmark-btn" onclick="toggleLandmarkDisplay()" class="route-control-btn">
-                <span>Açıklamaları Göster</span>
+
+            <button onclick="generateShareableLink()" 
+            class="btn-static !p-0 !min-w-[35px] !w-[35px] !h-[35px] flex items-center justify-center rounded-full overflow-hidden">
+            <img src="https://www.freyartt.com/wp-content/uploads/2026/04/share_icon_4.png" alt="Share" 
+         class="w-5 h-5 object-contain">
+  
             </button>
+            
+ 
+            
+<button id="toggle-landmark-btn" 
+        onclick="toggleLandmarkDisplay()" 
+        class="btn-static !p-0 !min-w-[35px] !w-[35px] !h-[35px] flex items-center justify-center rounded-full overflow-hidden">
+    <img src="https://www.freyartt.com/wp-content/uploads/2026/04/info_icon_3.png" 
+         alt="Info" 
+         class="w-5 h-5 object-contain">
+</button>
             
         </div>
         <div class="route-scroll-wrapper" id="horizontal-steps-list"></div>
@@ -1800,7 +1837,7 @@ function loadRouteFromUrl() {
     
     if (routeParam) {
         const ids = routeParam.split(',').map(Number);
-        
+        -
         // Clear current state and add the IDs from the URL
         selectedVenues.clear(); // Empty the Set
         ids.forEach(id => {
