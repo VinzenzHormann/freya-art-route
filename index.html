@@ -1383,37 +1383,65 @@ async function calculateRoute() {
         travelMode: 'WALKING'
     };
 
-    directionsService.route(request, (response, status) => {
-        mainActionButton.disabled = false;
-        if (status === 'OK') {
-            Object.values(markers).forEach(m => m.setMap(null));
-            directionsRenderer.setDirections(response);
+directionsService.route(request, (response, status) => {
+    mainActionButton.disabled = false;
+    if (status === 'OK') {
+        const route = response.routes[0];
+        const path = route.overview_path;
+        
+        // --- NEW: CREATE HIGH-DENSITY PATH ---
+        // This fills the gaps between Google's sparse points
+        let highDensityPath = [];
+        for (let i = 0; i < path.length - 1; i++) {
+            const start = path[i];
+            const end = path[i+1];
+            const segmentDist = google.maps.geometry.spherical.computeDistanceBetween(start, end);
             
-            const path = response.routes[0].overview_path;
-            
-            const directLandmarks = venues.filter(v => {
-                if (v.type !== 'landmark') return false;
-                const dist = getDistanceFromPath(new google.maps.LatLng(v.lat, v.lng), path);
-                return dist <= 50;
-            });
-
-            const peripheralLandmarks = venues.filter(v => {
-                if (v.type !== 'landmark') return false;
-                const dist = getDistanceFromPath(new google.maps.LatLng(v.lat, v.lng), path);
-                return dist > 50 && dist <= 150;
-            });
-
-            switchView('map');
-            
-            // Pass 'stops' here as well to replace 'orderedMuseums'
-            route_summary_horizontal(response, stops, directLandmarks);
-            
-            showPeripheralLandmarks(peripheralLandmarks);
-        } else {
-            alertUser('Rota bulunamadı: ' + status, 'error');
+            // Add a point every 20 meters along this specific segment
+            const steps = Math.max(1, Math.floor(segmentDist / 20));
+            for (let j = 0; j <= steps; j++) {
+                highDensityPath.push(google.maps.geometry.spherical.interpolate(start, end, j / steps));
+            }
         }
-    });
+
+        Object.values(markers).forEach(m => m.setMap(null));
+        directionsRenderer.setDirections(response);
+
+        // 1. Filter Direct Landmarks (Checking against the high-density "tube")
+        const directLandmarks = venues.filter(v => {
+            if (v.type !== 'landmark') return false;
+            const vLatLng = new google.maps.LatLng(v.lat, v.lng);
+            
+            // Checking against highDensityPath ensures we catch buildings 
+            // in the middle of long blocks like in your screenshot.
+            return highDensityPath.some(pathPoint => 
+                google.maps.geometry.spherical.computeDistanceBetween(vLatLng, pathPoint) <= 100
+            );
+        });
+
+        // 2. Filter Peripheral Landmarks
+        const peripheralLandmarks = venues.filter(v => {
+            if (v.type !== 'landmark') return false;
+            const vLatLng = new google.maps.LatLng(v.lat, v.lng);
+
+            const isNear = highDensityPath.some(pathPoint => 
+                google.maps.geometry.spherical.computeDistanceBetween(vLatLng, pathPoint) <= 250
+            );
+            
+            const isDirect = directLandmarks.some(dl => dl.id === v.id);
+            return isNear && !isDirect;
+        });
+
+        switchView('map');
+        route_summary_horizontal(response, stops, directLandmarks);
+        showPeripheralLandmarks(peripheralLandmarks);
+    } else {
+        alertUser('Rota bulunamadı: ' + status, 'error');
+    }
+});
+
 }
+
 function showPeripheralLandmarks(landmarks) {
     landmarks.forEach(landmark => {
         const marker = markers[landmark.id];
