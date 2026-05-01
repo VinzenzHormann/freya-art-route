@@ -539,7 +539,141 @@ body, main, .entry-content {
     z-index: 5000;      /* Higher than your action button (4000) */
 
 }
+.influencer-suggestions-container {
+    margin-top: 50px;
+    padding: 40px 0;
+    border-top: 1px solid #f0f0f0;
+}
 
+.suggestions-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.influencer-grid {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    width: 100%;
+    gap: 1.5rem;
+    padding: 0 1rem 1.5rem 1rem; /* Extra bottom padding for the scrollbar space */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+.influencer-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    min-width: 280px; /* Fixed width for each card */
+    max-width: 280px;
+    flex: 0 0 auto;   /* Prevents flexbox from shrinking the cards */
+
+}
+
+.influencer-card:hover {
+    transform: translateY(-5px);
+}
+
+.influencer-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10%; /* Matches your rounded square style */
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.influencer-name {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: 600;
+}
+
+.social-links {
+    margin-bottom: 20px;
+}
+
+.instagram-link svg {
+    width: 25px;
+    height: 25px;
+    fill: #262626;
+    transition: opacity 0.2s;
+}
+
+.instagram-link:hover svg {
+    opacity: 0.7;
+}
+
+.route-button {
+    display: inline-block;
+    background-color: #12a48e; 
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.route-button:hover {
+    background-color: #12a48e;
+    color: white;
+}
+
+/* Tablet and Desktop */
+@media (min-width: 768px) {
+    .influencer-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns side-by-side */
+    }
+}
+
+@media (min-width: 1024px) {
+    .influencer-grid {
+        /* On large screens, show 4 */
+        grid-template-columns: repeat(4, 1fr); 
+        gap: 1.5rem;
+    }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* 2. Enable and Style the Scrollbar for Desktop */
+.influencer-grid::-webkit-scrollbar {
+    height: 8px; /* Height of the horizontal scrollbar */
+    display: block;
+}
+
+.influencer-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.influencer-grid::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    border: 2px solid #ffffff; /* Creates a padding effect around the thumb */
+}
+
+.influencer-grid::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darkens on hover for better UX */
+}
+
+/* 3. Keep it thin for Firefox */
+.influencer-grid {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
 </style>
 </head>
 
@@ -556,37 +690,37 @@ body, main, .entry-content {
             <div id="control-panel" class="w-full pt-0 pb-40 sm:pb-6 lg:pb-40 pl-4 pr-4 sm:pl-6 sm:pr-6 lg:pl-8 lg:pr-8 bg-white flex-grow">  
             <!--  <div id="control-panel" class="w-full p-4 sm:p-6 lg:p-8 bg-white flex-grow">  -->  
                
-<header class="mb-4 flex justify-center">
-    <div class="w-full flex justify-center"> <picture>
-            <source media="(min-width: 768px)" srcset="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png">
-            
-            <img decoding="async" 
-                 id="banner-selection" 
-                 src="https://www.freyartt.com/wp-content/uploads/2026/04/banner_sanat_rotasi_mobile.png" 
-                 alt="Nasıl Kullanılır" 
-                 class="w-full max-w-[1120px] h-auto" 
-                 title="Rota Test Freya Art">
-        </picture>
-    </div>
-</header>
+                <header class="mb-4 flex justify-center">
+                    <div class="w-full flex justify-center"> <picture>
+                            <source media="(min-width: 768px)" srcset="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png">
+                            
+                            <img decoding="async" 
+                                id="banner-selection" 
+                                src="https://www.freyartt.com/wp-content/uploads/2026/04/banner_sanat_rotasi_mobile.png" 
+                                alt="Nasıl Kullanılır" 
+                                class="w-full max-w-[1120px] h-auto" 
+                                title="Rota Test Freya Art">
+                        </picture>
+                    </div>
+                </header>
 
-<div class="sr-only">
-    <h2>1. Keşfet: Müze ve galerileri inceleyin.</h2>
-    <h2>2. Seç: İlginizi çeken kartlara tıklayarak rotanıza ekleyin.</h2>
-    <h2>3. Rotanı Oluştur: En az iki mekan seçtikten sonra butona tıklayın.</h2>
-</div>
+                <div class="sr-only">
+                    <h2>1. Keşfet: Müze ve galerileri inceleyin.</h2>
+                    <h2>2. Seç: İlginizi çeken kartlara tıklayarak rotanıza ekleyin.</h2>
+                    <h2>3. Rotanı Oluştur: En az iki mekan seçtikten sonra butona tıklayın.</h2>
+                </div>
 
 
                 <div>
-<button id="info-toggle-btn" 
-        onclick="toggleInfoBox()" 
-        class="fixed bottom-[6.5rem] right-[7%] z-[4000] bg-white border-2 border-gray-200 text-gray-500 w-8 h-8 rounded-full shadow-lg flex items-center justify-center font-bold text-lg hover:bg-gray-50 transition-all hidden">
-    x
-</button>
+                    <button id="info-toggle-btn" 
+                            onclick="toggleInfoBox()" 
+                            class="fixed bottom-[6.5rem] right-[7%] z-[4000] bg-white border-2 border-gray-200 text-gray-500 w-8 h-8 rounded-full shadow-lg flex items-center justify-center font-bold text-lg hover:bg-gray-50 transition-all hidden">
+                        x
+                    </button>
                     <div id="route-info-box" class="hidden fixed bottom-[6rem] left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] bg-[#ffde59] border-2 border-yellow-600 rounded-xl p-3 shadow-lg z-[3500] text-center">
-        <p id="route-info-text" class="text-sm font-bold text-yellow-900">
-            </p>
-    </div>
+                        <p id="route-info-text" class="text-sm font-bold text-yellow-900">
+                        </p>
+                    </div>
 
                     <!-- Ana Eylem Butonu: Duruma göre metin ve işlev değişir -->
                     <button id="main-action-button" onclick="handleMainAction()" class="filter-btn btn-waiting fixed-bottom !text-lg !py-4 !shadow-2xl">
@@ -624,13 +758,20 @@ body, main, .entry-content {
                         </div>
                     </main>
                 </div>
+                <!-- Influencer Suggestions Section -->
+                <div class="influencer-suggestions-container">
+                    <h2 class="suggestions-title">Beyoğlu Sanat Rotası ile Gezenlerin Önerileri</h2>
+                
+                    <div class="influencer-grid">
+
+                    </div>
+            </div>
             </div>
            
             <!-- Harita Kapsayıcı (Başlangıçta gizli, Map View'da görünür) -->
             <div id="map-container" class="hidden w-full h-full">
                 <div id="map" class="w-full h-full"></div>
             </div>
-
 
         </div>
     </div>
@@ -974,6 +1115,17 @@ let venues = [
         }
     }
 ];
+
+
+const route_suggestions = {
+    1: {
+        name: "Nilay Koçak",
+        image: "https://www.freyartt.com/wp-content/uploads/2026/04/nilay-kocak-e1777553366493-600x600.webp",
+        inst_link: "https://www.instagram.com/nilayykocak_/",
+        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=2,5,7,10"
+    }
+};
+
     let map; 
     let selectedVenues = new Set(); 
     let markers = {};
@@ -1033,6 +1185,7 @@ function switchView(newState) {
     // Added this
     
     if (newState === 'map') {
+        updateRoutePreview();
         if (infoBox) infoBox.classList.add('hidden');
         //appContainer.classList.add('map-view-layout');
         //appContainer.classList.remove('selection-active');
@@ -1779,7 +1932,7 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
         updateButtonState();
     }
 
-    function createVenueCard(venue) {
+function createVenueCard(venue) {
     const today = getTodayKey();
     
     // NEW LOGIC: Look inside the 'meta' object
@@ -1839,14 +1992,51 @@ function displayVenues(filter = 'all') {
         .map(createVenueCard).join('');
 }
 
-    function alertUser(msg, type) {
+
+function createInfluencerCard(influencer) {
+    return `
+        <div class="influencer-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center transition-transform hover:-translate-y-1">
+            <img src="${influencer.image}" 
+                 alt="${escapeHTML(influencer.name)}" 
+                 class="w-32 h-32 rounded-lg object-cover mb-4 shadow-sm">
+            
+            <h3 class="text-lg font-bold text-gray-800 mb-1">${escapeHTML(influencer.name)}</h3>
+            
+            <div class="mb-4">
+                <a href="${influencer.inst_link}" target="_blank" class="text-gray-400 transition-colors">
+                    <svg class="w-6 h-6 inline" fill="currentColor" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg>
+                </a>
+            </div>
+
+            <a href="${influencer.route}" class="route-button text-white px-5 py-2 rounded-md font-bold text-sm transition-colors mt-auto">
+                ${influencer.name.split(' ')[0]}'ın Rotası
+            </a>
+        </div>
+    `;
+}
+
+function displayInfluencerSuggestions() {
+    const influencerGrid = document.querySelector('.influencer-grid');
+    if (!influencerGrid) return;
+
+    // We use flex instead of grid to keep them in one line
+    // overflow-x-auto allows the horizontal scroll
+    influencerGrid.className = "influencer-grid flex gap-6 overflow-x-auto pb-6 scroll-smooth";
+    influencerGrid.innerHTML = Object.values(route_suggestions)
+        .map(createInfluencerCard)
+        .join('');
+}
+
+
+
+function alertUser(msg, type) {
         alertBox.textContent = msg;
         alertBox.className = `mt-4 p-3 rounded border-l-4 ${type === 'error' ? 'bg-red-100 border-red-500 text-red-700' : 'bg-blue-100 border-blue-500 text-blue-700'}`;
         alertBox.classList.remove('hidden');
         setTimeout(() => alertBox.classList.add('hidden'), 3000);
     }
 
-    function loadGoogleMapsScript() {
+function loadGoogleMapsScript() {
         const script = document.createElement('script');
         // Added loading=async and v=weekly/beta
         script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=geometry&callback=initMap&loading=async`;
@@ -1856,6 +2046,7 @@ function displayVenues(filter = 'all') {
 
     document.addEventListener('DOMContentLoaded', () => {
         displayVenues();
+        displayInfluencerSuggestions();
         loadGoogleMapsScript();
         //updateDataFromCloud();
         infoBox = document.getElementById('route-info-box');
