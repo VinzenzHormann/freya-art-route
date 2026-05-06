@@ -806,7 +806,8 @@ let currentRouteStats = {
 };
 
 let lastClickedRouteItem = null;
-let currentRouteLandmarks = [];
+let directLandmarksList = [];
+let peripheralLandmarksList = [];
 
 const typeTranslations = {
     'museum': 'Müze',
@@ -1188,18 +1189,47 @@ const route_suggestions = {
         return p.innerHTML;
     }
 
+function getSessionId() {
+    let sid = sessionStorage.getItem('freya_sid');
+    
+    if (!sid) {
+        // Generate a random 16-character string
+        sid = Math.random().toString(36).substring(2, 10) + 
+              Math.random().toString(36).substring(2, 10);
+        sessionStorage.setItem('freya_sid', sid);
+    }
+    
+    return sid;
+}
 
-function logFreyaEvent(eventType, itemId, action) {
+async function logFreyaEvent(eventType, itemId, action) {
+
+    if (localStorage.getItem('freya_dev_mode') === 'true') {
+        console.log("🛠️ Dev Mode Active: Log suppressed", { eventType, itemId, action });
+        return; // Exit the function early
+    }
     const payload = {
+        session_id: getSessionId(),
         event_type: eventType,
         item_id: String(itemId),
         action: action,
-        timestamp: new Date().toISOString(),
-        // Adding session_id helps you group events by a single user's visit
-        // session_id: getSessionId() 
+        timestamp: new Date().toISOString()
+        
     };
 
     console.log("Tracking:", payload);
+
+    try {
+        const response = await fetch('https://log-freya-event-666539972908.europe-west3.run.app', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) throw new Error('Network log failed');
+    } catch (err) {
+        console.error("Logging error:", err);
+    }
 }
 
 async function updateDataFromCloud() {
@@ -1626,6 +1656,7 @@ directionsService.route(request, (response, status) => {
                 google.maps.geometry.spherical.computeDistanceBetween(vLatLng, pathPoint) <= 100
             );
         });
+        directLandmarksList = directLandmarks.map(v => v.id.toString());
 
         // 2. Filter Peripheral Landmarks
         const peripheralLandmarks = venues.filter(v => {
@@ -1639,6 +1670,8 @@ directionsService.route(request, (response, status) => {
             const isDirect = directLandmarks.some(dl => dl.id === v.id);
             return isNear && !isDirect;
         });
+
+        peripheralLandmarksList = peripheralLandmarks.map(v => v.id.toString());
 
         switchView('map');
         route_summary_horizontal(response, stops, directLandmarks);
@@ -1673,9 +1706,18 @@ google.maps.event.clearInstanceListeners(marker); // Clear old listeners
     });
 }
 
+
+
+
 function showVenueCard(venue) {
     const eventCategory = venue.type === 'landmark' ? 'map_view_landmark_interaction' : 'map_view_venue_interaction';
-    logFreyaEvent(eventCategory, venue.id, "see_venue_details");
+
+    if (directLandmarksList.map(String).includes(String(venue.id)) || selectedVenues.has(venue.id))
+        {logFreyaEvent(eventCategory, venue.id, "see_venue_details");            
+        }
+    else
+        {logFreyaEvent("map_view_landmark_interaction", venue.id, "see_venue_details_peripherie_landmark");
+        }
     const existing = document.getElementById('landmark-detail-card');
     if (existing) existing.remove();
 
@@ -1795,7 +1837,7 @@ function toggleLandmarkDisplay() {
         card.remove();
         updateToggleButtonText(); // Update text to "Göster"
     } else {
-        const toShow = lastClickedRouteItem || currentRouteLandmarks[0];
+        const toShow = lastClickedRouteItem || directLandmarksList[0];
         if (toShow) {
             showVenueCard(toShow); // This will internally call updateToggleBtnText to "Gizle"
         } else {
@@ -1969,6 +2011,7 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
         `;
         stepsList.appendChild(node);
     });
+
 }
 
 
