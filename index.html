@@ -102,6 +102,13 @@ html, body {
     transition: all 0.3s ease;
 }
 
+#main-action-button.hidden
+{
+    display: none ; /* Force hide */
+    opacity: 0;
+    transform: translate(-50%, 40px);
+}
+
 /* The Yellow Info Box */
 /* Update these lines in your CSS */
 /* Update these lines in your CSS */
@@ -127,6 +134,8 @@ html, body {
     opacity: 0;
     transform: translate(-50%, 40px);
 }
+
+
 
 /* The Toggle Circle Button (i / x) */
 #info-toggle-btn {
@@ -574,8 +583,9 @@ body, main, .entry-content {
     flex: 0 0 auto;          /* Essential to prevent shrinking in a slider */
     
     /* Dimensions (Tailwind's w-32 image + p-6 usually fits well in ~280px) */
-    min-width: 250px; 
-    max-width: 250px;
+    height: 450px;
+    width: 280px; 
+    width: 280px;
 
     /* Styling */
     background-color: #ffffff;      /* Match 'bg-white' */
@@ -595,6 +605,9 @@ body, main, .entry-content {
     border-radius: 50%; /* Matches your rounded square style */
     object-fit: cover;
     margin-bottom: 15px;
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .influencer-name {
@@ -643,6 +656,28 @@ body, main, .entry-content {
 .route-button:hover {
     background-color: #12a48e;
     color: white;
+}
+
+/* The scrollable comment container */
+.influencer-comment {
+height: 130px; 
+    min-height: 130px;
+    max-height: 130px;
+
+    overflow-y: auto; 
+    margin-bottom: 15px;
+    width: 100%;
+    padding-right: 2.5px;
+    text-align: left;    
+    flex: none;
+}
+
+
+.influencer-comment-text {
+    font-size: 0.8rem;
+    color: #4b5563; /* gray-600 */
+    line-height: 1.4;
+    text-align: left;
 }
 
 /* Tablet and Desktop */
@@ -743,7 +778,7 @@ body, main, .entry-content {
                     </div>
 
                     <!-- Ana Eylem Butonu: Duruma göre metin ve işlev değişir -->
-                    <button id="main-action-button" onclick="handleMainAction()" class="filter-btn btn-waiting fixed-bottom !text-lg !py-4 !shadow-2xl">
+                    <button id="main-action-button" onclick="handleMainAction()" class="filter-btn btn-waiting fixed-bottom hidden !text-lg !py-4 !shadow-2xl">
                     
                     <span id="btn-text">Mekan Seçin</span>
                 </button>
@@ -1140,26 +1175,14 @@ let venues = [
 
 const route_suggestions = {
     1: {
-        name: "Freya Art",
-        image: "https://www.freyartt.com/wp-content/uploads/2024/11/freya-3-1.png",
-        inst_link: "https://www.instagram.com/freyaartblog/",
-        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=3,1,2,20,4"
+        name: "info",
+        image: "info",
+        inst_link: "info",
+        route: "info",
+        comment: "info",
     },
 
-    2: {
-        name: "Nilay Koçak",
-        image: "https://www.freyartt.com/wp-content/uploads/2026/04/nilay-kocak-e1777553366493-600x600.webp",
-        inst_link: "https://www.instagram.com/nilayykocak_/",
-        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=2,5,7,10"
-    },
 
-    3: {
-        name: "Begüm Erer Tohum",
-        image: "https://www.freyartt.com/wp-content/uploads/2026/05/woman-wearing-checkered-hat-in-front-of-white-bookshelf.webp",
-        inst_link: "https://www.instagram.com/ererbegum/",
-        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=1,3"
-    }
-    
     
 };
 
@@ -1180,6 +1203,9 @@ const route_suggestions = {
     const selectionContent = document.getElementById('selection-content');
     const mapContainer = document.getElementById('map-container');
     const appContainer = document.getElementById('beyoglu-sanat-rehberi-app');
+    const controlPanel = document.getElementById('control-panel');
+
+
 
     // --- DATA HANDLING ---
     function escapeHTML(str) {
@@ -1216,8 +1242,6 @@ async function logFreyaEvent(eventType, itemId, action) {
         timestamp: new Date().toISOString()
         
     };
-
-    console.log("Tracking:", payload);
 
     try {
         const response = await fetch('https://log-freya-event-666539972908.europe-west3.run.app', {
@@ -1468,44 +1492,55 @@ function toggleInfoBox() {
 function updateButtonState() {
     const btn = document.getElementById('main-action-button');
     const btnText = document.getElementById('btn-text');
+    const panel = document.getElementById('control-panel');
     const toggleBtn = document.getElementById('info-toggle-btn');
-    const infoBox = document.getElementById('route-info-box'); // Get the yellow box too
+    const infoBox = document.getElementById('route-info-box');
     const count = selectedVenues.size;
+    
+    const isScrolled = window.scrollY > 100;
 
-    // --- 1. TOGGLE BUTTON VISIBILITY ('i' button) ---
+    // --- 1. TOGGLE INFO BUTTON VISIBILITY ('i' button) ---
+    // The info button should only show if there's a selection
     if (appState === 'selection' && count > 0) {
-        toggleBtn.classList.remove('hidden');
+        if (toggleBtn) toggleBtn.classList.remove('hidden');
     } else {
-        toggleBtn.classList.add('hidden');
-        // If count is 0, reset the manual hide flag so it pops up next time they select something
-        if (count === 0) isInfoBoxManuallyHidden = false; 
+        if (toggleBtn) toggleBtn.classList.add('hidden');
     }
 
     // --- 2. MAIN ACTION BUTTON VISIBILITY ---
-    if (appState === 'selection' && count === 0) {
-        btn.classList.add('hidden');
+    if (appState === 'selection') {
+        // Show if user has scrolled OR has selected at least one venue
+        if (count > 0 || isScrolled) {
+            btn.classList.remove('hidden');
+        } else {
+            btn.classList.add('hidden');
+        }
     } else {
+        // In Map view, always keep it visible
         btn.classList.remove('hidden');
     }
 
-    // --- 3. REFRESH THE YELLOW BOX DATA ---
+    // --- 3. REFRESH PREVIEW ---
     updateRoutePreview();
 
     // --- 4. BUTTON TEXT & STYLE LOGIC ---
     if (appState === 'map') {
         btn.classList.remove('btn-waiting');
-        btnText.textContent = "Rotayı Değiştir";
-        if (infoBox) infoBox.classList.add('hidden'); // Always hide info box on map view
+        if (btnText) btnText.textContent = "Rotayı Değiştir";
+        if (infoBox) infoBox.classList.add('hidden'); 
         return;
     }
 
-    if (count < 2) {
-        btn.classList.add('btn-waiting');
-        btnText.textContent = "1 Mekan Daha Seçin";
-    } else {
-        btn.classList.remove('btn-waiting');
-        btnText.textContent = `Rotayı Oluştur`;
-    }
+if (count === 0) {
+    btn.classList.add('btn-waiting');
+    if (btnText) btnText.textContent = "Mekan Seçin";
+} else if (count === 1) { // Change 'elif' to 'else if'
+    btn.classList.add('btn-waiting');
+    if (btnText) btnText.textContent = "1 Mekan Daha Seçin";
+} else {
+    btn.classList.remove('btn-waiting');
+    if (btnText) btnText.textContent = `Rotayı Oluştur`;
+}
 }
 
 
@@ -2100,13 +2135,16 @@ function displayVenues(filter = 'all') {
 
 
 function createInfluencerCard(influencer) {
+    // Basic safety check for the comment
+    const commentText = influencer.comment || "  ";
+
     return `
         <div class="influencer-card">
             <img src="${influencer.image}" 
                  alt="${escapeHTML(influencer.name)}" 
                  class="influencer-img">
             
-            <div class="influencer-header flex justify-between items-center w-full mb-4">
+            <div class="influencer-header flex justify-between items-center w-full mb-2">
                 <h3 class="influencer-name text-left font-bold text-gray-800 leading-tight">
                     ${escapeHTML(influencer.name)}
                 </h3>
@@ -2119,6 +2157,11 @@ function createInfluencerCard(influencer) {
                     </a>
                 </div>
             </div>
+<div class="meta-separator"></div>
+            <div class="influencer-comment">
+                <p class="influencer-comment-text">${escapeHTML(commentText)}</p>
+            </div>
+
             <a href="${influencer.route}" class="route-button" onclick="logFreyaEvent('influencer_card_interaction', '${influencer.name}', 'view_route')">
                 Rotayı Keşfet
             </a>
@@ -2160,7 +2203,12 @@ function loadGoogleMapsScript() {
         displayInfluencerSuggestions();
         loadGoogleMapsScript();
         //updateDataFromCloud();
-        infoBox = document.getElementById('route-info-box');
+;
+window.addEventListener('scroll', () => {
+        if (appState === 'selection') {
+            updateButtonState();
+        }
+    });
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
