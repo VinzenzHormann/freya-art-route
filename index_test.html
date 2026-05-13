@@ -563,30 +563,16 @@ body, main, .entry-content {
 }
 
 .influencer-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    gap: 1.5rem;
+    display: flex;
+    flex-direction: row;      /* Match 'flex' (defaults to row) */
+    gap: 1.5rem;             /* Match 'gap-6' */
+    overflow-x: auto;        /* Match 'overflow-x-auto' */
+    scroll-behavior: smooth; /* Match 'scroll-smooth' */
+    padding-bottom: 1.5rem;  /* Match 'pb-6' */
     
-    /* MOBILE: Center the first card */
-    padding-left: calc(50% - 140px);
-    padding-right: calc(50% - 140px);
-    
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none; 
-}
-
-/* DESKTOP: Reset the gap so it aligns to the left */
-@media (min-width: 1024px) {
-    .influencer-grid {
-        /* Standard padding for desktop so it doesn't float in the middle of nowhere */
-        padding-left: 2rem; 
-        padding-right: 2rem;
-        
-        /* Optional: If you still want it centered on desktop, 
-           keep the calc but wrap the grid in a max-width container */
-    }
+    /* Functional properties for the slider */
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 .influencer-card {
     /* Layout */
@@ -599,6 +585,7 @@ body, main, .entry-content {
     /* Dimensions (Tailwind's w-32 image + p-6 usually fits well in ~280px) */
     height: 450px;
     width: 280px; 
+    width: 280px;
 
     /* Styling */
     background-color: #ffffff;      /* Match 'bg-white' */
@@ -742,43 +729,6 @@ height: 130px;
     scrollbar-width: thin;
     scrollbar-color: #888 #f1f1f1;
 }
-
-/* 1. The wrapper that makes absolute positioning for buttons possible */
-.influencer-slider-wrapper {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-/* 2. Positioning the nav buttons to the extreme edges */
-.influencer-nav-btn {
-    position: absolute;
-    z-index: 10;
-    top: 50%;
-    transform: translateY(-50%);
-    /* Adding a shadow so they are visible over card backgrounds */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.influencer-nav-btn.left {
-    left: -15px; /* Adjust this to move the button further out or in */
-}
-
-.influencer-nav-btn.right {
-    right: -15px;
-}
-
-/* 3. Hide the scrollbar but keep the swipe functionality for mobile */
-.influencer-grid.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-.influencer-grid.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-
 </style>
 </head>
 
@@ -866,11 +816,10 @@ height: 130px;
                 <!-- Influencer Suggestions Section -->
                 <div class="influencer-suggestions-container">
                     <h2 class="suggestions-title">Beyoğlu Sanat Rotası ile Gezenlerin Önerileri</h2>
-                    
-                    <div id="influencer-slider-target">
-                        <div class="influencer-grid"></div>
+                
+                    <div class="influencer-grid">
+
                     </div>
-                </div>
             </div>
             </div>
            
@@ -1220,6 +1169,60 @@ let venues = [
             "price": 0,
             "info_url": "https://www.depoistanbul.net/iletisim/"
         }
+    },
+
+        {
+        "id": 70,
+        "name": "test şişli Park",
+        "type": "museum",
+        "description": "",
+        "address": "",
+        "lat": 41.050737648104864, 
+        "lng": 28.980057096503412,
+        "meta": {
+            "phone": "",
+            "website": "",
+            "hours": {"mon": 1, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1},
+            "payment": 0,
+            "price": 0,
+            "info_url": " "
+        }
+    },
+
+        {
+        "id": 71,
+        "name": "Test Şişli Ana cadde k.",
+        "type": "museum",
+        "description": "",
+        "address": "",
+        "lat": 41.0496829827282, 
+        "lng": 28.98191515571917,
+        "meta": {
+            "phone": "",
+            "website": "",
+            "hours": {"mon": 1, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1},
+            "payment": 0,
+            "price": 0,
+            "info_url": ""
+        }
+    },
+
+            {
+        "id": 72,
+        "name": "test şişli anadolu lisesi",
+        "type": "museum",
+        "description": "",
+        "address": "",
+        "lat": 41.04990674288323, 
+        "lng": 28.98068285692311,
+        "meta": {
+            "phone": "",
+            "website": "",
+            "hours": {"mon": 1, "tue": 1, "wed": 1, "thu": 1, "fri": 1, "sat": 1, "sun": 1},
+            "payment": 0,
+            "price": 0,
+            "info_url": ""
+        }
     }
 ];
 
@@ -1238,31 +1241,30 @@ const route_suggestions = {
         image: "https://www.freyartt.com/wp-content/uploads/2026/05/nergis.webp",
         inst_link: "https://www.instagram.com/nergisova/",
         route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=4%2C1%2C6%2C7%2C13%2C14%2C16%2C21", 
-        comment: "O kadar muazzam bir bölge de görülecek çok şey var ve bu bazen kafa karıştırabilir, fakat bu sistem sayesinde rotanız asla şaşmaz ve istediğiniz her yeri görebilirsiniz ✨",
-    },
-    3: {
-        name: "Özgür Öğünç ",
-        image: "https://www.freyartt.com/wp-content/uploads/2026/05/Ozgur-Ogunc.webp",
-        inst_link: "https://www.instagram.com/ozgurogunc_/ ",
-        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=3%2C4%2C14%2C19%2C17%2C20 ",
-        comment: "Beyoğlu gibi sanatın sokaklara taştığı bir yerde böyle bir rota gerçekten büyük kolaylık sağlıyor. Bazen neyi gezeceğimizi bilmeden saatlerce dolaşıyoruz ama artık yeni galeriler, müzeler ve yaratıcı mekanlar keşfetmek çok daha keyifli ve düzenli hale geldi. Özellikle sanatla iç içe vakit geçirmeyi sevenler için aşırı ilham verici bir proje✨ ",
+        comment: " ",
     },
 
-    4: {
+    3: {
         name: "Nilay Koçak",
         image: "https://www.freyartt.com/wp-content/uploads/2026/04/nilay-kocak-e1777553366493-600x600.webp",
         inst_link: "https://www.instagram.com/nilayykocak_/",
         route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=2,5,7,10",
         comment: " ",
     },
-    5: {
+    4: {
         name: "Sezin Gürpınar",
         image: "https://www.freyartt.com/wp-content/uploads/2026/05/Sezin-Gurpinar.webp",
         inst_link: "https://www.instagram.com/seziingurpinar/",
         route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=3%2C10%2C8",
         comment: " ",
     },
-
+    5: {
+        name: "Özgür Öğünç ",
+        image: "https://www.freyartt.com/wp-content/uploads/2026/05/Ozgur-Ogunc.webp",
+        inst_link: "https://www.instagram.com/ozgurogunc_/ ",
+        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=3%2C4%2C14%2C19%2C17%2C20 ",
+        comment: " ",
+    },
 
    6: {
         name: "Zeynep Özdemir",
@@ -1282,6 +1284,8 @@ const route_suggestions = {
     let appState = 'selection';
     let infoBox;
     let isInfoBoxManuallyHidden = false;
+    // tracking implement
+    let userLocationMarker = null;
 
     // DOM Elements
     const grid = document.getElementById('venue-grid');
@@ -1316,51 +1320,70 @@ function getSessionId() {
     return sid;
 }
 
-async function logFreyaEvent(eventType, itemId, action) {
+// async function logFreyaEvent(eventType, itemId, action) {
 
-    if (localStorage.getItem('freya_dev_mode') === 'true') {
-        console.log("🛠️ Dev Mode Active: Log suppressed", { eventType, itemId, action });
-        return; // Exit the function early
-    }
-    const payload = {
-        session_id: getSessionId(),
-        event_type: eventType,
-        item_id: String(itemId),
-        action: action,
-        timestamp: new Date().toISOString()
+//     if (localStorage.getItem('freya_dev_mode') === 'true') {
+//         console.log("🛠️ Dev Mode Active: Log suppressed", { eventType, itemId, action });
+//         return; // Exit the function early
+//     }
+//     const payload = {
+//         session_id: getSessionId(),
+//         event_type: eventType,
+//         item_id: String(itemId),
+//         action: action,
+//         timestamp: new Date().toISOString()
         
-    };
+//     };
 
-    try {
-        const response = await fetch('https://log-freya-event-666539972908.europe-west3.run.app', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+//     try {
+//         const response = await fetch('https://log-freya-event-666539972908.europe-west3.run.app', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify(payload)
+//         });
         
-        if (!response.ok) throw new Error('Network log failed');
-    } catch (err) {
-        console.error("Logging error:", err);
-    }
-}
+//         if (!response.ok) throw new Error('Network log failed');
+//     } catch (err) {
+//         console.error("Logging error:", err);
+//     }
+// }
 
 async function updateDataFromCloud() {
     try {
         const response = await fetch(API_URL);
-        const data = await response.json();
+        const cloudData = await response.json();
         
-        if (data && Array.isArray(data)) {
-            venues = data;
+        if (cloudData && Array.isArray(cloudData)) {
+            // 1. Create a Set of existing IDs you already have in the HTML (like 70, 71, 73)
+            const localIds = new Set(venues.map(v => v.id));
+
+            // 2. Only add items from the cloud if the ID isn't already in your local list
+            cloudData.forEach(cloudItem => {
+                if (!localIds.has(cloudItem.id)) {
+                    venues.push(cloudItem);
+                }
+            });
+
+            // 3. Refresh the UI
             displayVenues();
+
+            // 4. Update the Map Markers
+            // Clear old markers to prevent duplicates
             Object.values(markers).forEach(m => m.setMap(null));
+            markers = {}; // Reset the markers object
+            
+            // Re-add markers for the combined list (Local + Cloud)
             venues.forEach(addMarker);
             
-            console.log("Data loaded successfully");
-            return data; // IMPORTANT: Return the data so the promise resolves with it
+            console.log("Cloud data merged with local test waypoints successfully");
+            return venues; 
         }
     } catch (e) {
-        console.error("Sync failed:", e);
-        throw e; // Throw error so initMap knows it failed
+        console.error("Sync failed, using local test data only:", e);
+        // We don't throw the error here so the app still loads with your local Şişli points
+        displayVenues();
+        venues.forEach(addMarker);
+        return venues;
     }
 }
 
@@ -1437,9 +1460,9 @@ function handleMainAction() {
 
 
     if (appState === 'selection') {
-        if (selectedVenues.size > 1) {logFreyaEvent("main_button_interaction", routeIdList, "create_route"); calculateRoute(); }
-        else {logFreyaEvent("main_button_interaction", routeIdList, "create_route_fail_because_of_not_enougth_venues"); }}
+        if (selectedVenues.size > 1) { calculateRoute(); }
     else switchView('selection');
+    }
     }
 
 
@@ -1654,6 +1677,8 @@ if (count === 0) {
     }).catch(err => {
         console.error("Failed to load data:", err);
     });
+    // tracking implement
+    trackLocation();
 }
 
 function addMarker(venue) {
@@ -1833,14 +1858,14 @@ google.maps.event.clearInstanceListeners(marker); // Clear old listeners
 
 
 function showVenueCard(venue) {
-    const eventCategory = venue.type === 'landmark' ? 'map_view_landmark_interaction' : 'map_view_venue_interaction';
+    //const eventCategory = venue.type === 'landmark' ? 'map_view_landmark_interaction' : 'map_view_venue_interaction';
 
-    if (directLandmarksList.map(String).includes(String(venue.id)) || selectedVenues.has(venue.id))
-        {logFreyaEvent(eventCategory, venue.id, "see_venue_details");            
-        }
-    else
-        {logFreyaEvent("map_view_landmark_interaction", venue.id, "see_venue_details_peripherie_landmark");
-        }
+    //if (directLandmarksList.map(String).includes(String(venue.id)) || selectedVenues.has(venue.id))
+    //    {logFreyaEvent(eventCategory, venue.id, "see_venue_details");            
+    //    }
+    //else
+    //    {logFreyaEvent("map_view_landmark_interaction", venue.id, "see_venue_details_peripherie_landmark");
+    //    }
     const existing = document.getElementById('landmark-detail-card');
     if (existing) existing.remove();
 
@@ -1877,10 +1902,10 @@ function showVenueCard(venue) {
 
     const card = document.createElement('div');
     card.id = 'landmark-detail-card';
-
+// <button onclick="logFreyaEvent('map_view_landmark_interaction', '${venue.id}', 'close_landmark_detail_card'); document.getElementById('landmark-detail-card').remove()" 
 card.innerHTML = `
     <div class="relative w-full h-full flex flex-col">
-<button onclick="logFreyaEvent('map_view_landmark_interaction', '${venue.id}', 'close_landmark_detail_card'); document.getElementById('landmark-detail-card').remove()" 
+<button onclick=document.getElementById('landmark-detail-card').remove()" 
         class="absolute -top-2 -right-4 w-6 h-6 flex items-center justify-center bg-white rounded-full text-gray-500 font-bold text-lg z-10 ">
     ×
 </button>
@@ -1919,8 +1944,10 @@ card.innerHTML = `
             document.getElementById('prevFact').disabled = currentIndex === 0;
             document.getElementById('nextFact').disabled = currentIndex === infoList.length - 1;
         };
-        document.getElementById('nextFact').onclick = () => { if (currentIndex < infoList.length - 1) { currentIndex++; updateUI(); logFreyaEvent("map_view_landmark_interaction", venue.id, "funfact_next"); } };
-        document.getElementById('prevFact').onclick = () => { if (currentIndex > 0) { currentIndex--; updateUI(); logFreyaEvent("map_view_landmark_interaction", venue.id, "funfact_prev");} };
+        // document.getElementById('nextFact').onclick = () => { if (currentIndex < infoList.length - 1) { currentIndex++; updateUI(); logFreyaEvent("map_view_landmark_interaction", venue.id, "funfact_next"); } };
+        // document.getElementById('prevFact').onclick = () => { if (currentIndex > 0) { currentIndex--; updateUI(); logFreyaEvent("map_view_landmark_interaction", venue.id, "funfact_prev");} };
+        document.getElementById('nextFact').onclick = () => { if (currentIndex < infoList.length - 1) { currentIndex++; updateUI();} };
+        document.getElementById('prevFact').onclick = () => { if (currentIndex > 0) { currentIndex--; updateUI();} }
     }
 }
 
@@ -2154,11 +2181,11 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
             card.classList.add('bg-emerald-50');
         }
         updateButtonState();
-        logFreyaEvent(
-        "venue_card_interaction", 
-        venueId, 
-        isNowSelected ? "select_venue" : "deselect_venue"
-    );
+    //     logFreyaEvent(
+    //     "venue_card_interaction", 
+    //     venueId, 
+    //     isNowSelected ? "select_venue" : "deselect_venue"
+    // );
     }
 
 function createVenueCard(venue) {
@@ -2176,6 +2203,8 @@ function createVenueCard(venue) {
     
     // Only show Museum and Gallery for the initial selection grid
     if (venue.type !== 'museum' && venue.type !== 'gallery') return '';
+//<a href="${escapeHTML(meta.website)}" target="_blank" rel="noopener" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation(); logFreyaEvent('venue_card_interaction', '${venue.id}', 'view_venue_website')">Web Sitesini Ziyaret Et</a>
+//<a href="${escapeHTML(meta.info_url || meta.website)}" target="_blank" rel="noopener" class="hover:underline text-xs font-bold text-emerald-700" onclick="event.stopPropagation(); logFreyaEvent('venue_card_interaction', '${venue.id}', 'view_venue_price_website')">
 
     return `
         <div id="venue-card-${venue.id}" 
@@ -2200,13 +2229,13 @@ function createVenueCard(venue) {
                 </div>
                 <div class="flex items-center gap-1">
                     <span class="flex-shrink-0">🌐</span>
-                    <a href="${escapeHTML(meta.website)}" target="_blank" rel="noopener" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation(); logFreyaEvent('venue_card_interaction', '${venue.id}', 'view_venue_website')">Web Sitesini Ziyaret Et</a>
+                    <a href="${escapeHTML(meta.website)}" target="_blank" rel="noopener" class="hover:underline text-blue-600 truncate" onclick="event.stopPropagation();">Web Sitesini Ziyaret Et</a>
                 </div>
             </div>
 
 <div class="flex justify-between items-center pt-2 border-t border-gray-100 mt-auto">
     <span class="text-[9px] uppercase font-bold text-gray-400">${translateType(venue.type)}</span>                  
-    <a href="${escapeHTML(meta.info_url || meta.website)}" target="_blank" rel="noopener" class="hover:underline text-xs font-bold text-emerald-700" onclick="event.stopPropagation(); logFreyaEvent('venue_card_interaction', '${venue.id}', 'view_venue_price_website')">
+    <a href="${escapeHTML(meta.info_url || meta.website)}" target="_blank" rel="noopener" class="hover:underline text-xs font-bold text-emerald-700" onclick="event.stopPropagation();">
         ${meta.payment? 'Fiyat Bilgisi' : 'Ücretsiz'}
     </a>
 </div>
@@ -2225,7 +2254,7 @@ function displayVenues(filter = 'all') {
 function createInfluencerCard(influencer) {
     // Basic safety check for the comment
     const commentText = influencer.comment || "  ";
-
+//<a href="${influencer.route}" class="route-button" onclick="logFreyaEvent('influencer_card_interaction', '${influencer.name}', 'view_route')">
     return `
         <div class="influencer-card">
             <img src="${influencer.image}" 
@@ -2250,7 +2279,7 @@ function createInfluencerCard(influencer) {
                 <p class="influencer-comment-text">${escapeHTML(commentText)}</p>
             </div>
 
-            <a href="${influencer.route}" class="route-button" onclick="logFreyaEvent('influencer_card_interaction', '${influencer.name}', 'view_route')">
+            <a href="${influencer.route}" class="route-button"">
                 Rotayı Keşfet
             </a>
         </div>
@@ -2258,49 +2287,17 @@ function createInfluencerCard(influencer) {
 }
 
 function displayInfluencerSuggestions() {
-    // Look for the parent container where the grid usually lives
-    const container = document.getElementById('influencer-slider-target');
-    
-    if (!container) return;
-    const cardsHTML = Object.values(route_suggestions)
+    const influencerGrid = document.querySelector('.influencer-grid');
+    if (!influencerGrid) return;
+
+    // We use flex instead of grid to keep them in one line
+    // overflow-x-auto allows the horizontal scroll
+    influencerGrid.className = "influencer-grid flex gap-6 overflow-x-auto pb-6 scroll-smooth";
+    influencerGrid.innerHTML = Object.values(route_suggestions)
         .map(createInfluencerCard)
         .join('');
-
-    // We overwrite the container to include the Wrapper + Buttons + Grid
-    container.innerHTML = `
-        <div class="influencer-slider-wrapper">
-            <button class="nav-btn-circle influencer-nav-btn left" onclick="scrollInfluencers(-1)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-            </button>
-
-            <div class="influencer-grid flex gap-6 overflow-x-auto pb-6 scroll-smooth scrollbar-hide">
-                ${cardsHTML}
-            </div>
-
-            <button class="nav-btn-circle influencer-nav-btn right" onclick="scrollInfluencers(1)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-            </button>
-        </div>
-    `;
 }
 
-// The function that actually moves the cards
-function scrollInfluencers(direction) {
-    const grid = document.querySelector('.influencer-grid');
-    if (!grid) return;
-
-    // Card (280) + Gap (24) = 304
-    const scrollAmount = 304; 
-    
-    grid.scrollBy({
-        left: direction * scrollAmount,
-        behavior: 'smooth'
-    });
-}
 
 
 function alertUser(msg, type) {
@@ -2338,6 +2335,52 @@ window.addEventListener('scroll', () => {
         });
     });
 
+
+// tracking implement
+function trackLocation() {
+    if (!navigator.geolocation) {
+        console.log("Geolocation is not supported by your browser");
+        return;
+    }
+
+    navigator.geolocation.watchPosition(
+        (position) => {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            if (userLocationMarker) {
+                // If the dot exists, just move it
+                userLocationMarker.setPosition(pos);
+            } else {
+                // Create the "Blue Dot" for the first time
+                userLocationMarker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#4285F4', // Google Blue
+                        fillOpacity: 1,
+                        scale: 8,
+                        strokeColor: 'white',
+                        strokeWeight: 2
+                    },
+                    title: "Buradasınız",
+                    zIndex: 1000 // Keep it above venue markers
+                });
+            }
+        },
+        (error) => {
+            console.error("Error tracking location:", error);
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 10000
+        }
+    );
+}
+
 async function generateShareableLink() {
     // 1. Prepare data
     const routeIds = Array.from(selectedVenues).join(',');
@@ -2374,7 +2417,7 @@ async function generateShareableLink() {
     }
 
 
-    logFreyaEvent("map_view_interaction", routeIds, "share_route");
+    //logFreyaEvent("map_view_interaction", routeIds, "share_route");
 }
 
 function loadRouteFromUrl() {
@@ -2383,6 +2426,7 @@ function loadRouteFromUrl() {
     
     if (routeParam) {
         const ids = routeParam.split(',').map(Number);
+        
         // Clear current state and add the IDs from the URL
         selectedVenues.clear(); // Empty the Set
         ids.forEach(id => {
