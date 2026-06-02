@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beyoğlu Sanat Rota Planlayıcısı</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap&amp;subset=latin-ext" rel="stylesheet">
 
    
    <style>
@@ -730,11 +727,11 @@ height: 130px;
     scrollbar-color: #888 #f1f1f1;
 }
 </style>
-</head>
 
 
 
-<body class="font-sans antialiased text-stone-800">
+
+
 
 
     <div id="beyoglu-sanat-rehberi-app" class="text-stone-800 full-screen-container flex flex-col">
@@ -749,12 +746,7 @@ height: 130px;
                     <div class="w-full flex justify-center"> <picture>
                             <source media="(min-width: 768px)" srcset="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png">
                             
-                            <img decoding="async" 
-                                id="banner-selection" 
-                                src="https://www.freyartt.com/wp-content/uploads/2026/04/banner_sanat_rotasi_mobile.png" 
-                                alt="Nasıl Kullanılır" 
-                                class="w-full max-w-[1120px] h-auto" 
-                                title="Rota Test Freya Art">
+                            <img decoding="async" id="banner-selection" src="https://www.freyartt.com/wp-content/uploads/2026/04/banner_sanat_rotasi_mobile.png" alt="Nasıl Kullanılır" class="w-full max-w-[1120px] h-auto" title="Rota Test Freya Art">
                         </picture>
                     </div>
                 </header>
@@ -767,9 +759,7 @@ height: 130px;
 
 
                 <div>
-                    <button id="info-toggle-btn" 
-                            onclick="toggleInfoBox()" 
-                            class="fixed bottom-[6.5rem] right-[7%] z-[4000] bg-white border-2 border-gray-200 text-gray-500 w-8 h-8 rounded-full shadow-lg flex items-center justify-center font-bold text-lg hover:bg-gray-50 transition-all hidden">
+                    <button id="info-toggle-btn" onclick="toggleInfoBox()" class="fixed bottom-[6.5rem] right-[7%] z-[4000] bg-white border-2 border-gray-200 text-gray-500 w-8 h-8 rounded-full shadow-lg flex items-center justify-center font-bold text-lg hover:bg-gray-50 transition-all hidden">
                         x
                     </button>
                     <div id="route-info-box" class="hidden fixed bottom-[6rem] left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] bg-[#ffde59] border-2 border-yellow-600 rounded-xl p-3 shadow-lg z-[3500] text-center">
@@ -798,7 +788,7 @@ height: 130px;
 
 
                 <!-- Filtreler ve Mekan Kartları (Sadece Seçim Görünümünde) -->
-                <div id="selection-content" >
+                <div id="selection-content">
                     <nav id="filter-nav" class="flex gap-3 mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide py-2">
                         <button id="filter-all" class="filter-btn active" data-filter="all">Tümü</button>
                         <button id="filter-museum" class="filter-btn" data-filter="museum">Müzeler</button>
@@ -843,6 +833,7 @@ let currentRouteStats = {
 let lastClickedRouteItem = null;
 let directLandmarksList = [];
 let peripheralLandmarksList = [];
+let currentActivePath = null;
 
 const typeTranslations = {
     'museum': 'Müze',
@@ -1286,6 +1277,7 @@ const route_suggestions = {
     let isInfoBoxManuallyHidden = false;
     // tracking implement
     let userLocationMarker = null;
+    let isTrackingInitiated = false;
 
     // DOM Elements
     const grid = document.getElementById('venue-grid');
@@ -1421,6 +1413,12 @@ function switchView(newState) {
         setTimeout(() => {
             if (map) google.maps.event.trigger(map, 'resize');
         }, 200);
+        
+        if (!isTrackingInitiated) {
+        console.log("Entering Map View for the first time. Requesting location permission...");
+        trackLocation();
+        isTrackingInitiated = true; // Set to true so we never trigger the prompt loop again
+    }
 
     } else {
         updateRoutePreview();
@@ -1677,8 +1675,7 @@ if (count === 0) {
     }).catch(err => {
         console.error("Failed to load data:", err);
     });
-    // tracking implement
-    trackLocation();
+
 }
 
 function addMarker(venue) {
@@ -1905,7 +1902,7 @@ function showVenueCard(venue) {
 // <button onclick="logFreyaEvent('map_view_landmark_interaction', '${venue.id}', 'close_landmark_detail_card'); document.getElementById('landmark-detail-card').remove()" 
 card.innerHTML = `
     <div class="relative w-full h-full flex flex-col">
-<button onclick=document.getElementById('landmark-detail-card').remove()" 
+<button onclick="document.getElementById('landmark-detail-card').remove()" 
         class="absolute -top-2 -right-4 w-6 h-6 flex items-center justify-center bg-white rounded-full text-gray-500 font-bold text-lg z-10 ">
     ×
 </button>
@@ -2019,9 +2016,9 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
     if (existing) existing.remove();
 
     const path = response.routes[0].overview_path;
+    currentActivePath = path; // Essential for the tracker!
 
-    // --- STEP 1: START FRESH (MOVE THIS TO THE TOP) ---
-    // This clears the map before we start drawing any new markers
+    // --- STEP 1: START FRESH ---
     Object.values(markers).forEach(m => m.setMap(null));
 
     // --- STEP 2: DRAW PERIPHERAL LANDMARKS ---
@@ -2043,7 +2040,7 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
                 strokeColor: "#ffffff"
             });
             marker.setLabel(null);
-            marker.setMap(map); // Now it stays visible
+            marker.setMap(map);
             
             google.maps.event.clearInstanceListeners(marker);
             marker.addListener('click', () => {
@@ -2053,7 +2050,7 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
         }
     });
 
-    // --- STEP 3: DRAW MAIN ROUTE MARKERS ---
+    // --- STEP 3: SORT MAIN ROUTE MARKERS ---
     let fullRoute = [...orderedMuseums, ...directLandmarks];
     fullRoute.sort((a, b) => {
         const posA = getPointProgressOnPath(new google.maps.LatLng(a.lat, a.lng), path);
@@ -2062,31 +2059,80 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
     });
 
     const firstLandmark = fullRoute.find(stop => stop.type === 'landmark');
-
     if (firstLandmark) {
-        // If a landmark exists on the route, set it as the default memory
         lastClickedRouteItem = firstLandmark;
     } else if (fullRoute.length > 0) {
-        // Fallback: If no landmarks are on the path, use the first museum (#1)
         lastClickedRouteItem = fullRoute[0];
     }
 
+    // --- STEP 4: CREATE FLOATING CARD WINDOW ---
+    const card = document.createElement('div');
+    card.id = 'horizontal-route-container'; // This remains the tracker target
+    card.className = 'route-horizontal-card animate-bounce-in';
+    card.style.position = 'fixed';
+    card.style.paddingTop = '12px';
+
+    card.innerHTML = `
+        <div class="route-card-controls">
+            <button onclick="switchView('selection')" class="route-control-btn">
+                Rotayı Değiştir
+            </button>
+            <button onclick="generateShareableLink()" 
+                    class="btn-static !p-0 !min-w-[35px] !w-[35px] !h-[35px] flex items-center justify-center rounded-full overflow-hidden">
+                <img src="https://www.freyartt.com/wp-content/uploads/2026/04/share_icon_4.png" alt="Share" class="w-5 h-5 object-contain">
+            </button>
+            <button id="toggle-landmark-btn" 
+                    onclick="toggleLandmarkDisplay()" 
+                    class="btn-static !p-0 !min-w-[35px] !w-[35px] !h-[35px] flex items-center justify-center rounded-full overflow-hidden">
+                <img src="https://www.freyartt.com/wp-content/uploads/2026/04/info_icon_3.png" alt="Info" class="w-5 h-5 object-contain">
+            </button>
+        </div>
+        <div class="route-scroll-wrapper" id="horizontal-steps-list"></div>
+    `;
+    document.body.appendChild(card);
+
+    // --- STEP 5: RENDER STEPS & CONFIG MAP MARKERS ---
+    const stepsList = document.getElementById('horizontal-steps-list');
+    
     fullRoute.forEach((stop, i) => {
         const isLandmark = stop.type === 'landmark';
-        const markerColor = isLandmark ? "#ffde59" : "#047666";
+        const color = isLandmark ? "#ffde59" : "#047666";
+        const textColor = isLandmark ? "#92400e" : "#FFFFFF";
+
+        // Create individual node wrapper
+        const node = document.createElement('div');
+        // Added 'route-summary-item' class and data attributes here so tracking works!
+        node.className = 'route-step-node route-summary-item cursor-pointer';
+        node.dataset.id = stop.id;
+        node.dataset.lat = stop.lat;
+        node.dataset.lng = stop.lng;
+        
+        node.addEventListener('click', () => handleRouteItemClick(stop.id));
+
+        node.innerHTML = `
+            <p class="text-[9px] font-bold text-gray-800 leading-tight line-clamp-2 h-[22px] mb-1">
+                ${stop.name}
+            </p>
+            <div class="step-number-circle" style="background-color: ${color}; color: ${textColor}">
+                ${i + 1}
+            </div>
+        `;
+        stepsList.appendChild(node);
+
+        // Update Map Marker Style
         const marker = markers[stop.id];
         if (marker) {
             marker.setIcon({
                 path: google.maps.SymbolPath.CIRCLE,
                 scale: 14,
-                fillColor: markerColor,
+                fillColor: color,
                 fillOpacity: 1,
                 strokeWeight: 2,
                 strokeColor: "#FFFFFF"
             });
             marker.setLabel({
                 text: (i + 1).toString(),
-                color: isLandmark ? "#92400e" : "#FFFFFF",
+                color: textColor,
                 fontSize: "12px",
                 fontWeight: "bold"
             });
@@ -2100,75 +2146,11 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
             });
         }
     });
-
-    const card = document.createElement('div');
-    card.id = 'horizontal-route-container';
-    card.className = 'route-horizontal-card animate-bounce-in';
-    card.style.position = 'fixed';
-    card.style.paddingTop = '12px'
-
-
-    // Build the container structure
-    card.innerHTML = `
-        <div class="route-card-controls">
-
-           <button onclick="switchView('selection')" class="route-control-btn">
-                Rotayı Değiştir
-            </button>
-
-            <button onclick="generateShareableLink()" 
-            class="btn-static !p-0 !min-w-[35px] !w-[35px] !h-[35px] flex items-center justify-center rounded-full overflow-hidden">
-            <img src="https://www.freyartt.com/wp-content/uploads/2026/04/share_icon_4.png" alt="Share" 
-         class="w-5 h-5 object-contain">
-  
-            </button>
-            
- 
-            
-<button id="toggle-landmark-btn" 
-        onclick="toggleLandmarkDisplay()" 
-        class="btn-static !p-0 !min-w-[35px] !w-[35px] !h-[35px] flex items-center justify-center rounded-full overflow-hidden">
-    <img src="https://www.freyartt.com/wp-content/uploads/2026/04/info_icon_3.png" 
-         alt="Info" 
-         class="w-5 h-5 object-contain">
-</button>
-            
-        </div>
-        <div class="route-scroll-wrapper" id="horizontal-steps-list"></div>
-    `;
-    document.body.appendChild(card);
-
-    // 2. Add the steps individually to attach clean click events
-    const stepsList = document.getElementById('horizontal-steps-list');
-    fullRoute.forEach((stop, i) => {
-        const isLandmark = stop.type === 'landmark';
-        const color = isLandmark ? "#ffde59" : "#047666";
-        const textColor = isLandmark ? "#92400e" : "#FFFFFF";
-
-        const node = document.createElement('div');
-        node.className = 'route-step-node cursor-pointer';
-        
-        // This handles the memory save and the pan
-        node.addEventListener('click', () => handleRouteItemClick(stop.id));
-
-        node.innerHTML = `
-            <p class="text-[9px] font-bold text-gray-800 leading-tight line-clamp-2 h-[22px] mb-1">
-                ${stop.name}
-            </p>
-            <div class="step-number-circle" style="background-color: ${color}; color: ${textColor}">
-                ${i + 1}
-            </div>
-        `;
-        stepsList.appendChild(node);
-    });
-
 }
 
 
-
-
     // --- UI INTERACTION ---
-    function toggleVenueSelection(venueId) {
+function toggleVenueSelection(venueId) {
         const isNowSelected = !selectedVenues.has(venueId);
         const card = document.getElementById(`venue-card-${venueId}`);
         if (selectedVenues.has(venueId)) {
@@ -2370,6 +2352,7 @@ function trackLocation() {
                     zIndex: 1000 // Keep it above venue markers
                 });
             }
+            updateUserProgressOnHorizontalBar(pos);
         },
         (error) => {
             console.error("Error tracking location:", error);
@@ -2380,6 +2363,101 @@ function trackLocation() {
         }
     );
 }
+
+
+
+function updateUserProgressOnHorizontalBar(userPos) {
+    const horizontalContainer = document.getElementById('horizontal-route-container');
+    if (!horizontalContainer || !currentActivePath) return; // Only process if map view is active
+
+    const userLatLng = new google.maps.LatLng(userPos.lat, userPos.lng);
+    
+    // 1. Get user's progress percentage on the active route line (Value between 0 and 1)
+    const userProgress = getPointProgressOnPath(userLatLng, currentActivePath);
+
+    // 2. Clear out any previously placed live dots from the horizontal DOM rows
+    document.querySelectorAll('.live-location-dot').forEach(dot => dot.remove());
+
+    // 3. Loop through your rendered items to find where the user sits
+    const routeItems = horizontalContainer.querySelectorAll('.route-summary-item');
+    
+    let insertionIndex = -1;
+
+    for (let i = 0; i < routeItems.length; i++) {
+        const itemLatLng = new google.maps.LatLng(
+            parseFloat(routeItems[i].dataset.lat),
+            parseFloat(routeItems[i].dataset.lng)
+        );
+        const itemProgress = getPointProgressOnPath(itemLatLng, currentActivePath);
+
+        if (userProgress < itemProgress) {
+            insertionIndex = i;
+            break;
+        }
+    }
+
+    // let prevVenueItem = null;
+    // let nextVenueItem = null;
+
+    // if (insertionIndex === 0) {
+    //     nextVenueItem = routeItems[0];
+    // } else if (insertionIndex === -1) {
+    //     prevVenueItem = routeItems[routeItems.length - 1];
+    // } else {
+    //     prevVenueItem = routeItems[insertionIndex - 1];
+    //     nextVenueItem = routeItems[insertionIndex];
+    // }
+
+    // // Calculate actual distance to the nearest bounding venue
+    // let isNearRoute = false;
+    // const MAX_DISTANCE = 500; // 500 meters threshold
+
+    // if (prevVenueItem) {
+    //     const prevLatLng = new google.maps.LatLng(parseFloat(prevVenueItem.dataset.lat), parseFloat(prevVenueItem.dataset.lng));
+    //     const distToPrev = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, prevLatLng);
+    //     if (distToPrev <= MAX_DISTANCE) isNearRoute = true;
+    // }
+
+    // if (nextVenueItem) {
+    //     const nextLatLng = new google.maps.LatLng(parseFloat(nextVenueItem.dataset.lat), parseFloat(nextVenueItem.dataset.lng));
+    //     const distToNext = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, nextLatLng);
+    //     if (distToNext <= MAX_DISTANCE) isNearRoute = true;
+    // }
+
+    // // If the user is miles away (e.g., Beşiktaş), break out early and do not render the dot
+    // if (!isNearRoute) {
+    //     console.log("User is too far from active route segments. Hiding tracking dot.");
+    //     return;
+    // }
+
+    // 4. Build the floating HTML indicator dot
+    const liveDotHTML = `
+        <div class="live-location-dot flex flex-col items-center justify-start h-full mx-1" style="align-self: flex-start; padding-top: 5px;">
+            <div class="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-md animate-pulse"></div>
+        </div>
+    `;
+
+    // 5. Inject the dot in the correct gap
+    if (insertionIndex === 0) {
+        // User is before the very first stop
+        routeItems[0].before(createElementFromHTML(liveDotHTML));
+    } else if (insertionIndex === -1) {
+        // User has passed the final stop or path isn't fully initialized
+        routeItems[routeItems.length - 1].after(createElementFromHTML(liveDotHTML));
+    } else {
+        // User is perfectly between index - 1 and index
+        routeItems[insertionIndex - 1].after(createElementFromHTML(liveDotHTML));
+    }
+}
+
+// Small helper to turn string strings into DOM objects safely
+function createElementFromHTML(htmlString) {
+    const div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+    return div.firstChild;
+}
+
+
 
 async function generateShareableLink() {
     // 1. Prepare data
@@ -2448,5 +2526,3 @@ function loadRouteFromUrl() {
     }
 }
 </script>
-</body>
-</html>
