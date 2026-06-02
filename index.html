@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beyoğlu Sanat Rota Planlayıcısı</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap&subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap&amp;subset=latin-ext" rel="stylesheet">
 
    
    <style>
@@ -63,7 +60,8 @@ html, body {
 #control-panel {
     flex: 1;
     overflow-y: visible;
-    padding-bottom: 175px; /* Spacing for the floating button */
+    padding-bottom: 40px; /* Spacing for the floating button */
+    
 }
 
 
@@ -779,12 +777,407 @@ height: 130px;
 }
 
 
+    .nav-btn {
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        pointer-events: auto;
+        transition: var(--freya-transition);
+        color: var(--freya-brand);
+        font-size: 20px;
+    }
+
+    .nav-btn:hover {
+        background: var(--freya-brand);
+        color: white;
+    }
+    :root {
+        --freya-brand: #12a48e;
+        --freya-brand-light: rgba(18, 164, 142, 0.05);
+        --freya-dark: #1f1f1f;
+        --freya-border: #e8e8e8;
+        --freya-transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .instractions-and-ss-wrapper {
+        max-width: 925px;
+        margin: 60px auto;
+        padding: 0 20px;
+        font-family: 'Poppins', sans-serif;
+        color: var(--freya-dark);
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+        margin-top: 60px;
+    }
+
+    .section-header h2 {
+        font-size: 28px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        color: var(--freya-dark);
+    }
+
+    .divider {
+        width: 60px;
+        height: 3px;
+        background: var(--freya-brand);
+        margin: 0 auto;
+    }
+
+    /* Slider Tasarımı */
+    .freya-slider-container {
+        position: relative;
+        width: 100%;
+        margin-bottom: 30px;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+        background: #f8f8f8;
+    }
+
+    .freya-slides {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .freya-slide {
+        min-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .freya-slide img {
+        width: 100%;
+        height: auto;
+        display: block;
+        min-height: 400px;
+        object-fit: contain; /* Görsellerin kesilmemesi için */
+        background: #fcfcfc;
+    }
+
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+        padding: 0 15px;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .nav-btn {
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        pointer-events: auto;
+        transition: var(--freya-transition);
+        color: var(--freya-brand);
+        font-size: 20px;
+    }
+
+    .nav-btn:hover {
+        background: var(--freya-brand);
+        color: white;
+    }
+
+    .slider-dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 60px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        background: #ddd;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: var(--freya-transition);
+    }
+
+    .dot.active {
+        background: var(--freya-brand);
+        width: 25px;
+        border-radius: 10px;
+    }
+
+    /* SSS Tasarımı */
+    .freya-acc-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .freya-acc-card {
+        background: #fff;
+        border: 1px solid var(--freya-border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: var(--freya-transition);
+    }
+
+    .freya-acc-card:hover {
+        border-color: var(--freya-brand);
+        box-shadow: 0 10px 40px rgba(18, 164, 142, 0.08);
+    }
+
+    .freya-acc-trigger {
+        width: 100%;
+        padding: 24px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        outline: none;
+    }
+
+    .freya-acc-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--freya-dark);
+        line-height: 1.4;
+    }
+
+    .freya-acc-card.active .freya-acc-title {
+        color: var(--freya-brand);
+    }
+
+    .freya-acc-icon {
+        width: 24px;
+        height: 24px;
+        position: relative;
+        flex-shrink: 0;
+        transition: var(--freya-transition);
+        background: var(--freya-brand-light);
+        border-radius: 50%;
+    }
+
+    .freya-acc-icon::before, .freya-acc-icon::after {
+        content: '';
+        position: absolute;
+        background: var(--freya-brand);
+        transition: var(--freya-transition);
+    }
+
+    .freya-acc-icon::before { width: 12px; height: 2px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .freya-acc-icon::after { width: 2px; height: 12px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+    .freya-acc-card.active .freya-acc-icon {
+        transform: rotate(45deg);
+        background: var(--freya-brand);
+    }
+
+    .freya-acc-card.active .freya-acc-icon::before,
+    .freya-acc-card.active .freya-acc-icon::after { background: #fff; }
+
+    .freya-acc-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: var(--freya-transition);
+    }
+
+    .freya-acc-card.active .freya-acc-content { max-height: 500px; }
+
+    .freya-acc-body {
+        padding: 0 30px 30px 30px;
+        font-size: 16px;
+        line-height: 1.8;
+        color: #555;
+        font-weight: 300;
+    }
+
+  
+    :root {
+        --freya-brand: #12a48e;
+        --freya-dark: #1f1f1f;
+        --freya-border: #e8e8e8;
+        --freya-transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .freya-blog-section {
+        max-width: 1000px;
+        margin: 100px auto 60px auto;
+        padding: 0 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+
+
+    .freya-divider {
+        width: 60px;
+        height: 3px;
+        background: var(--freya-brand);
+        margin: 0 auto;
+    }
+
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .blog-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid var(--freya-border);
+        overflow: hidden;
+        transition: var(--freya-transition);
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--freya-brand);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
+
+    .blog-image {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        background: #eee;
+    }
+
+    .blog-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .blog-card:hover .blog-image img {
+        transform: scale(1.1);
+    }
+
+    .blog-content {
+        padding: 25px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .blog-card h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 15px 0;
+        line-height: 1.4;
+        color: var(--freya-dark);
+    }
+
+    .blog-cta {
+        display: inline-flex;
+        align-items: center;
+        color: var(--freya-brand);
+        font-weight: 500;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    .blog-cta::after {
+        content: '→';
+        margin-left: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .blog-card:hover .blog-cta::after {
+        transform: translateX(5px);
+    }
+
+    @media (max-width: 992px) {
+        .blog-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+        .blog-grid { grid-template-columns: 1fr; }
+
+    }
+
+.btn-waiting {
+    background-color: #9ca3af !important; /* Tailwind gray-400 */
+    opacity: 0.75;
+    cursor: not-allowed;
+    /* Optional: Slight desaturation to make it look 'off' */
+    filter: grayscale(0.5);
+
+}
+/* Navigation Controls in the middle bottom */
+.fact-nav-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;     /* CHANGE: Fixed small gap instead of 'auto' */
+    padding-top: 5px;
+
+}
+
+/* Circular Freya Buttons */
+.nav-btn-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #12a48e; /* Freya Green/Blue */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    transition: opacity 0.2s;
+}
+
+.nav-btn-circle:disabled {
+    background-color: #cbd5e1; /* Grayed out when inactive */
+    cursor: not-allowed;
+}
+.fact-nav-controls.hidden {
+    display: none ;
+}
+
+.section-subtitle {
+    font-size: 0.95rem;      /* Slightly smaller than main titles but readable */
+    color: #4b5563;          /* Dark gray (Tailwind gray-600) for clean contrast */
+    line-height: 1.6;        /* Breathable line spacing for mobile readability */
+    max-width: 600px;        /* Prevents lines from getting too wide on desktop */
+    margin: 0.75rem auto 0;  /* Centers the text if your headers are centered */
+    text-align: center;      /* Matches centered section headers */
+}
+
 </style>
-</head>
 
 
 
-<body class="font-sans antialiased text-stone-800">
+
+
 
 
     <div id="beyoglu-sanat-rehberi-app" class="text-stone-800 full-screen-container flex flex-col">
@@ -799,12 +1192,7 @@ height: 130px;
                     <div class="w-full flex justify-center"> <picture>
                             <source media="(min-width: 768px)" srcset="https://www.freyartt.com/wp-content/uploads/2026/03/rota-banner-main.png">
                             
-                            <img decoding="async" 
-                                id="banner-selection" 
-                                src="https://www.freyartt.com/wp-content/uploads/2026/04/banner_sanat_rotasi_mobile.png" 
-                                alt="Nasıl Kullanılır" 
-                                class="w-full max-w-[1120px] h-auto" 
-                                title="Rota Test Freya Art">
+                            <img decoding="async" id="banner-selection" src="https://www.freyartt.com/wp-content/uploads/2026/04/banner_sanat_rotasi_mobile.png" alt="Nasıl Kullanılır" class="w-full max-w-[1120px] h-auto" title="Rota Test Freya Art">
                         </picture>
                     </div>
                 </header>
@@ -817,9 +1205,7 @@ height: 130px;
 
 
                 <div>
-                    <button id="info-toggle-btn" 
-                            onclick="toggleInfoBox()" 
-                            class="fixed bottom-[6.5rem] right-[7%] z-[4000] bg-white border-2 border-gray-200 text-gray-500 w-8 h-8 rounded-full shadow-lg flex items-center justify-center font-bold text-lg hover:bg-gray-50 transition-all hidden">
+                    <button id="info-toggle-btn" onclick="toggleInfoBox()" class="fixed bottom-[6.5rem] right-[7%] z-[4000] bg-white border-2 border-gray-200 text-gray-500 w-8 h-8 rounded-full shadow-lg flex items-center justify-center font-bold text-lg hover:bg-gray-50 transition-all hidden">
                         x
                     </button>
                     <div id="route-info-box" class="hidden fixed bottom-[6rem] left-1/2 -translate-x-1/2 w-[90%] max-w-[400px] bg-[#ffde59] border-2 border-yellow-600 rounded-xl p-3 shadow-lg z-[3500] text-center">
@@ -848,7 +1234,7 @@ height: 130px;
 
 
                 <!-- Filtreler ve Mekan Kartları (Sadece Seçim Görünümünde) -->
-                <div id="selection-content" >
+                <div id="selection-content">
                     <nav id="filter-nav" class="flex gap-3 mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide py-2">
                         <button id="filter-all" class="filter-btn active" data-filter="all">Tümü</button>
                         <button id="filter-museum" class="filter-btn" data-filter="museum">Müzeler</button>
@@ -863,15 +1249,8 @@ height: 130px;
                         </div>
                     </main>
                 </div>
-                <!-- Influencer Suggestions Section -->
-                <div class="influencer-suggestions-container">
-                    <h2 class="suggestions-title">Beyoğlu Sanat Rotası ile Gezenlerin Önerileri</h2>
-                    
-                    <div id="influencer-slider-target">
-                        <div class="influencer-grid"></div>
-                    </div>
-                </div>
-            </div>
+                
+                
             </div>
            
             <!-- Harita Kapsayıcı (Başlangıçta gizli, Map View'da görünür) -->
@@ -879,6 +1258,175 @@ height: 130px;
                 <div id="map" class="w-full h-full"></div>
             </div>
 
+        </div>
+
+        <div id="footer-content-area">
+            <div class="instractions-and-ss-wrapper">
+                <div class="section-header">
+                    <h2>Beyoğlu Sanat Rotası ile Gezenlerin Önerileri</h2>
+                    <div class="divider"></div>
+<p class="section-subtitle">
+                Beyoğlu’nda gezilecek yerler arayan ve aracımızı kullanan isimlerle tanışın! Beyoğlu müze ve sergileri kolayca keşfedin ve eşsiz deneyimler kazanın!
+            </p>
+                </div>
+
+                <div id="influencer-slider-wrapper">
+                    <div class="influencer-grid"></div>
+                </div>
+                        
+
+
+                <div class="section-header">
+                    <h2>Beyoğlu Sanat Rotası Nasıl Kullanılır?</h2>
+                    <div class="divider"></div>
+<p class="section-subtitle">
+                Beyoğlu Sanat Rotası aracı, pratik ve kullanışlı bir arayüze sahiptir. Taksim Beyoğlu gezilecek yerler arayanlar için saniyeler içerisinde sanatsal bir rota oluşturur!
+            </p>
+                </div>
+
+                <!-- Görsel Slider Alanı -->
+                <div class="freya-slider-container">
+                    <div class="freya-slides" id="slider">
+                        
+                        <!-- 1. GÖRSEL -->
+                        <div class="freya-slide">
+                            <img src="https://www.freyartt.com/wp-content/uploads/2026/05/beyoglu-sanat-rotasi-araci.webp" alt="Adım 1" onerror="this.src='https://placehold.co/900x500/12a48e/ffffff?text=BURAYA+EKLE:+2.jpg+Linki'">
+                        </div>
+
+                        <!-- 2. GÖRSEL -->
+                        <div class="freya-slide">
+                            <img src="https://www.freyartt.com/wp-content/uploads/2026/05/beyoglu-sanat-rotasi-araci-1.webp" alt="Adım 2" onerror="this.src='https://placehold.co/900x500/12a48e/ffffff?text=BURAYA+EKLE:+3.jpg+Linki'">
+                        </div>
+
+                        <!-- 3. GÖRSEL -->
+                        <div class="freya-slide">
+                            <img src="https://www.freyartt.com/wp-content/uploads/2026/05/beyoglu-sanat-rotasi-araci-2.webp" alt="Adım 3" onerror="this.src='https://placehold.co/900x500/12a48e/ffffff?text=BURAYA+EKLE:+4.jpg+Linki'">
+                        </div>
+
+                        <!-- 4. GÖRSEL -->
+                        <div class="freya-slide">
+                            <img src="https://www.freyartt.com/wp-content/uploads/2026/05/beyoglu-sanat-rotasi-araci-3.webp" alt="Adım 4" onerror="this.src='https://placehold.co/900x500/12a48e/ffffff?text=BURAYA+EKLE:+5.jpg+Linki'">
+                        </div>
+
+                    </div>
+
+                    <div class="slider-nav">
+                        <button class="nav-btn" onclick="moveSlide(-1)">❮</button>
+                        <button class="nav-btn" onclick="moveSlide(1)">❯</button>
+                    </div>
+                </div>
+                
+                <div class="slider-dots">
+                    <div class="dot active" onclick="currentSlide(0)"></div>
+                    <div class="dot" onclick="currentSlide(1)"></div>
+                    <div class="dot" onclick="currentSlide(2)"></div>
+                    <div class="dot" onclick="currentSlide(3)"></div>
+                </div>
+
+                <!-- SSS Bölümü -->
+                <div class="section-header">
+                    <h2>Beyoğlu Sanat Rotası Hakkında SSS</h2>
+                    <div class="divider"></div>
+<p class="section-subtitle">
+               Beyoğlu Sanat Rotası aracı hakkında merak edilenler burada! Beyoğlu’nda gezilecek tarihi yerler arıyorsanız ve sevdiklerinizle sanatsal bir gün geçirmek istiyorsanız bu araç tam size göre! 
+            </p>
+                </div>
+
+                <div class="freya-acc-container">
+                    <div class="freya-acc-card">
+                        <button class="freya-acc-trigger" onclick="toggleFreyarttFaq(this)">
+                            <h3 class="freya-acc-title">Araçtaki mekanlar güncel mi?</h3>
+                            <div class="freya-acc-icon"></div>
+                        </button>
+                        <div class="freya-acc-content">
+                            <div class="freya-acc-body">
+                                Evet. Beyoğlu Sanat Rotası aracında bulunan tüm müze ve sergi detayları günceldir. Mekanların detaylı bilgisi için web site linklerine tıklamanız yeterli olacaktır.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="freya-acc-card">
+                        <button class="freya-acc-trigger" onclick="toggleFreyarttFaq(this)">
+                            <h3 class="freya-acc-title">Araç ücretsiz mi?</h3>
+                            <div class="freya-acc-icon"></div>
+                        </button>
+                        <div class="freya-acc-content">
+                            <div class="freya-acc-body">
+                                Evet! Aracımız tamamen ücretsizdir. Sanatseverlerin Beyoğlu'nu keşfetmesini kolaylaştırmak için geliştirilmiştir.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="freya-acc-card">
+                        <button class="freya-acc-trigger" onclick="toggleFreyarttFaq(this)">
+                            <h3 class="freya-acc-title">Beyoğlu’nda bulunan tüm müzeler yer alıyor mu?</h3>
+                            <div class="freya-acc-icon"></div>
+                        </button>
+                        <div class="freya-acc-content">
+                            <div class="freya-acc-body">
+                                Beyoğlu’nda görebileceğiniz tüm önemli müzeler aracımızda mevcuttur. Sanat rotanıza bölgenin zengin kültürel mirası eşlik edecektir.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="freya-acc-card">
+                        <button class="freya-acc-trigger" onclick="toggleFreyarttFaq(this)">
+                            <h3 class="freya-acc-title">Rotada mekan limiti var mı?</h3>
+                            <div class="freya-acc-icon"></div>
+                        </button>
+                        <div class="freya-acc-content">
+                            <div class="freya-acc-body">
+                                Sanat rotası oluştururken dilediğiniz kadar sergi ve müze ekleyebilirsiniz. Aracımızda herhangi bir mekan limiti bulunmamaktadır.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="freya-blog-section">
+                <div class="section-header">
+                    <h2>Beyoğlu'nda Gezilecek Yerleri Keşfedin</h2>
+                    <div class="freya-divider"></div>
+                </div>
+
+                <div class="blog-grid">
+                    
+                    <!-- Blog Yazısı 1 -->
+                    <a href="https://www.freyartt.com/gezi-rehberi/galeri-nev-istanbulu-gezmek-icin-5-sebep/" class="blog-card">
+                        <div class="blog-image">
+                            <img src="https://www.freyartt.com/wp-content/uploads/2026/05/Galeri-Nev-Istanbulu-Gezmek-Icin-5-Sebep.webp" alt="Blog 1" onerror="this.src='https://placehold.co/400x250/12a48e/ffffff?text=Blog+Görseli+1'">
+                        </div>
+                        <div class="blog-content">
+                            <h2>Galeri Nev İstanbul’u Gezmek İçin 5 Sebep</h2>
+                            <span class="blog-cta">Devamını Oku</span>
+                        </div>
+                    </a>
+
+                    <!-- Blog Yazısı 2 -->
+                    <a href="https://www.freyartt.com/gezi-rehberi/galeri-zilberman-ile-sanatsal-bir-gun-gecirin/" class="blog-card">
+                        <div class="blog-image">
+                            <img src="https://www.freyartt.com/wp-content/uploads/2026/05/Galeri-Zilberman-ile-Sanatsal-Bir-Gun-Gecirin-1.webp" alt="Blog 2" onerror="this.src='https://placehold.co/400x250/12a48e/ffffff?text=Blog+Görseli+2'">
+                        </div>
+                        <div class="blog-content">
+                            <h2>Galeri Zilberman ile Sanatsal Bir Gün Geçirin
+            </h2>
+                            <span class="blog-cta">Devamını Oku</span>
+                        </div>
+                    </a>
+
+                    <!-- Blog Yazısı 3 -->
+                    <a href="https://www.freyartt.com/gezi-rehberi/masumiyet-muzesinin-hikayesi-gercek-mi/" class="blog-card">
+                        <div class="blog-image">
+                            <img src="https://www.freyartt.com/wp-content/uploads/2026/05/Masumiyet-Muzesinin-Hikayesi-Gercek-mi_-2.webp" alt="Blog 3" onerror="this.src='https://placehold.co/400x250/12a48e/ffffff?text=Blog+Görseli+3'">
+                        </div>
+                        <div class="blog-content">
+                            <h2>Masumiyet Müzesi’nin Hikayesi Gerçek mi?</h2>
+                            <span class="blog-cta">Devamını Oku</span>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
         </div>
     </div>
 
@@ -894,7 +1442,9 @@ let currentRouteStats = {
 let lastClickedRouteItem = null;
 let directLandmarksList = [];
 let peripheralLandmarksList = [];
-
+let slideIndex = 0;
+const slides = document.getElementById('slider');
+const dots = document.querySelectorAll('.dot');
 const typeTranslations = {
     'museum': 'Müze',
     'gallery': 'Galeri',
@@ -1225,22 +1775,33 @@ let venues = [
 
 
 const route_suggestions = {
+
     1: {
+        name: "Nilay Koçak",
+        image: "https://www.freyartt.com/wp-content/uploads/2026/04/nilay-kocak-e1777553366493-600x600.webp",
+        inst_link: "https://www.instagram.com/nilayykocak_/",
+        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=2,5,7,10",
+        comment: "Aradığım uygulamayı sonunda buldum. Beyoğlu’ndaki müzeleri ve sanat galerilerini tek bir yerde topluyor, ben de istediğim gibi kendime özel bir rota oluşturabiliyorum. Şehri böyle sanat üzerinden keşfetmek gerçekten çok daha keyifli geliyor 🫠",
+    },
+
+
+
+    2: {
         name: "Dilayda Soylu",
         image: "https://www.freyartt.com/wp-content/uploads/2026/05/Dilayda-Soylu.webp",
         inst_link: "https://www.instagram.com/dilaydaks/",
         route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=1%2C3%2C6%2C7%2C20%2C19%2C2",
         comment: "Beyoğlu gibi kültürel ve sanatsal mirası çok zengin bir yerin tam ihtiyacı olan bir proje olmuş. Artık sanatsal aktivitelerimiz daha eforsuz ve keyifli olacak, aynısını başka ilçelerimiz için de dört gözle bekliyoruz❤️",
     },
-
-   2: {
+    
+   3: {
         name: "Nergis Ova",
         image: "https://www.freyartt.com/wp-content/uploads/2026/05/nergis.webp",
         inst_link: "https://www.instagram.com/nergisova/",
         route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=4%2C1%2C6%2C7%2C13%2C14%2C16%2C21", 
         comment: "O kadar muazzam bir bölge de görülecek çok şey var ve bu bazen kafa karıştırabilir, fakat bu sistem sayesinde rotanız asla şaşmaz ve istediğiniz her yeri görebilirsiniz ✨",
     },
-    3: {
+    4: {
         name: "Özgür Öğünç ",
         image: "https://www.freyartt.com/wp-content/uploads/2026/05/Ozgur-Ogunc.webp",
         inst_link: "https://www.instagram.com/ozgurogunc_/ ",
@@ -1248,29 +1809,14 @@ const route_suggestions = {
         comment: "Beyoğlu gibi sanatın sokaklara taştığı bir yerde böyle bir rota gerçekten büyük kolaylık sağlıyor. Bazen neyi gezeceğimizi bilmeden saatlerce dolaşıyoruz ama artık yeni galeriler, müzeler ve yaratıcı mekanlar keşfetmek çok daha keyifli ve düzenli hale geldi. Özellikle sanatla iç içe vakit geçirmeyi sevenler için aşırı ilham verici bir proje✨ ",
     },
 
-    4: {
-        name: "Nilay Koçak",
-        image: "https://www.freyartt.com/wp-content/uploads/2026/04/nilay-kocak-e1777553366493-600x600.webp",
-        inst_link: "https://www.instagram.com/nilayykocak_/",
-        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=2,5,7,10",
-        comment: " ",
-    },
+
     5: {
         name: "Sezin Gürpınar",
         image: "https://www.freyartt.com/wp-content/uploads/2026/05/Sezin-Gurpinar.webp",
         inst_link: "https://www.instagram.com/seziingurpinar/",
         route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=3%2C10%2C8",
-        comment: " ",
-    },
-
-
-   6: {
-        name: "Zeynep Özdemir",
-        image: "https://www.freyartt.com/wp-content/uploads/2026/05/Zeynep-Ozdemir.webp",
-        inst_link: "https://www.instagram.com/ozdmzeynp/",
-        route: "https://www.freyartt.com/beyoglu-sergi-rehberi/?route=14%2C17%2C19%2C7%2C10", 
-        comment: " ",
-    },   
+        comment: "Beyoğlu’na çok yakışan bir proje olmuş. Kullanırken çok keyif aldım. Beyoğlu’nu bir nebze bildiğimi düşünürdüm ama önünden geçerken kaçırdığım çok şey varmış. Umarım en kısa zamanda başka semtlerimizi de görürüz 💌 ",
+    }, 
     
 };
 
@@ -1279,9 +1825,19 @@ const route_suggestions = {
     let markers = {};
     let directionsService; 
     let directionsRenderer;
-    let appState = 'selection';
     let infoBox;
     let isInfoBoxManuallyHidden = false;
+    let isInsideSelectionArea = true;
+    let isInfluencerAreaVisible = false;
+
+    let userLocationMarker = null;
+    let isTrackingInitiated = false;
+
+    // Check immediately on script execution if this is a shared route link
+    const hasSharedRouteInUrl = new URLSearchParams(window.location.search).has('route');
+// Adjust your initial appState variable based on that check
+    let appState = hasSharedRouteInUrl ? 'map' : 'selection';
+
 
     // DOM Elements
     const grid = document.getElementById('venue-grid');
@@ -1373,8 +1929,9 @@ function switchView(newState) {
     const panel = document.getElementById('control-panel');
     if (panel) panel.scrollTop = 0;
     const btn = document.getElementById('main-action-button');
-
-    // Added this
+    const extraWrappers = document.querySelectorAll('.instractions-and-ss-wrapper');
+    const blogSection = document.querySelector('.freya-blog-section');
+    const influencerSection = document.querySelector('.influencer-suggestions-container');  // Added this
     
     if (newState === 'map') {
         updateRoutePreview();
@@ -1384,7 +1941,11 @@ function switchView(newState) {
         selectionContent.classList.add('hidden');
         mapContainer.classList.remove('hidden');
         
+        //if (faqSection) faqSection.classList.add('hidden');
+        extraWrappers.forEach(wrapper => wrapper.classList.add('hidden'));
         
+        if (blogSection) blogSection.classList.add('hidden');
+        if (influencerSection) influencerSection.classList.add('hidden');
        
         // Move button to summary
         btn.classList.remove('fixed-bottom');
@@ -1392,12 +1953,18 @@ function switchView(newState) {
         routeSummary.appendChild(btn); 
         
         
-        history.pushState({ newState: 'map' }, 'Map View');
+         history.pushState({ newState: 'map' }, 'Map View');
         document.body.classList.add('map-view-layout');
         // Ensure Map Resizes
         setTimeout(() => {
             if (map) google.maps.event.trigger(map, 'resize');
         }, 200);
+        
+        if (!isTrackingInitiated) {
+        console.log("Entering Map View for the first time. Requesting location permission...");
+        trackLocation();
+        isTrackingInitiated = true; // Set to true so we never trigger the prompt loop again
+    }
 
     } else {
         updateRoutePreview();
@@ -1410,7 +1977,11 @@ function switchView(newState) {
         //appContainer.classList.add('selection-active');
         selectionContent.classList.remove('hidden');
         mapContainer.classList.add('hidden');
+        //if (faqSection) faqSection.classList.remove('hidden');
+        extraWrappers.forEach(wrapper => wrapper.classList.remove('hidden'));
         
+        if (blogSection) blogSection.classList.remove('hidden');
+        if (influencerSection) influencerSection.classList.remove('hidden');
         
        
         // Move button back
@@ -1487,10 +2058,7 @@ function updateRoutePreview() {
     const infoText = document.getElementById('route-info-text');
     const count = selectedVenues.size;
 
-    if (count > 0 && appState === 'selection') {
-        if (!isInfoBoxManuallyHidden) {
-            infoBox.classList.remove('hidden');
-        }
+    if (count > 1 && appState === 'selection') {
         
         
         const selectedObjects = Array.from(selectedVenues)
@@ -1580,55 +2148,60 @@ function toggleInfoBox() {
 function updateButtonState() {
     const btn = document.getElementById('main-action-button');
     const btnText = document.getElementById('btn-text');
-    const panel = document.getElementById('control-panel');
     const toggleBtn = document.getElementById('info-toggle-btn');
     const infoBox = document.getElementById('route-info-box');
     const count = selectedVenues.size;
     
     const isScrolled = window.scrollY > 100;
 
-    // --- 1. TOGGLE INFO BUTTON VISIBILITY ('i' button) ---
-    // The info button should only show if there's a selection
-    if (appState === 'selection' && count > 0) {
-        if (toggleBtn) toggleBtn.classList.remove('hidden');
-    } else {
-        if (toggleBtn) toggleBtn.classList.add('hidden');
-    }
+    // --- 1. DEFINE SHARED VISIBILITY CONDITION ---
+    // The UI elements should only show if we are in selection mode, 
+    // scrolled down, and NOT in the influencer area.
+const shouldShowUI = appState === 'selection' && isScrolled && !isInfluencerAreaVisible;
 
-    // --- 2. MAIN ACTION BUTTON VISIBILITY ---
-    if (appState === 'selection') {
-        // Show if user has scrolled OR has selected at least one venue
-        if (count > 0 || isScrolled) {
-            btn.classList.remove('hidden');
-        } else {
-            btn.classList.add('hidden');
+    // 2. Info Toggle Button ('i')
+    if (shouldShowUI && count > 1) {
+        if (toggleBtn) toggleBtn.classList.remove('hidden');
+        
+        // 3. Info Box Visibility Logic
+        // It only shows if UI is allowed AND user hasn't manually closed it
+        if (infoBox && !isInfoBoxManuallyHidden) {
+            infoBox.classList.remove('hidden');
+        } else if (infoBox) {
+            infoBox.classList.add('hidden');
         }
     } else {
-        // In Map view, always keep it visible
-        btn.classList.remove('hidden');
+        if (toggleBtn) toggleBtn.classList.add('hidden');
+        if (infoBox) infoBox.classList.add('hidden');
     }
 
-    // --- 3. REFRESH PREVIEW ---
+    // 4. Main Action Button
+    if (appState === 'selection' && shouldShowUI) {
+        btn.classList.remove('hidden');
+    } else if (appState === 'selection') {
+        btn.classList.add('hidden');
+    }
+
+    // --- 4. REFRESH PREVIEW & STYLE ---
     updateRoutePreview();
 
-    // --- 4. BUTTON TEXT & STYLE LOGIC ---
     if (appState === 'map') {
         btn.classList.remove('btn-waiting');
         if (btnText) btnText.textContent = "Rotayı Değiştir";
-        if (infoBox) infoBox.classList.add('hidden'); 
         return;
     }
 
-if (count === 0) {
-    btn.classList.add('btn-waiting');
-    if (btnText) btnText.textContent = "Mekan Seçin";
-} else if (count === 1) { // Change 'elif' to 'else if'
-    btn.classList.add('btn-waiting');
-    if (btnText) btnText.textContent = "1 Mekan Daha Seçin";
-} else {
-    btn.classList.remove('btn-waiting');
-    if (btnText) btnText.textContent = `Rotayı Oluştur`;
-}
+    // Button text logic based on selection count
+    if (count === 0) {
+        btn.classList.add('btn-waiting');
+        if (btnText) btnText.textContent = "2 Mekan Daha Seçin";
+    } else if (count === 1) {
+        btn.classList.add('btn-waiting');
+        if (btnText) btnText.textContent = "1 Mekan Daha Seçin";
+    } else {
+        btn.classList.remove('btn-waiting');
+        if (btnText) btnText.textContent = `Rotayı Oluştur`;
+    }
 }
 
 
@@ -1648,12 +2221,23 @@ if (count === 0) {
             suppressMarkers: true, // This is key to prevent duplicate markers
             polylineOptions: { strokeColor: '#12a48e', strokeWeight: 6 }
         });
- updateDataFromCloud().then(() => {
-        console.log("Data ready, now checking URL for route...");
+updateDataFromCloud().then(() => {
+    console.log("Data ready, checking URL for route...");
+    
+    if (hasSharedRouteInUrl) {
+        // Force the UI elements to hide/show instantly before calculating 
+        // to prevent the selection panel from flickering on screen.
+        switchView('map');
+        
+        // Load and pass the path data to your horizontal steps bar
         loadRouteFromUrl(); 
-    }).catch(err => {
-        console.error("Failed to load data:", err);
-    });
+    } else {
+        // Standard flow for normal users starting fresh
+        switchView('selection');
+    }
+}).catch(err => {
+    console.error("Failed to load initial assets:", err);
+});
 }
 
 function addMarker(venue) {
@@ -1924,7 +2508,49 @@ card.innerHTML = `
     }
 }
 
+function trackLocation() {
+    if (!navigator.geolocation) {
+        console.log("Geolocation is not supported by your browser");
+        return;
+    }
 
+    navigator.geolocation.watchPosition(
+        (position) => {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            if (userLocationMarker) {
+                // If the dot exists, just move it
+                userLocationMarker.setPosition(pos);
+            } else {
+                // Create the "Blue Dot" for the first time
+                userLocationMarker = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#4285F4', // Google Blue
+                        fillOpacity: 1,
+                        scale: 8,
+                        strokeColor: 'white',
+                        strokeWeight: 2
+                    },
+                    title: "Buradasınız",
+                    zIndex: 1000 // Keep it above venue markers
+                });
+            }            
+        },
+        (error) => {
+            console.error("Error tracking location:", error);
+        },
+        {
+            enableHighAccuracy: true,
+            maximumAge: 10000
+        }
+    );
+}
 
 function panToVenueWithOffset(lat, lng) {
     const latLng = new google.maps.LatLng(lat, lng);
@@ -2258,18 +2884,32 @@ function createInfluencerCard(influencer) {
 }
 
 function displayInfluencerSuggestions() {
-    // Look for the parent container where the grid usually lives
-    const container = document.getElementById('influencer-slider-target');
-    
+    const container = document.getElementById('influencer-slider-wrapper');
     if (!container) return;
-    const cardsHTML = Object.values(route_suggestions)
+
+    // 1. Convert dictionary values to an Array
+    let influencerArray = Object.values(route_suggestions);
+
+    // 2. Calculate a rotation index based on the date
+    // (Total days since epoch / days in a year basically gives us a unique day number)
+    const now = new Date();
+    const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    
+    // 3. Perform the rotation
+    const rotationIndex = dayOfYear % influencerArray.length;
+    const rotatedInfluencers = [
+        ...influencerArray.slice(rotationIndex),
+        ...influencerArray.slice(0, rotationIndex)
+    ];
+
+    // 4. Map the ROTATED array to HTML
+    const cardsHTML = rotatedInfluencers
         .map(createInfluencerCard)
         .join('');
 
-    // We overwrite the container to include the Wrapper + Buttons + Grid
     container.innerHTML = `
         <div class="influencer-slider-wrapper">
-            <button class="nav-btn-circle influencer-nav-btn left" onclick="scrollInfluencers(-1)">
+            <button class="nav-btn influencer-nav-btn left" onclick="scrollInfluencers(-1)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
@@ -2279,7 +2919,7 @@ function displayInfluencerSuggestions() {
                 ${cardsHTML}
             </div>
 
-            <button class="nav-btn-circle influencer-nav-btn right" onclick="scrollInfluencers(1)">
+            <button class="nav-btn influencer-nav-btn right" onclick="scrollInfluencers(1)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
@@ -2403,6 +3043,50 @@ function loadRouteFromUrl() {
         console.log("No route parameter found, staying in selection view.");
     }
 }
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        // This fires when the influencer section enters OR leaves the screen
+        isInfluencerAreaVisible = entry.isIntersecting;
+        console.log("Influencers visible?", isInfluencerAreaVisible);
+        updateButtonState();
+    });
+}, {
+    root: null,      // Watch the browser window
+    rootMargin: '0px',
+    threshold: 0.01  // Fire as soon as 1% is visible
+});
+
+// Start watching the grid (make sure this class matches your HTML)
+const footerArea = document.getElementById('footer-content-area');
+if (footerArea) {
+    observer.observe(footerArea);
+}
+function updateSlider() {
+        slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === slideIndex);
+        });
+    }
+
+    function moveSlide(n) {
+        slideIndex += n;
+        if (slideIndex >= 4) slideIndex = 0;
+        if (slideIndex < 0) slideIndex = 3;
+        updateSlider();
+    }
+
+    function currentSlide(n) {
+        slideIndex = n;
+        updateSlider();
+    }
+
+    function toggleFreyarttFaq(btn) {
+        const currentCard = btn.parentElement;
+        const allCards = document.querySelectorAll('.freya-acc-card');
+        allCards.forEach(card => {
+            if (card !== currentCard) card.classList.remove('active');
+        });
+        currentCard.classList.toggle('active');
+    }
 </script>
-</body>
-</html>
