@@ -1,8 +1,15 @@
-# Beyoğlu Art Route — Phase 3: Production Analytics, High-Density Routing & Mobile UX Re-Engineering
+![freya_art_route_logo](ss/logo/freya_art_route_logo.png)
+Freya Art Route is an interactive digital heritage and exhibition guide. The project pilots in Beyoğlu, a culturally vibrant district of Istanbul chosen specifically because it seamlessly blends a dense concentration of art galleries and museums with a unique, European-influenced urban flair and countless hidden historical landmarks.
 
-This repository contains the production-grade infrastructure and logic for the Beyoğlu Art Route.
+The guide provides users with personalized, cureated and walkable art routes that organically connect modern exhibition spaces with the neighborhood's deep architectural and cultural history.
 
-This phase marks the transition of the Beyoğlu Art Route from an interactive map interface into a production-grade, analytics-driven application. Over the past 1.5 months, engineering efforts focused heavily on deep UI/UX optimizations for mobile and desktop environments, implementing an event-tracking pipeline, and fixing corridor edge cases via high-density line interpolation.
+Rather than forcing users to sift through thousands of unverified, mediocre data points, Freya Art Route takes special care to meticulously research and curate every single venue and landmark. By focusing on narrative depth and historical precision, the project actively shines a light on lesser-known local landmarks, galleries, and oral histories. It invites both locals and travelers to step off the beaten tourist paths, encouraging them to stroll, explore, and experience a welcoming, culturally rich district with absolute ease.
+
+# Phase 3: Production Analytics, High-Density Routing & Mobile UX Re-Engineering
+
+This repository contains the production-grade infrastructure and logic for the Freya Art Route.
+
+This phase marks the transition of the Freya Art Route from an interactive map interface into a production-grade, analytics-driven application. Over the past 1.5 months, engineering efforts focused heavily on deep UI/UX optimizations for mobile and desktop environments, implementing an event-tracking pipeline, and fixing corridor edge cases via high-density line interpolation.
 
 ## Key Improvements in Phase 3
 1. **Advanced Analytics & Event-Tracking Pipeline**
@@ -35,10 +42,9 @@ The map interactions and selection states were overhauled to provide native-feel
 
 ---
 
+# Phase 2.5: The Geospatial Enrichment Layer
 
-# Beyoğlu Art Route — Phase 2.5: The Geospatial Enrichment Layer
-
-This repository contains the production-grade infrastructure and logic for the Beyoğlu Art Route.
+This repository contains the production-grade infrastructure and logic for the Freya Art Route.
 
 Following the successful migration to a cloud-native FastAPI backend (Phase 2), Phase 2.5 focuses on Geospatial Intelligence and UX Optimization. We have moved beyond simple point-mapping to implement corridor-based discovery and live route analytics.
 
@@ -92,9 +98,9 @@ The schema now leverages a flexible meta field to support future expansion witho
 
 ---
 
-# Beyoğlu Art Route - Phase 2: Scale-Up to a production-grade, cloud-native FastAPI infrastructure
+# Phase 2: Scale-Up to a production-grade, cloud-native FastAPI infrastructure
 
-This repository houses the improved data backend for the **Beyoğlu Art Route**. This version implements the migration from a basic CMS to a production-grade, cloud-native FastAPI infrastructure designed for speed, security, and global scalability. While Phase 1 (Google Sheets CMS) was great for prototyping, it had limitations in speed and concurrency. For Phase 2, I completely re-engineered the backend to handle high traffic and complex geospatial data.
+This repository houses the improved data backend for the **Freya Art Route**. This version implements the migration from a basic CMS to a production-grade, cloud-native FastAPI infrastructure designed for speed, security, and global scalability. While Phase 1 (Google Sheets CMS) was great for prototyping, it had limitations in speed and concurrency. For Phase 2, I completely re-engineered the backend to handle high traffic and complex geospatial data.
 
 ## The New Cloud Infrastructure
 
@@ -188,9 +194,9 @@ Phase 2 (Current) Migrating to a cloud-native FastAPI backend solution for quick
 ```
 
 ---
-# Beyoğlu Art Route - Phase 1: Google Sheets as a Headless CMS
+# Phase 1: Google Sheets as a Headless CMS
 
-This repository contains the foundational phase of the **Beyoğlu Art Route** project. This version implements a lightweight, serverless "Headless CMS" using **Google Sheets** and **Google Apps Script** to power a dynamic web application.
+This repository contains the foundational phase of the **Freya Art Route** project. This version implements a lightweight, serverless "Headless CMS" using **Google Sheets** and **Google Apps Script** to power a dynamic web application.
 
 ## The Concept
 Instead of hardcoding museum and gallery data or setting up a complex database at the start, I leveraged Google Workspace tools to create a user-friendly data management system. This allows for real-time updates to the website by simply editing a spreadsheet.
