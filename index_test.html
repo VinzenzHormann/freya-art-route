@@ -6,6 +6,8 @@
 
    
    <style>
+
+    
  /* 1. DEĞİŞKENLER VE TEMEL AYARLAR */
 :root {
     --color-primary: #12a48e;
@@ -485,6 +487,12 @@ html, body {
     }
 }
 
+
+.route-url-active #selection-content,
+.route-url-active .influencer-suggestions-container,
+.route-url-active #banner-selection { display: none !important; }
+.route-url-active #map-container { display: block !important; }
+
 .nv-single-page-wrap, 
 .nv-content-wrap {
     padding: 0 !important;
@@ -733,6 +741,13 @@ height: 130px;
 
 
 
+
+    <!-- Inline script runs synchronously before paint — kills the selection flash for shared route URLs -->
+    <script>
+        if (window.location.search.includes('route=')) {
+            document.body.classList.add('route-url-active');
+        }
+    </script>
 
     <div id="beyoglu-sanat-rehberi-app" class="text-stone-800 full-screen-container flex flex-col">
         <!-- Ana İçerik Kapsayıcı: Selection View'da dikey, Map View'da masaüstünde yatay -->
@@ -1272,12 +1287,32 @@ const route_suggestions = {
     let markers = {};
     let directionsService; 
     let directionsRenderer;
-    let appState = 'selection';
+
     let infoBox;
     let isInfoBoxManuallyHidden = false;
     // tracking implement
     let userLocationMarker = null;
     let isTrackingInitiated = false;
+
+    function checkForSharedRoute() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 1. Check standard query parameters (?route=14,13)
+    if (urlParams.has('route')) {
+        return true;
+    }
+    
+    // 2. Fallback: Check if a redirect shoved the query parameters somewhere else
+    if (window.location.href.includes('route=')) {
+        return true;
+    }
+
+    return false;
+}
+
+    const hasSharedRouteInUrl = checkForSharedRoute();
+    let appState = hasSharedRouteInUrl ? 'map' : 'selection';
+
 
     // DOM Elements
     const grid = document.getElementById('venue-grid');
@@ -1288,7 +1323,6 @@ const route_suggestions = {
     const mapContainer = document.getElementById('map-container');
     const appContainer = document.getElementById('beyoglu-sanat-rehberi-app');
     const controlPanel = document.getElementById('control-panel');
-
 
 
     // --- DATA HANDLING ---
@@ -1444,6 +1478,8 @@ function switchView(newState) {
         if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
     
         document.body.classList.remove('map-view-layout');
+        const cleanUrl = window.location.pathname;
+        history.replaceState(null, '', cleanUrl);
     }
     updateButtonState();
 }
@@ -1669,12 +1705,18 @@ if (count === 0) {
             suppressMarkers: true, // This is key to prevent duplicate markers
             polylineOptions: { strokeColor: '#12a48e', strokeWeight: 6 }
         });
- updateDataFromCloud().then(() => {
-        console.log("Data ready, now checking URL for route...");
+updateDataFromCloud().then(() => {
+    console.log("Data ready, checking URL for route...");
+    
+    if (hasSharedRouteInUrl) {       
+        
+        // 2. Parse the URL and draw the walking lines and markers
         loadRouteFromUrl(); 
-    }).catch(err => {
-        console.error("Failed to load data:", err);
-    });
+
+    }
+}).catch(err => {
+    console.error("Failed to load initial assets:", err);
+});
 
 }
 
@@ -2297,26 +2339,40 @@ function loadGoogleMapsScript() {
         document.head.appendChild(script);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        displayVenues();
-        displayInfluencerSuggestions();
-        loadGoogleMapsScript();
-        //updateDataFromCloud();
-;
-window.addEventListener('scroll', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    // --- FIX: Prevent the initial flash by hiding selection and showing map immediately ---
+    if (hasSharedRouteInUrl) {
+        const selContent = document.getElementById('selection-content');
+        const mapCont = document.getElementById('map-container');
+        const influencerSection = document.querySelector('.influencer-suggestions-container');
+        const banner = document.getElementById('banner-selection');
+
+        if (selContent) selContent.style.display = 'none';
+        if (mapCont) mapCont.classList.remove('hidden');
+        if (influencerSection) influencerSection.style.display = 'none';
+        if (banner) banner.style.display = 'none';
+        document.body.classList.add('map-view-layout');
+    }
+
+    // --- All your original initializations continue downstream safely ---
+    displayVenues();
+    displayInfluencerSuggestions();
+    loadGoogleMapsScript();
+    
+    window.addEventListener('scroll', () => {
         if (appState === 'selection') {
             updateButtonState();
         }
     });
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                displayVenues(e.currentTarget.dataset.filter);
-            });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            displayVenues(e.currentTarget.dataset.filter);
         });
     });
-
+});
 
 // tracking implement
 function trackLocation() {
@@ -2399,41 +2455,41 @@ function updateUserProgressOnHorizontalBar(userPos) {
     // let prevVenueItem = null;
     // let nextVenueItem = null;
 
-    // if (insertionIndex === 0) {
-    //     nextVenueItem = routeItems[0];
-    // } else if (insertionIndex === -1) {
-    //     prevVenueItem = routeItems[routeItems.length - 1];
-    // } else {
-    //     prevVenueItem = routeItems[insertionIndex - 1];
-    //     nextVenueItem = routeItems[insertionIndex];
-    // }
+     if (insertionIndex === 0) {
+         nextVenueItem = routeItems[0];
+     } else if (insertionIndex === -1) {
+         prevVenueItem = routeItems[routeItems.length - 1];
+     } else {
+         prevVenueItem = routeItems[insertionIndex - 1];
+         nextVenueItem = routeItems[insertionIndex];
+     }
 
-    // // Calculate actual distance to the nearest bounding venue
-    // let isNearRoute = false;
-    // const MAX_DISTANCE = 500; // 500 meters threshold
+     // Calculate actual distance to the nearest bounding venue
+     let isNearRoute = false;
+     const MAX_DISTANCE = 500; // 500 meters threshold
 
-    // if (prevVenueItem) {
-    //     const prevLatLng = new google.maps.LatLng(parseFloat(prevVenueItem.dataset.lat), parseFloat(prevVenueItem.dataset.lng));
-    //     const distToPrev = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, prevLatLng);
-    //     if (distToPrev <= MAX_DISTANCE) isNearRoute = true;
-    // }
+     if (prevVenueItem) {
+         const prevLatLng = new google.maps.LatLng(parseFloat(prevVenueItem.dataset.lat), parseFloat(prevVenueItem.dataset.lng));
+         const distToPrev = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, prevLatLng);
+         if (distToPrev <= MAX_DISTANCE) isNearRoute = true;
+     }
 
-    // if (nextVenueItem) {
-    //     const nextLatLng = new google.maps.LatLng(parseFloat(nextVenueItem.dataset.lat), parseFloat(nextVenueItem.dataset.lng));
-    //     const distToNext = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, nextLatLng);
-    //     if (distToNext <= MAX_DISTANCE) isNearRoute = true;
-    // }
+     if (nextVenueItem) {
+         const nextLatLng = new google.maps.LatLng(parseFloat(nextVenueItem.dataset.lat), parseFloat(nextVenueItem.dataset.lng));
+         const distToNext = google.maps.geometry.spherical.computeDistanceBetween(userLatLng, nextLatLng);
+         if (distToNext <= MAX_DISTANCE) isNearRoute = true;
+     }
 
-    // // If the user is miles away (e.g., Beşiktaş), break out early and do not render the dot
-    // if (!isNearRoute) {
-    //     console.log("User is too far from active route segments. Hiding tracking dot.");
-    //     return;
-    // }
+     // If the user is miles away (e.g., Beşiktaş), break out early and do not render the dot
+     if (!isNearRoute) {
+         console.log("User is too far from active route segments. Hiding tracking dot.");
+         return;
+    }
 
     // 4. Build the floating HTML indicator dot
     const liveDotHTML = `
         <div class="live-location-dot flex flex-col items-center justify-start h-full mx-1" style="align-self: flex-start; padding-top: 5px;">
-            <div class="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-md animate-pulse"></div>
+            <div class="w-5 h-5 bg-blue-500 rounded-full border-2 border-white shadow-md"></div>
         </div>
     `;
 
@@ -2462,7 +2518,11 @@ function createElementFromHTML(htmlString) {
 async function generateShareableLink() {
     // 1. Prepare data
     const routeIds = Array.from(selectedVenues).join(',');
-    const baseUrl = window.location.origin + window.location.pathname;
+    let baseUrl = window.location.origin + window.location.pathname;
+    if (!baseUrl.endsWith('/')) {
+        baseUrl += '/';
+    }
+    
     const shareUrl = `${baseUrl}?route=${routeIds}`;
     
     // Combine text and URL for the clipboard fallback
@@ -2518,7 +2578,6 @@ function loadRouteFromUrl() {
         
         // Run your route calculation
         calculateRoute(); 
-        switchView('map');
         displayVenues();
     }
      else {
