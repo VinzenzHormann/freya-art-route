@@ -2408,7 +2408,7 @@ directionsService.route(request, (response, status) => {
             // Checking against highDensityPath ensures we catch buildings 
             // in the middle of long blocks like in your screenshot.
             return highDensityPath.some(pathPoint => 
-                google.maps.geometry.spherical.computeDistanceBetween(vLatLng, pathPoint) <= 100
+                google.maps.geometry.spherical.computeDistanceBetween(vLatLng, pathPoint) <= 40
             );
         });
         directLandmarksList = directLandmarks.map(v => v.id.toString());
@@ -2429,7 +2429,7 @@ directionsService.route(request, (response, status) => {
         peripheralLandmarksList = peripheralLandmarks.map(v => v.id.toString());
 
         switchView('map');
-        route_summary_horizontal(response, stops, directLandmarks);
+        route_summary_horizontal(response, stops, directLandmarks, peripheralLandmarks);
         showPeripheralLandmarks(peripheralLandmarks);
     } else {
         alertUser('Rota bulunamadı: ' + status, 'error');
@@ -2623,9 +2623,7 @@ function handleRouteItemClick(venueId) {
     // Replace the old panTo/panBy with our new function
     panToVenueWithOffset(venueData.lat, venueData.lng);
 
-    if (document.getElementById('landmark-detail-card')) {
-        showVenueCard(venueData);
-    }
+    showVenueCard(venueData);
 }
 
 function toggleLandmarkDisplay() {
@@ -2662,7 +2660,7 @@ function getPointProgressOnPath(point, path) {
 }
 
 
-function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
+function route_summary_horizontal(response, orderedMuseums, directLandmarks, peripheralLandmarks) {
     const existing = document.getElementById('horizontal-route-container');
     if (existing) existing.remove();
 
@@ -2673,11 +2671,6 @@ function route_summary_horizontal(response, orderedMuseums, directLandmarks) {
     Object.values(markers).forEach(m => m.setMap(null));
 
     // --- STEP 2: DRAW PERIPHERAL LANDMARKS ---
-    const peripheralLandmarks = venues.filter(v => {
-        if (v.type !== 'landmark') return false;
-        const dist = getDistanceFromPath(new google.maps.LatLng(v.lat, v.lng), path);
-        return dist > 50 && dist <= 150; 
-    });
 
     peripheralLandmarks.forEach(landmark => {
         const marker = markers[landmark.id];
